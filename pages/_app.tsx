@@ -11,6 +11,7 @@ import ResolutionContext from "../context/ResolutionContext";
 import ThemeContext from "../context/ThemeContext";
 import usePokemons from "../hooks/usePokemons";
 import NavigationBar from "../ui/components/NavigationBar/NavigationBar";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 const App = ({ Component, pageProps }: AppProps) => {
   const [filteredPokemons, pokemons, setPokemons] = usePokemons();
@@ -21,6 +22,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <>
+            <GoogleAnalytics gaId="G-6FS0YBDE8T" />
       <div data-resolution={resolution} className={styles.container} data-theme={theme}>
         <ResolutionContext.Provider value={{ resolution, setResolution }}>
           <ThemeContext.Provider value={{ theme, setTheme }}>
