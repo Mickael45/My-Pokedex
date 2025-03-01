@@ -30,7 +30,7 @@ const SearchInput = () => {
       router.push(HOME);
       return;
     }
-    const search = !isNaN(+value) ? `id=${value}` : `name=${value}`;
+    const search = !isNaN(+value) ? `id=${value.toLowerCase()}` : `name=${value.toLowerCase()}`;
 
     router.push({
       pathname: HOME,
@@ -57,6 +57,7 @@ const SearchInput = () => {
             maxWidth: "100%",
             height: "auto"
           }} />
+        <button type="submit" hidden>Submit</button>
       </div>
     </form>
   );
