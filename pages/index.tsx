@@ -42,7 +42,7 @@ const HomePage = ({ pokemons }: IProps) => {
     }
   };
 
-  useEffect(updatePokemons, [pokemons, setLoading]);
+  useEffect(updatePokemons, [pokemons, setLoading, setPokemons]);
 
   if (!filteredPokemons.length && !loading) {
     return <EmptyListPlaceholder text="No Pokemon Found..." />;
