@@ -9,7 +9,6 @@ import {
   extractPokemonDescription,
   extractPokemonCategory,
   extractTypeName,
-  replaceBrokenName,
 } from "./extractors";
 import {
   BASIC_PIC,

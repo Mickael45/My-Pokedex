@@ -22,7 +22,7 @@ const App = ({ Component, pageProps }: AppProps) => {
 
   return (
     <>
-            <GoogleAnalytics gaId="G-6FS0YBDE8T" />
+      <GoogleAnalytics gaId="G-6FS0YBDE8T" />
       <div data-resolution={resolution} className={styles.container} data-theme={theme}>
         <ResolutionContext.Provider value={{ resolution, setResolution }}>
           <ThemeContext.Provider value={{ theme, setTheme }}>
