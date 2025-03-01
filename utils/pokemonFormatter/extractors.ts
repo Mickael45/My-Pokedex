@@ -32,6 +32,8 @@ export const extractAbilitiesFromPokemon = (abilities: Ability[]) => {
 
 export const extractTypeName = (type: Type) => type.type.name;
 
+export const extractPokemonName = ({ name }: IBasicPokemon) => name;
+
 export const extractPokemonDescription = (pokemonSpeciesData: Specie) =>
   pokemonSpeciesData.flavor_text_entries.find(findEnglishEntry)?.flavor_text || "";
 
