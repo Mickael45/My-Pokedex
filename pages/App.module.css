@@ -1,0 +1,133 @@
+.container {
+  min-height: 100vh;
+  padding-bottom: 20px;
+}
+
+.container[id="loading-screen"],
+.container[id="error-screen"] {
+  background: rgba(236, 236, 236);
+}
+
+.container[data-resolution="low res."] * {
+  font-family: PixelPokemonFont;
+}
+
+.container[data-resolution="low res."] [id="id"] {
+  font-size: 13px;
+}
+
+.container[data-resolution="low res."] [id="type"] {
+  font-size: 10px;
+}
+
+.container[data-resolution="low res."] input::placeholder {
+  font-size: min(11px, 1.5vh);
+}
+
+.container[data-resolution="low res."] h4 {
+  font-size: 13px;
+}
+
+.container[data-resolution="low res."] [id="res switch"] {
+  font-size: 11px;
+}
+
+.container[data-resolution="low res."] [alt$="pic"] {
+  image-rendering: pixelated;
+}
+
+.container[data-resolution="high res."] * {
+  font-family: HdPokemonFont, arial, sans-serif;
+}
+
+.container[data-resolution="high res."] h4 {
+  font-size: 20px;
+}
+
+.container[data-resolution="high res."] h3 {
+  font-size: 25px;
+}
+
+.container[data-resolution="high res."] h2 {
+  font-size: 30px;
+}
+
+.container[data-resolution="high res."] [id="id"] {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.container[data-resolution="high res."] [id="type"] {
+  font-size: 15px;
+}
+
+.container[data-resolution="high res."] [id="info"] {
+  font-size: 100%;
+}
+
+.container[data-resolution="high res."] input::placeholder {
+  font-size: min(15px, 2vh);
+}
+
+.container[data-resolution="high res."] [id="res switch"] {
+  font-size: 17px;
+}
+
+.container[data-resolution="high res."] [alt$="pic"] {
+  image-rendering: crisp-edges;
+}
+
+.container[data-theme="light"] {
+  background: rgba(236, 236, 236);
+}
+
+.container[data-theme="light"] [id="type-interactions"] [data-checked="true"] {
+  border-color: black;
+}
+
+.container[data-theme="light"] a {
+  color: #cc0000;
+}
+
+.container[data-theme="light"] [id="bannered-button"] {
+  color: #3b4cca;
+}
+
+.container[data-theme="dark"],
+.container[data-theme="dark"] select,
+.container[data-theme="dark"] form *,
+.container[data-theme="dark"] [id="loading-screen"],
+.container[data-theme="dark"] [id="error-screen"] {
+  background: rgba(40, 40, 40);
+  color: white;
+}
+
+.container[data-theme="dark"] [id="types-interaction-details"],
+.container[data-theme="dark"] [id="type"] {
+  color: white;
+}
+
+.container[data-theme="dark"] [id="id"],
+.container[data-theme="dark"] [id="id-details"] {
+  color: #cc0000;
+}
+
+.container[data-theme="dark"] [id="id-nav-button"],
+.container[data-theme="dark"] [id="bannered-button"] {
+  border: 3px solid #ffde00;
+  background: #3b4cca;
+  color: #ffde00;
+}
+
+.container[data-theme="dark"] [id="bannered-button"]:before {
+  background: #ffde00;
+  color: #3b4cca;
+}
+
+.container[data-theme="dark"] [id="type-interactions"] [data-checked="true"] {
+  border-color: white;
+}
+
+.container[data-theme="dark"] a {
+  color: #ffde00;
+}

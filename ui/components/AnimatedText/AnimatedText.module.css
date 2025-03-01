@@ -1,0 +1,43 @@
+.container,
+.container span {
+  display: flex;
+  flex-wrap: wrap;
+  justify-items: space-around;
+}
+
+.container p[data-char=" "] {
+  margin-left: 15px;
+}
+
+.container p {
+  text-transform: uppercase;
+}
+
+.char {
+  display: inline-block;
+  animation-name: bounce;
+  animation-duration: 2s;
+  animation-iteration-count: 2;
+  animation-delay: calc(var(--char-index) * (1.5s / var(--word-length)));
+  animation-timing-function: cubic-bezier(0.165, 0.44, 0.64, 1);
+}
+
+@keyframes bounce {
+  0%,
+  15% {
+    transform: translateY(0);
+  }
+  7% {
+    transform: translateY(-100%);
+  }
+}
+
+@-webkit-keyframes bounce {
+  0%,
+  15% {
+    transform: translateY(0);
+  }
+  7% {
+    transform: translateY(-100%);
+  }
+}

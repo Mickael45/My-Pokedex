@@ -1,0 +1,45 @@
+.container {
+}
+
+.container > :only-child {
+  width: 60px;
+  height: 60px;
+  background-color: #fff;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid rgba(50, 50, 50);
+  animation: frames 0.8s linear 0s infinite;
+}
+
+.container > :only-child:after {
+  content: "";
+  position: absolute;
+  width: 60px;
+  height: 32px;
+  background-color: red;
+  border-bottom: 4px solid rgba(50, 50, 50);
+  top: -4px;
+}
+
+.container > :only-child:before {
+  content: "";
+  position: absolute;
+  background-color: white;
+  width: 10px;
+  height: 10px;
+  border: 4px solid rgba(50, 50, 50);
+  border-radius: 50%;
+  bottom: 21px;
+  right: 21px;
+  z-index: 1;
+}
+
+@keyframes frames {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

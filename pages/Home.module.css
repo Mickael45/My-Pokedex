@@ -1,0 +1,11 @@
+.container {
+  display: grid;
+  justify-content: center;
+  justify-items: center;
+  row-gap: 15px;
+}
+
+.container > :first-child {
+  height: 35px;
+  justify-self: end;
+}

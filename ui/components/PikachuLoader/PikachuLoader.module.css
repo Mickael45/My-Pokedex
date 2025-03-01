@@ -1,0 +1,27 @@
+.container {
+  position: relative;
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  top: 40vh;
+  transform: translateY(-50%);
+  display: grid;
+  row-gap: 30px;
+}
+
+.container > :only-child {
+  display: grid;
+  align-content: center;
+  justify-content: center;
+  justify-items: center;
+}
+
+@keyframes fadeIn {
+  0%,
+  90% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

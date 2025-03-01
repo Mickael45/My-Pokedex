@@ -1,0 +1,16 @@
+.container {
+  display: grid;
+  align-content: center;
+  max-width: 750px;
+  padding: 30px 0 10px 0;
+}
+
+.container > :only-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.highlight {
+  border-color: white;
+}

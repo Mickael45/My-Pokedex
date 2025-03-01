@@ -1,0 +1,10 @@
+.container > * {
+  min-width: 100%;
+}
+
+.typeInteractions {
+  margin-top: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}

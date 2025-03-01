@@ -1,0 +1,17 @@
+.typeContainer {
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0 5px 5px 0;
+  border: 2px solid transparent;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.typeContainer:hover {
+  cursor: pointer;
+}

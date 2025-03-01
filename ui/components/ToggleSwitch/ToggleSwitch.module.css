@@ -1,0 +1,74 @@
+.container {
+  display: grid;
+  align-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.toggle {
+  display: none;
+}
+
+.toggleButton {
+  display: block;
+  width: 145px;
+  height: 37px;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+  backface-visibility: hidden;
+  transition: all 0.2s ease;
+  background: #ffde00;
+  border: 3px solid #3b4cca;
+  color: #3b4cca;
+}
+
+.toggleButton:after,
+.toggleButton:before {
+  display: inline-block;
+  transition: all 0.2s ease;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  line-height: 37px;
+  font-weight: bold;
+}
+
+.toggleButton:after {
+  left: 100%;
+  content: attr(data-tg-on);
+}
+
+.toggleButton:before {
+  left: 0;
+  content: attr(data-tg-off);
+}
+
+.toggleButton:active:before {
+  left: -10%;
+}
+
+.toggle:checked + .toggleButton {
+  background: #3b4cca;
+  color: #ffde00;
+  border: 3px solid #ffde00;
+  overflow: hidden;
+}
+
+.toggle:checked + .toggleButton:before {
+  left: -100%;
+}
+
+.toggle:checked + .toggleButton:after {
+  left: 0;
+}
+
+.toggle:checked + .toggleButton:active:after {
+  left: 10%;
+}
+
+@media screen and (max-width: 800px) {
+  .toggleButton {
+    width: 50px !important;
+  }
+}

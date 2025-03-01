@@ -1,0 +1,15 @@
+export const DEFAULT_POKEMON = {
+  pixelImageUrl: "",
+  hdImageUrl: "",
+  name: "",
+  types: "",
+  height: 0,
+  weight: 0,
+  id: 0,
+  stats: [],
+  weaknesses: [],
+  evolutionChain: [],
+  abilities: [],
+  description: "",
+  category: "",
+};

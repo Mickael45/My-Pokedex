@@ -1,0 +1,48 @@
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 10px 5px 10px 5px;
+  align-content: flex-start;
+  width: 320px;
+  height: 100%;
+  text-align: center;
+}
+
+.container details {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  text-align: left;
+  width: 100%;
+  color: white;
+}
+
+.container details > :last-child {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  color: black;
+}
+
+.container details > :last-child,
+.container details > :last-child > * > :last-child {
+  padding: 20px 5px;
+  display: grid;
+}
+
+.container details > :last-child > * > :last-child {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.container summary {
+  max-height: 40px;
+  border: 3px solid;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+
+.container summary:hover {
+  cursor: pointer;
+}

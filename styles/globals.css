@@ -1,0 +1,34 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  transition: color 1s ease-in-out;
+  transition: background-color 1s ease-in-out;
+}
+
+@font-face {
+  font-family: "PixelPokemonFont";
+  src: local("PixelPokemonFont"), url(/fonts/pixelPokemonFont.ttf) format("truetype");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HdPokemonFont";
+  src: local("HdPokemonFont"), url(/fonts/hdPokemonFont.woff) format("woff");
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "HdPokemonFont";
+  src: local("HdPokemonFont-bold"), url(/fonts/hdPokemonFont-bold.woff) format("woff");
+  font-weight: bold;
+  font-display: swap;
+}

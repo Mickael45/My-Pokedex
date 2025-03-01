@@ -1,0 +1,29 @@
+.container {
+  display: grid;
+  row-gap: 50px;
+}
+
+.container > :last-child {
+  display: flex;
+  flex-wrap: wrap;
+  color: white;
+  border-radius: 10px;
+  font-weight: bold;
+  padding: 30px 10px;
+  justify-content: space-around;
+}
+
+.container > :last-child > * {
+  display: grid;
+  max-width: 35%;
+  width: 100%;
+  padding: 10px 0;
+  align-content: flex-start;
+}
+
+.container span {
+  margin-top: 10px;
+  font-size: 80%;
+  color: black;
+  font-weight: normal;
+}

@@ -1,0 +1,49 @@
+.container > :first-child {
+  display: flex;
+  justify-content: center;
+}
+
+.container > :nth-child(2) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.container > :nth-child(2) > :not(:last-child) {
+  display: grid;
+  width: 45%;
+  align-content: space-evenly;
+}
+
+.container > :nth-child(2) > :last-child {
+  width: 95%;
+}
+
+@media screen and (max-width: 800px) {
+  .container > :nth-child(2) > :not(:last-child),
+  .container > :nth-child(2) > :last-child {
+    width: 100%;
+  }
+  .container > :nth-child(2) {
+    display: grid;
+    row-gap: 50px;
+    align-content: space-around;
+  }
+}
+
+.container > :nth-child(2) > :nth-child(3) > :last-child {
+  background: white;
+  text-align: center;
+  border-radius: 10px;
+  color: black;
+}
+
+.container > :nth-child(2) > :nth-child(3) :last-child h3 {
+  text-align: left;
+  margin-left: 35px;
+}
+
+.container > :nth-child(1) > :last-child {
+  color: rgb(164, 164, 164);
+  margin-left: 10px;
+}

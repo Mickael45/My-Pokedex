@@ -1,0 +1,35 @@
+{
+  "name": "quantum-password-checker",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@next/third-parties": "^15.2.0",
+    "d3": "^7.1.1",
+    "next": "15.1.7",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sharp": "^0.29.2"
+  },
+  "devDependencies": {
+    "@types/d3": "^7.1.0",
+    "@eslint/eslintrc": "^3",
+    "@types/lodash": "^4.17.15",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.1.7",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  },
+  "resolutions": {
+    "@types/react": "19.0.10"
+  }
+}
