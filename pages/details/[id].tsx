@@ -41,7 +41,7 @@ const DetailsPage = ({
 
   const setLoadingToFalse = () => setLoading(false);
 
-  useEffect(setLoadingToFalse, [id]);
+  useEffect(setLoadingToFalse, [id, setLoading]);
 
   return (
     <>
