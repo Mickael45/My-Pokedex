@@ -10,14 +10,7 @@ import {
   extractPokemonCategory,
   extractTypeName,
 } from "./extractors";
-import {
-  BASIC_PIC,
-  FULL_PIC,
-  PIXELATED,
-  POKEMON_BASIC_PIC_URL,
-  POKEMON_FULL_PIC_URL,
-  POKEMON_PIXEL_PIC_URL,
-} from "../../constants/FetchPokemons";
+import { BASIC_PIC, FULL_PIC, PIXELATED } from "../../constants/FetchPokemons";
 
 type PIC_TYPE = typeof BASIC_PIC | typeof FULL_PIC | typeof PIXELATED;
 
@@ -106,11 +99,16 @@ export const formatPokemonEvolutionChain = (
   return evolutionChain;
 };
 
+// Images are self-hosted under public/pokemon by scripts/downloadPokemonImages.mjs
+// (run via the prebuild/predev hooks), so these resolve to same-origin static files
+// that ship with the SSG output instead of runtime CDN fetches. The folder layout
+// and padding here MUST match that download script.
 const createImageUrl = (id: number, imgType: PIC_TYPE = PIXELATED) => {
   if (imgType === PIXELATED) {
-    return `${POKEMON_PIXEL_PIC_URL}${id}.png`;
+    return `/pokemon/pixel/${id}.png`;
   }
-  return `${imgType === BASIC_PIC ? POKEMON_BASIC_PIC_URL : POKEMON_FULL_PIC_URL}${formatNumberToMatchLength(id)}.png`;
+  const folder = imgType === BASIC_PIC ? "basic" : "full";
+  return `/pokemon/${folder}/${formatNumberToMatchLength(id)}.png`;
 };
 
 export const formatToBasicPokemon = (pokemon: IPokemonResponseType): IBasicPokemon => {

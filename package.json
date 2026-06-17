@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "images": "node scripts/downloadPokemonImages.mjs",
+    "predev": "node scripts/downloadPokemonImages.mjs",
     "dev": "next dev --turbopack",
+    "prebuild": "node scripts/downloadPokemonImages.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"

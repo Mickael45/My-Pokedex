@@ -4,7 +4,9 @@ import { useRouter } from "next/router";
 import styles from "./Details.module.css";
 import { DETAILS } from "../../constants/Routes";
 import { MAX_POKEMON_ID_ALLOWED } from "../../constants/FetchPokemons";
+import { LOW_RESOLUTION } from "../../constants/Resolution";
 import LoadingContext from "../../context/LoadingContext";
+import ResolutionContext from "../../context/ResolutionContext";
 import { usePokemonPic } from "../../hooks/usePokemonPic";
 import { fetchAllPokemons, fetchPokemonDetailsByNameOrId } from "../../services/fetchPokemons/fetchPokemons";
 import Header from "../../ui/components/Header/Header";
@@ -39,12 +41,32 @@ const DetailsPage = ({
 }: IFullPokemon) => {
   const router = useRouter();
   const { setLoading } = useContext(LoadingContext);
+  const { resolution } = useContext(ResolutionContext);
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
   const color = getPokemonPrimaryTypeColor(types);
   const typeList = types.split(",");
 
   const setLoadingToFalse = () => setLoading(false);
   useEffect(setLoadingToFalse, [id, setLoading]);
+
+  // Warm the browser cache for the neighbouring Pokemon so Prev/Next shows the
+  // image instantly instead of waiting on a fresh request. Pixel art is tiny so it
+  // is always prefetched; the heavier HD art is only prefetched in high-res mode.
+  useEffect(() => {
+    const preload = (targetId: number) => {
+      if (targetId < 1 || targetId > MAX_POKEMON_ID_ALLOWED) return;
+      const urls = [`/pokemon/pixel/${targetId}.png`];
+      if (resolution !== LOW_RESOLUTION) {
+        urls.push(`/pokemon/full/${formatNumberToMatchLength(targetId)}.png`);
+      }
+      urls.forEach((src) => {
+        const img = new window.Image();
+        img.src = src;
+      });
+    };
+    preload(id - 1);
+    preload(id + 1);
+  }, [id, resolution]);
 
   const goTo = (pokemonId: number) => router.push(`${DETAILS}${pokemonId}`);
 
