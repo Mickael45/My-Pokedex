@@ -2,11 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-/* High-res mode uses the HD font, which is narrower, so the list-card name and
-   HP can scale up to 18px (low-res keeps the compact 12px pixel-font size). */
+/* High-res mode uses the HD font, which is narrower, so the list-card text can
+   scale up (low-res keeps the compact 12px pixel-font sizes). Everything goes to
+   18px except HP, which sits at 16px. */
 [data-resolution="high res."] .card-name,
-[data-resolution="high res."] .card-hp {
+[data-resolution="high res."] .card-stat {
   font-size: 1.125rem;
+}
+
+[data-resolution="high res."] .card-hp,
+[data-resolution="high res."] .card-hp-label {
+  font-size: 1rem;
 }
 
 html,

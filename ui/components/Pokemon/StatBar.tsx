@@ -10,7 +10,7 @@ const StatBar = ({ label, value }: IProps) => {
 
   return (
     <div>
-      <div className="flex items-center gap-2 text-xs font-bold">
+      <div className="card-stat flex items-center gap-2 text-xs font-bold">
         <span className="w-20 shrink-0 whitespace-nowrap text-left">{label}</span>
         <div className="flex-1 bg-yellow-200/50 rounded-full h-1.5 shadow-inner">
           <div

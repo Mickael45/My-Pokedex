@@ -25,14 +25,14 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
       onClick={handleClick}
     >
       <div className="rounded-md text-white" style={{ backgroundColor: cardColor }}>
-        <div className="flex items-center gap-2 p-2">
+        <div className="flex items-center gap-2 px-2 py-3">
           {/* Plain div (not <h2>) so the global high-res `h2 { font-size: 30px }`
               rule can't override the fixed size and cause a layout shift. */}
           <div className="card-name flex-1 min-w-0 whitespace-nowrap text-[12px] font-bold capitalize leading-tight" title={name}>
             {name}
           </div>
           <div className="flex shrink-0 items-center gap-1">
-            <span className="text-[9px] font-bold">HP</span>
+            <span className="card-hp-label text-[9px] font-bold">HP</span>
             <span className="card-hp text-[12px] font-bold leading-none">{hp}</span>
             <TypeBadge type={primaryType} size={22} className="ml-2" />
           </div>
