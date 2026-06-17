@@ -209,6 +209,11 @@
   font-size: calc(13px * var(--font-scale));
   font-weight: 600;
 }
+/* The pixel font is wider, so the longest labels ("Spe. Att" / "Spe. Def")
+   overflow the 72px column and collide with the value — widen it in low-res. */
+:global([data-resolution="low res."]) .statline {
+  grid-template-columns: 104px 30px 1fr;
+}
 .statLabel {
   white-space: nowrap;
   opacity: 0.9;
