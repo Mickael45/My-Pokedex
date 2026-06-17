@@ -88,9 +88,6 @@
   align-items: center;
   padding: 16px 0;
   border-bottom: 1px solid var(--line-soft);
-  /* Keep render cheap when a tier holds hundreds of avatars. */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 130px;
 }
 .cat:last-child {
   border-bottom: none;

@@ -29,16 +29,15 @@ const ATTACKING_LABELS: Record<number, string> = {
 };
 const TIER_CLASS: Record<number, string> = { 4: "t4", 2: "t2", 0.5: "th", 0.25: "tq", 0: "t0" };
 
-const factorLabel = (factor: number) =>
-  factor === 0 ? "0" : factor === 0.25 ? "¼" : factor === 0.5 ? "½" : `${factor}`;
+const factorLabel = (factor: number) => `${factor}`;
 
-// Renders avatars capped at a responsive limit (10 desktop / 5 mobile) and
-// reveals the rest one chunk per click, so neither a type change nor expanding
-// ever mounts hundreds of nodes at once. Resets to the cap when the list
-// changes (i.e. a new type is picked).
+// Renders nothing until asked: a type click only paints labels + counts, then
+// each "See N more" click reveals one chunk (10 desktop / 5 mobile). This keeps
+// chip clicks instant — no avatar (and no image request) is mounted up front.
+// Resets to hidden when the list changes (i.e. a new type is picked).
 const AvatarShelf = ({ pokemons }: { pokemons: IBasicPokemon[] }) => {
   const [limit, setLimit] = useState(DESKTOP_LIMIT);
-  const [visible, setVisible] = useState(DESKTOP_LIMIT);
+  const [visible, setVisible] = useState(0);
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 640px)");
@@ -48,7 +47,7 @@ const AvatarShelf = ({ pokemons }: { pokemons: IBasicPokemon[] }) => {
     return () => query.removeEventListener("change", apply);
   }, []);
 
-  useEffect(() => setVisible(limit), [pokemons, limit]);
+  useEffect(() => setVisible(0), [pokemons, limit]);
 
   const shown = pokemons.slice(0, visible);
   const allShown = visible >= pokemons.length;
@@ -56,20 +55,20 @@ const AvatarShelf = ({ pokemons }: { pokemons: IBasicPokemon[] }) => {
 
   return (
     <>
-      <div className={styles.mons}>
-        {shown.map((pokemon) => (
-          <PokemonAvatar key={pokemon.id} pokemon={pokemon} />
-        ))}
-      </div>
-      {pokemons.length > limit && (
-        <button
-          type="button"
-          className={styles.seeMore}
-          onClick={() => setVisible((value) => (allShown ? limit : value + limit))}
-        >
-          {allShown ? "See less" : `See ${nextChunk} more`}
-        </button>
+      {shown.length > 0 && (
+        <div className={styles.mons}>
+          {shown.map((pokemon) => (
+            <PokemonAvatar key={pokemon.id} pokemon={pokemon} />
+          ))}
+        </div>
       )}
+      <button
+        type="button"
+        className={styles.seeMore}
+        onClick={() => setVisible((value) => (allShown ? 0 : value + limit))}
+      >
+        {allShown ? "See less" : `See ${nextChunk} more`}
+      </button>
     </>
   );
 };
