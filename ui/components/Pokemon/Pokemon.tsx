@@ -25,7 +25,7 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
       onClick={handleClick}
     >
       <div className="rounded-md text-white" style={{ backgroundColor: cardColor }}>
-        <div className="flex items-center gap-2 px-2 py-3">
+        <div className="flex items-center gap-2 px-4 py-3">
           {/* Plain div (not <h2>) so the global high-res `h2 { font-size: 30px }`
               rule can't override the fixed size and cause a layout shift. */}
           <div className="card-name flex-1 min-w-0 whitespace-nowrap text-[12px] font-bold capitalize leading-tight" title={name}>
@@ -38,7 +38,7 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
           </div>
         </div>
 
-        <div className="relative mx-2 mb-2 border-2 bg-gray-500 shadow-inner" style={{ borderColor: "silver" }}>
+        <div className="relative mx-4 mb-2 border-2 bg-gray-500 shadow-inner" style={{ borderColor: "silver" }}>
           <img src={imageUrl} alt={`${name}-pic`} className="w-full h-48 object-contain" loading="lazy" />
           {evolvesFrom && (
             <div className="absolute top-1.5 left-1.5 w-8 h-8 flex items-center justify-center bg-gray-100 border-2 border-white outline outline-2 outline-yellow-500 rounded-full overflow-hidden top-[-8] left-[-4]">
