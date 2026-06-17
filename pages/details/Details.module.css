@@ -20,6 +20,16 @@
 :global([data-resolution="low res."]) .wrap {
   --font-scale: 0.75;
 }
+/* Per-resolution font with an arial fallback so glyphs the pixel font lacks
+   (accents like é, chevrons ‹ ›) still render instead of disappearing. */
+:global([data-resolution="low res."]) .wrap,
+:global([data-resolution="low res."]) .wrap * {
+  font-family: "PixelPokemonFont", arial, sans-serif !important;
+}
+:global([data-resolution="high res."]) .wrap,
+:global([data-resolution="high res."]) .wrap * {
+  font-family: "HdPokemonFont", arial, sans-serif !important;
+}
 .inner {
   max-width: 1000px;
   margin: 0 auto;
@@ -66,8 +76,7 @@
   position: absolute;
   right: 4px;
   top: -40px;
-  /* Fixed HD font; size follows --font-scale like the rest of the text. */
-  font-family: "HdPokemonFont", arial, sans-serif !important;
+  /* Font follows the res toggle (via .wrap *); size follows --font-scale. */
   font-size: calc(190px * var(--font-scale));
   font-weight: 900;
   line-height: 1;
@@ -114,9 +123,10 @@
   object-fit: contain;
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.32));
 }
-/* The low-res pixel sprite is shown at 2x so it reads as well as the HD art. */
+/* The low-res pixel sprite is shown 1.2x larger so it reads as well as the HD
+   art while keeping the hero height (and the vertical rhythm) close. */
 :global([data-resolution="low res."]) .heroImg {
-  height: clamp(380px, 60vw, 540px);
+  height: clamp(228px, 36vw, 324px);
 }
 
 /* ---- glass panels ---- */

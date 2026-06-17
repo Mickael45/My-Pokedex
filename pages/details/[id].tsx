@@ -82,7 +82,7 @@ const DetailsPage = ({
             <div className={styles.inner}>
               <nav className={styles.nav}>
                 <button type="button" className={styles.navBtn} disabled={id <= 1} onClick={() => goTo(id - 1)}>
-                  ‹ Prev
+                  &lt; Prev
                 </button>
                 <button
                   type="button"
@@ -90,7 +90,7 @@ const DetailsPage = ({
                   disabled={id >= MAX_POKEMON_ID_ALLOWED}
                   onClick={() => goTo(id + 1)}
                 >
-                  Next ›
+                  Next &gt;
                 </button>
               </nav>
 
@@ -112,7 +112,7 @@ const DetailsPage = ({
 
               <div className={styles.panes}>
                 <section className={`${styles.glass} ${styles.entry}`}>
-                  <div className={styles.paneTitle}>Pokédex entry</div>
+                  <div className={styles.paneTitle}>Pokedex entry</div>
                   <p>{description}</p>
                 </section>
 
