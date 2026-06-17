@@ -1,10 +1,167 @@
-.container > * {
-  min-width: 100%;
+/* Type Interactions — a "dossier" for the selected typing: the Pokémon that
+   wield it, who threatens it (defending) and who it beats (attacking), each
+   bucketed by damage multiplier. Colour tokens default to the Daylight (light)
+   theme and are overridden for Carbon Grid (dark); avatars inherit them. */
+.container {
+  --panel-bg: #ffffff;
+  --panel-border: rgba(20, 30, 60, 0.12);
+  --ink: #1a2233;
+  --ink-dim: #5a6678;
+  --ink-faint: #8a93a8;
+  --line-soft: rgba(20, 30, 60, 0.09);
+  --avatar-bg: #eef1f7;
+  --tooltip-bg: #11141d;
+  --tooltip-ink: #ffffff;
+  --tooltip-border: rgba(255, 255, 255, 0.14);
+  --t4: #e11d48;
+  --t2: #ea6a17;
+  --th: #1f9d57;
+  --tq: #0f7a42;
+  --t0: #6b7280;
+
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 8px 6px 70px;
+  color: var(--ink);
 }
 
-.typeInteractions {
-  margin-top: 50px;
+:global([data-theme="dark"]) .container {
+  --panel-bg: #14181f;
+  --panel-border: rgba(255, 255, 255, 0.09);
+  --ink: #e8ecf6;
+  --ink-dim: #9aa3b8;
+  --ink-faint: #5e6880;
+  --line-soft: rgba(255, 255, 255, 0.07);
+  --avatar-bg: #0d1018;
+  --tooltip-bg: #0d1018;
+  --tooltip-border: rgba(255, 255, 255, 0.16);
+  --t4: #ff3d63;
+  --t2: #ff8a3d;
+  --th: #36c98f;
+  --tq: #18b073;
+  --t0: #8a93a8;
+}
+
+.prompt {
+  text-align: center;
+  color: var(--ink-dim);
+  padding: 56px 16px;
+  font-size: 15px;
+}
+
+.block {
+  margin-top: 36px;
+}
+
+.secHead {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.ic {
+  font-size: 20px;
+  line-height: 1;
+}
+.blockTitle {
+  margin: 0;
+  font-weight: bold;
+  color: var(--ink);
+}
+.secDesc {
+  color: var(--ink-dim);
+  font-size: 13px;
+  margin: 8px 0 16px;
+}
+
+.panel {
+  border: 1px solid var(--panel-border);
+  border-radius: 18px;
+  padding: 2px 20px;
+  background: var(--panel-bg);
+  box-shadow: 0 18px 50px -34px rgba(0, 0, 0, 0.5);
+}
+
+.cat {
+  display: grid;
+  grid-template-columns: 152px 1fr;
+  gap: 18px;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line-soft);
+  /* Keep render cheap when a tier holds hundreds of avatars. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 130px;
+}
+.cat:last-child {
+  border-bottom: none;
+}
+
+.catHead {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+.badge {
+  min-width: 44px;
+  font-weight: bold;
+  font-size: 22px;
+  color: var(--cc);
+}
+.catLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.catName {
+  font-weight: bold;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+.catCount {
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
+.t4 {
+  --cc: var(--t4);
+}
+.t2 {
+  --cc: var(--t2);
+}
+.th {
+  --cc: var(--th);
+}
+.tq {
+  --cc: var(--tq);
+}
+.t0 {
+  --cc: var(--t0);
+}
+
+.mons {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  gap: 13px;
+  align-items: flex-start;
+}
+
+.empty {
+  color: var(--ink-faint);
+  font-size: 13px;
+  padding: 16px 0;
+}
+
+@media (max-width: 640px) {
+  .cat {
+    grid-template-columns: 1fr;
+    gap: 9px;
+  }
+  .panel {
+    padding: 2px 14px;
+  }
+  .mons {
+    gap: 10px;
+  }
 }
