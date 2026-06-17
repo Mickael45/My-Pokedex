@@ -1,30 +1,169 @@
-.container {
-  width: 210px;
-  padding: 20px;
-  border-radius: 5px;
-  overflow-wrap: anywhere;
-  transition: box-shadow 0.3s ease-in-out;
-}
-
-.container:hover {
-  box-shadow: 0px 0px 15px 5px rgb(164, 164, 164);
-}
-
-.container > :first-child {
-  width: 200px;
-  height: 200px;
-  top: 0;
-}
-
-.container > :first-child:hover,
-.container > :nth-child(2) {
+/* List card — immersive type-gradient design, echoing the details page hero.
+   --type drives the gradient and accents; --font-scale shrinks the text in the
+   wider pixel font (low-res) so the card keeps the same footprint, like the
+   details hero. The sprite breaks out of the top of the card. */
+.card {
+  --type: #888;
+  --font-scale: 1;
+  position: relative;
+  width: 17.5rem;
+  margin-top: 34px;
+  padding-top: 50px;
+  border-radius: 22px;
+  color: #fff;
   cursor: pointer;
+  background:
+    radial-gradient(120% 80% at 85% -10%, rgba(255, 255, 255, 0.22), transparent 55%),
+    linear-gradient(160deg, var(--type), rgba(0, 0, 0, 0.62));
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 24px 46px rgba(0, 0, 0, 0.55);
+}
+.card:hover .heroImg {
+  transform: scale(1.07) translateY(-4px);
 }
 
-.container > :nth-child(2) > div {
-  color: grey;
+:global([data-resolution="low res."]) .card {
+  --font-scale: 0.8;
 }
 
-.container > :nth-child(2) {
-  display: grid;
+/* Pokedex number watermark — top-right, behind the sprite. */
+.watermark {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+  font-size: calc(94px * var(--font-scale));
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -4px;
+  color: #fff;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+/* Pre-evolution badge, kept from the previous card. */
+.evoBadge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.85);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+.evoBadge img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.heroImg {
+  display: block;
+  height: 172px;
+  width: auto;
+  max-width: 86%;
+  margin: -86px auto -6px;
+  position: relative;
+  z-index: 2;
+  object-fit: contain;
+  filter: drop-shadow(0 20px 22px rgba(0, 0, 0, 0.45));
+  transition: transform 0.3s ease;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 18px;
+}
+.name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: calc(18px * var(--font-scale));
+  font-weight: bold;
+  text-transform: capitalize;
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+}
+.hp {
+  flex-shrink: 0;
+  font-size: calc(13px * var(--font-scale));
+  font-weight: bold;
+  opacity: 0.92;
+}
+
+.glass {
+  margin: 10px 14px 14px;
+  padding: 13px 15px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 11px;
+}
+.typeChip {
+  color: #fff;
+  font-weight: bold;
+  border-radius: 999px;
+  padding: 4px 13px;
+  font-size: calc(12px * var(--font-scale));
+  text-transform: capitalize;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.45);
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 7px;
+  font-size: calc(12px * var(--font-scale));
+  font-weight: bold;
+}
+.stat:first-child {
+  margin-top: 0;
+}
+.statLabel {
+  width: 62px;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+.track {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.24);
+  overflow: hidden;
+}
+.fill {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  /* Primary type colour. */
+  background: var(--type);
+  transition: width 0.6s ease;
+}
+.statValue {
+  width: 26px;
+  flex-shrink: 0;
+  text-align: right;
+  opacity: 0.95;
 }
