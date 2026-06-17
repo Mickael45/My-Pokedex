@@ -112,7 +112,7 @@
 /* Low-res (pixel) tuning: roomier rows, taller chips, and a slightly wider
    value column so the bigger pixel values stay inside it. */
 :global([data-resolution="low res."]) .row {
-  padding: 13px 0;
+  padding: 9px 0;
   grid-template-columns: 104px 1fr 66px;
 }
 :global([data-resolution="low res."]) .typeChip {
