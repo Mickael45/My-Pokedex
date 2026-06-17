@@ -1,15 +1,17 @@
-import React, { memo, useMemo } from "react";
+import React, { memo, useEffect, useMemo, useState } from "react";
 
 import styles from "./TypeInteractions.module.css";
-import { TYPE_INTERACTIONS } from "../../constants/Routes";
-import { usePokemonTypesFromQuery } from "../../hooks/useQueryParams";
 import Header from "../../ui/components/Header/Header";
 import PokemonAvatar from "../../ui/components/PokemonAvatar/PokemonAvatar";
-import TypesSelector from "../../ui/components/TypesSelector/TypesSelector";
+import TypePicker from "../../ui/components/TypePicker/TypePicker";
 import Page from "../../ui/templates/Page/Page";
+import { usePokemonTypesFromQuery } from "../../hooks/useQueryParams";
 import { fetchAllPokemons } from "../../services/fetchPokemons/fetchPokemons";
 import { bestDamage, DAMAGE_TIERS } from "../../utils/pokemonTypes/effectiveness";
 import { capitalizeFirstLetter } from "../../utils/stringManipulation";
+
+const DESKTOP_LIMIT = 10;
+const MOBILE_LIMIT = 5;
 
 const DEFENDING_LABELS: Record<number, string> = {
   4: "Double weak",
@@ -29,6 +31,39 @@ const TIER_CLASS: Record<number, string> = { 4: "t4", 2: "t2", 0.5: "th", 0.25: 
 
 const factorLabel = (factor: number) =>
   factor === 0 ? "0" : factor === 0.25 ? "¼" : factor === 0.5 ? "½" : `${factor}`;
+
+// Renders a list of avatars capped at the responsive limit, with a toggle that
+// reveals the rest. Limit is 10 on desktop, 5 on phones.
+const AvatarShelf = ({ pokemons }: { pokemons: IBasicPokemon[] }) => {
+  const [expanded, setExpanded] = useState(false);
+  const [limit, setLimit] = useState(DESKTOP_LIMIT);
+
+  useEffect(() => {
+    const query = window.matchMedia("(max-width: 640px)");
+    const apply = () => setLimit(query.matches ? MOBILE_LIMIT : DESKTOP_LIMIT);
+    apply();
+    query.addEventListener("change", apply);
+    return () => query.removeEventListener("change", apply);
+  }, []);
+
+  const shown = expanded ? pokemons : pokemons.slice(0, limit);
+  const hidden = pokemons.length - limit;
+
+  return (
+    <>
+      <div className={styles.mons}>
+        {shown.map((pokemon) => (
+          <PokemonAvatar key={pokemon.id} pokemon={pokemon} />
+        ))}
+      </div>
+      {hidden > 0 && (
+        <button type="button" className={styles.seeMore} onClick={() => setExpanded((value) => !value)}>
+          {expanded ? "See less" : `See ${hidden} more`}
+        </button>
+      )}
+    </>
+  );
+};
 
 interface IProps {
   pokemons: IBasicPokemon[];
@@ -54,11 +89,8 @@ const TypeInteractionsPage = ({ pokemons }: IProps) => {
     };
 
     return {
-      // Pokémon that have exactly the selected typing.
       roster: pokemons.filter((pokemon) => types.every((type) => pokemon.types.split(",").includes(type))),
-      // How hard each Pokémon's best move hits the selected typing.
       defending: bucketize((pokemon) => bestDamage(pokemon.types.split(","), types)),
-      // How hard the selected typing's best move hits each Pokémon.
       attacking: bucketize((pokemon) => bestDamage(types, pokemon.types.split(","))),
     };
   }, [selectedKey, pokemons]);
@@ -85,25 +117,20 @@ const TypeInteractionsPage = ({ pokemons }: IProps) => {
           {tiers.length === 0 ? (
             <p className={styles.empty}>No notable interactions for this selection.</p>
           ) : (
-            tiers.map((tier) => {
-              const list = grouped.get(tier) as IBasicPokemon[];
-              return (
-                <div key={tier} className={`${styles.cat} ${styles[TIER_CLASS[tier]]}`}>
-                  <div className={styles.catHead}>
-                    <span className={styles.badge}>×{factorLabel(tier)}</span>
-                    <span className={styles.catLabel}>
-                      <span className={styles.catName}>{labels[tier]}</span>
-                      <span className={styles.catCount}>{list.length} found</span>
-                    </span>
-                  </div>
-                  <div className={styles.mons}>
-                    {list.map((pokemon) => (
-                      <PokemonAvatar key={pokemon.id} pokemon={pokemon} />
-                    ))}
-                  </div>
+            tiers.map((tier) => (
+              <div key={tier} className={`${styles.cat} ${styles[TIER_CLASS[tier]]}`}>
+                <div className={styles.catHead}>
+                  <span className={styles.badge}>×{factorLabel(tier)}</span>
+                  <span className={styles.catLabel}>
+                    <span className={styles.catName}>{labels[tier]}</span>
+                    <span className={styles.catCount}>{(grouped.get(tier) as IBasicPokemon[]).length} found</span>
+                  </span>
                 </div>
-              );
-            })
+                <div className={styles.catBody}>
+                  <AvatarShelf pokemons={grouped.get(tier) as IBasicPokemon[]} />
+                </div>
+              </div>
+            ))
           )}
         </div>
       </section>
@@ -117,8 +144,8 @@ const TypeInteractionsPage = ({ pokemons }: IProps) => {
         description="Pick a type to see the Pokémon that wield it, who threatens it, and who it beats."
       />
       <Page>
-        <div id="type-interactions" className={styles.container}>
-          <TypesSelector pathname={TYPE_INTERACTIONS} />
+        <div className={styles.container}>
+          <TypePicker />
 
           {!buckets ? (
             <p className={styles.prompt}>
@@ -133,23 +160,20 @@ const TypeInteractionsPage = ({ pokemons }: IProps) => {
                   </span>
                   <h2 className={styles.blockTitle}>Pokémon of this type</h2>
                 </div>
-                {buckets.roster.length === 0 ? (
-                  <p className={styles.empty}>
-                    There are no Pokémon of the {combo}
-                    {selected.length > 1 ? " dual type combination" : " type"}.
-                  </p>
-                ) : (
-                  <>
-                    <p className={styles.secDesc}>
-                      {buckets.roster.length} Pokémon {selected.length > 1 ? "are exactly" : "have"} {combo}.
-                    </p>
-                    <div className={styles.mons}>
-                      {buckets.roster.map((pokemon) => (
-                        <PokemonAvatar key={pokemon.id} pokemon={pokemon} />
-                      ))}
+                <p className={styles.secDesc}>
+                  {buckets.roster.length === 0
+                    ? `There are no Pokémon of the ${combo}${selected.length > 1 ? " dual type combination" : " type"}.`
+                    : `${buckets.roster.length} Pokémon ${selected.length > 1 ? "are exactly" : "have"} ${combo}.`}
+                </p>
+                <div className={styles.panel}>
+                  {buckets.roster.length === 0 ? (
+                    <p className={styles.empty}>Try a single type, or a different pairing.</p>
+                  ) : (
+                    <div className={styles.catBody}>
+                      <AvatarShelf pokemons={buckets.roster} />
                     </div>
-                  </>
-                )}
+                  )}
+                </div>
               </section>
 
               {renderMatchup(

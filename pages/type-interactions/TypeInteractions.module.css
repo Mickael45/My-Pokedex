@@ -140,11 +140,31 @@
   --cc: var(--t0);
 }
 
+.catBody {
+  min-width: 0;
+}
+
 .mons {
   display: flex;
   flex-wrap: wrap;
   gap: 13px;
   align-items: flex-start;
+}
+
+.seeMore {
+  margin-top: 13px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 12px;
+  color: var(--cc, var(--ink-dim));
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.seeMore:hover {
+  opacity: 0.8;
 }
 
 .empty {
