@@ -78,7 +78,10 @@
 }
 
 .container[data-theme="light"] {
-  background: rgba(236, 236, 236);
+  /* Daylight: pale base carrying the same dot grid as the dark (carbon) mode. */
+  background-color: #e9edf4;
+  background-image: radial-gradient(rgba(20, 30, 60, 0.08) 1px, transparent 1px);
+  background-size: 22px 22px;
 }
 
 .container[data-theme="light"] [id="type-interactions"] [data-checked="true"] {
@@ -93,12 +96,19 @@
   color: #3b4cca;
 }
 
-.container[data-theme="dark"],
+/* Carbon grid: near-black base with a faint dot grid. */
+.container[data-theme="dark"] {
+  background-color: #0b0d11;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 22px 22px;
+  color: white;
+}
+
 .container[data-theme="dark"] select,
 .container[data-theme="dark"] form *,
 .container[data-theme="dark"] [id="loading-screen"],
 .container[data-theme="dark"] [id="error-screen"] {
-  background: rgba(40, 40, 40);
+  background: #14181f;
   color: white;
 }
 

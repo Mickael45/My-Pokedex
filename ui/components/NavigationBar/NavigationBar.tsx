@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
   addClassToElement,
@@ -16,8 +17,35 @@ import { HOME, TYPE_INTERACTIONS } from "../../../constants/Routes";
 const DRAWER_ELEMENT_ID = "drawerElementId";
 const ARROW_ELEMENT_ID = "arrowElementId";
 
+const SCROLL_HIDE_THRESHOLD = 120;
+
 const NavigationBar = () => {
   const router = useRouter();
+  const [hidden, setHidden] = useState(false);
+
+  // Hide the bar when scrolling down (past the bar's own height), reveal it the
+  // moment the user scrolls back up, and always show it at the top of the page.
+  useEffect(() => {
+    let lastScrollY = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (currentScrollY <= SCROLL_HIDE_THRESHOLD) {
+        setHidden(false);
+      } else if (currentScrollY > lastScrollY) {
+        setHidden(true);
+      } else if (currentScrollY < lastScrollY) {
+        setHidden(false);
+      }
+
+      lastScrollY = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navigateHome = () => router.push(HOME);
 
@@ -61,7 +89,7 @@ const NavigationBar = () => {
     ) : null;
 
   return (
-    <nav className={styles.container}>
+    <nav className={`${styles.container} ${hidden ? styles.hidden : ""}`}>
       <img src="/icons/logo.svg" alt="logo" onClick={navigateHome} />
       <div>
         <SearchInput />

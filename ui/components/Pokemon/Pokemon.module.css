@@ -35,7 +35,7 @@
   position: absolute;
   top: 14px;
   right: 10px;
-  font-size: calc(94px * var(--font-scale));
+  font-size: calc(68px * var(--font-scale));
   font-weight: 900;
   line-height: 1;
   letter-spacing: -4px;

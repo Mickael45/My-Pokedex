@@ -2,9 +2,31 @@
   display: flex;
   width: 100%;
   padding: 20px 0;
-  background: #cc0000;
+  background: #ffffff;
   min-width: 60%;
   min-height: 100px;
+  /* Sticks to the top and slides away on scroll-down / back on scroll-up. */
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.hidden {
+  transform: translateY(-100%);
+}
+
+/* Theme-aware header: Daylight (light) clean white bar; Carbon (dark) near-black
+   bar capped by a thin type-gradient accent line. */
+:global([data-theme="light"]) .container {
+  box-shadow: 0 4px 18px rgba(20, 30, 60, 0.1);
+  border-bottom: 1px solid #e6e9f0;
+}
+
+:global([data-theme="dark"]) .container {
+  background: #121620;
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, #ff4422, #3399ff, #ffcc33) 1;
 }
 
 .container > img {
@@ -130,6 +152,18 @@ div.open {
 .drawer > :first-child {
   margin: 30px 0;
   color: white;
+}
+
+/* The drawer label and chevron are white by default (for the dark bar); on the
+   light Daylight header they need a dark ink to stay visible. */
+:global([data-theme="light"]) .drawer > :first-child {
+  color: #2b2f3a;
+}
+
+:global([data-theme="light"]) .arrow,
+:global([data-theme="light"]) .arrow:before {
+  border-right-color: #2b2f3a;
+  border-bottom-color: #2b2f3a;
 }
 
 .close {
