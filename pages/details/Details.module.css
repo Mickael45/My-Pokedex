@@ -70,14 +70,14 @@
 /* ---- hero ---- */
 .hero {
   position: relative;
-  padding: 6px 6px 4px;
+  padding: 0 6px;
 }
 .watermark {
   position: absolute;
   right: 4px;
   top: -40px;
   /* Font follows the res toggle (via .wrap *); size follows --font-scale. */
-  font-size: calc(190px * var(--font-scale));
+  font-size: calc(140px * var(--font-scale));
   font-weight: 900;
   line-height: 1;
   letter-spacing: -8px;
@@ -116,17 +116,17 @@
   position: relative;
   z-index: 1;
   display: block;
-  margin: 6px auto 0;
-  height: clamp(190px, 30vw, 270px);
+  margin: 0 auto;
+  height: clamp(230px, 36vw, 340px);
   width: auto;
-  max-width: 90%;
+  max-width: 92%;
   object-fit: contain;
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.32));
 }
 /* The low-res pixel sprite is shown 1.2x larger so it reads as well as the HD
    art while keeping the hero height (and the vertical rhythm) close. */
 :global([data-resolution="low res."]) .heroImg {
-  height: clamp(228px, 36vw, 324px);
+  height: clamp(276px, 43vw, 408px);
 }
 
 /* ---- glass panels ---- */
@@ -134,7 +134,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 14px;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 .glass {
   background: rgba(255, 255, 255, 0.14);
@@ -312,7 +312,7 @@
     justify-content: center;
   }
   .watermark {
-    font-size: calc(150px * var(--font-scale));
+    font-size: calc(110px * var(--font-scale));
     top: -30px;
     right: 50%;
     transform: translateX(50%);
