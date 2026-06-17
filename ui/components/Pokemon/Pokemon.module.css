@@ -72,15 +72,19 @@
   height: 172px;
   width: auto;
   max-width: 86%;
-  margin: -86px auto -6px;
+  /* Breaks out of the top; the positive bottom margin keeps tall sprites
+     (e.g. Raging Bolt) from reaching down into the name. */
+  margin: -86px auto 6px;
   position: relative;
-  z-index: 2;
+  z-index: 1;
   object-fit: contain;
   filter: drop-shadow(0 20px 22px rgba(0, 0, 0, 0.45));
   transition: transform 0.3s ease;
 }
 
 .head {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -106,6 +110,8 @@
 }
 
 .glass {
+  position: relative;
+  z-index: 2;
   margin: 10px 14px 14px;
   padding: 13px 15px;
   border-radius: 16px;
