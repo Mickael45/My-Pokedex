@@ -40,6 +40,14 @@
   padding: 0 18px;
 }
 
+/* The immersive hero is always dark, so its links (Prev / Next, evolution names)
+   stay white instead of inheriting the global themed link colour (red in light,
+   yellow in dark). The .wrap .inner scoping outspecifies that global rule. */
+:global([data-theme="light"]) .wrap .inner a,
+:global([data-theme="dark"]) .wrap .inner a {
+  color: #fff;
+}
+
 /* ---- prev / next ---- */
 .nav {
   display: flex;
