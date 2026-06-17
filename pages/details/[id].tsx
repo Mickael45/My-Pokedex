@@ -60,10 +60,10 @@ const DetailsPage = ({
             key={type}
             className={`${styles.effTile} ${effClass(factor)}`}
             style={{ background: typeColor(type) }}
-            title={`${capitalizeFirstLetter(type)}: ×${FACTOR_LABEL[factor]}`}
+            title={`${capitalizeFirstLetter(type)}: x${FACTOR_LABEL[factor]}`}
           >
             <span className={styles.effType}>{capitalizeFirstLetter(type)}</span>
-            <span className={styles.effMult}>×{FACTOR_LABEL[factor]}</span>
+            <span className={styles.effMult}>x{FACTOR_LABEL[factor]}</span>
           </span>
         ))}
       </div>

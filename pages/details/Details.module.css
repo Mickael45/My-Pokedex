@@ -18,7 +18,7 @@
     linear-gradient(160deg, var(--type), rgba(0, 0, 0, 0.6));
 }
 :global([data-resolution="low res."]) .wrap {
-  --font-scale: 0.52;
+  --font-scale: 0.75;
 }
 .inner {
   max-width: 1000px;
@@ -66,9 +66,9 @@
   position: absolute;
   right: 4px;
   top: -40px;
-  /* Fixed font + size so the background number is identical in both resolutions. */
+  /* Fixed HD font; size follows --font-scale like the rest of the text. */
   font-family: "HdPokemonFont", arial, sans-serif !important;
-  font-size: 190px;
+  font-size: calc(190px * var(--font-scale));
   font-weight: 900;
   line-height: 1;
   letter-spacing: -8px;
@@ -113,6 +113,10 @@
   max-width: 90%;
   object-fit: contain;
   filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.32));
+}
+/* The low-res pixel sprite is shown at 2x so it reads as well as the HD art. */
+:global([data-resolution="low res."]) .heroImg {
+  height: clamp(380px, 60vw, 540px);
 }
 
 /* ---- glass panels ---- */
@@ -298,7 +302,7 @@
     justify-content: center;
   }
   .watermark {
-    font-size: 150px;
+    font-size: calc(150px * var(--font-scale));
     top: -30px;
     right: 50%;
     transform: translateX(50%);
