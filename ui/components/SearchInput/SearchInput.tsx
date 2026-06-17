@@ -1,11 +1,10 @@
-import Image from "next/image";
 import { FormEvent, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getElementById } from "../../../utils/domManipulation";
 import useFiltering from "../../../hooks/useFiltering";
 import { usePokemonIdFromQuery, usePokemonNameFromQuery } from "../../../hooks/useQueryParams";
 import styles from "./SearchInput.module.css";
-import { HOME } from "../../../constants/Routes";
+import { DETAILS, HOME } from "../../../constants/Routes";
 
 const NAME_INPUT_ID = "nameInputId";
 
@@ -15,13 +14,15 @@ const SearchInput = () => {
   const filteredPokemons = useFiltering();
   const router = useRouter();
 
+  const isOnDetailsPage = router.pathname.startsWith(DETAILS);
+
   const handlePokemonsAndFilteringQueryChange = () => {
     const input = getElementById(NAME_INPUT_ID) as HTMLInputElement;
 
-    input.value = id || name;
+    input.value = isOnDetailsPage ? "" : id || name;
   };
 
-  useEffect(handlePokemonsAndFilteringQueryChange, [id, name, filteredPokemons]);
+  useEffect(handlePokemonsAndFilteringQueryChange, [id, name, filteredPokemons, isOnDetailsPage]);
 
   const createQuery = () => {
     const { value = "" } = getElementById(NAME_INPUT_ID) as HTMLInputElement;
@@ -47,7 +48,7 @@ const SearchInput = () => {
     <form onSubmit={handleFormSubmit} className={styles.container}>
       <div>
         <input autoComplete="off" placeholder="Search a Pokemon by name or id" id={NAME_INPUT_ID} />
-        <Image
+        <img
           src="/icons/search.svg"
           onClick={createQuery}
           alt="searchIcon"

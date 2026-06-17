@@ -24,3 +24,6 @@ amplifytools.xcconfig
 .secret-*
 **.sample
 #amplify-do-not-edit-end
+
+# TypeScript incremental build cache
+*.tsbuildinfo

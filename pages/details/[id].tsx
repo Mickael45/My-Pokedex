@@ -1,5 +1,4 @@
 import { useContext, useEffect } from "react";
-import Image from "next/image";
 
 import styles from "./Details.module.css";
 import { TYPE_INTERACTIONS } from "../../constants/Routes";
@@ -60,11 +59,9 @@ const DetailsPage = ({
                   <h3 id="id-details">{`#${id}`}</h3>
                 </div>
                 <div>
-                  <Image
+                  <img
                     src={imageUrl}
                     alt={`${name}-pic`}
-                    placeholder="blur"
-                    blurDataURL={imageUrl}
                     height={400}
                     width={400}
                     style={{

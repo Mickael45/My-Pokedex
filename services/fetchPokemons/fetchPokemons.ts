@@ -10,11 +10,32 @@ import {
 import { Specie, IPokemonResponseType } from "../../utils/pokemonFormatter/types";
 import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL } from "../../constants/FetchPokemons";
 
-const request = async (url: string) => {
-  const response = await fetch(url);
-  const jsonResponse = await response.json();
+const REQUEST_RETRIES = 3;
+const REQUEST_RETRY_DELAY_MS = 400;
 
-  return jsonResponse;
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// fetchAllPokemons fans out ~1025 concurrent requests; a single reset connection
+// would otherwise reject the whole Promise.all and crash getStaticProps. Retry
+// transient failures (network errors and non-2xx responses) with a small backoff.
+const request = async (url: string, attempt = 1): Promise<any> => {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Request to ${url} failed with status ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error) {
+    if (attempt >= REQUEST_RETRIES) {
+      throw error;
+    }
+
+    await wait(REQUEST_RETRY_DELAY_MS * attempt);
+
+    return request(url, attempt + 1);
+  }
 };
 
 const fetchPokemonByNameOrId = async (name: string) => await request(`${POKE_API_URL}pokemon/${name}`)

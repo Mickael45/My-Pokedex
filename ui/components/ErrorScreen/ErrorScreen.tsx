@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { ErrorTypeToMessageHashMap } from "../../../constants/ErrorTypeToMessageHashMap";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
 import styles from "./ErrorScreen.module.css";
@@ -13,7 +12,7 @@ export const ErrorScreen = ({ type }: IProps) => {
   return (
     <div id="error-screen" className={styles.container}>
       <div>
-        <Image
+        <img
           src={gif}
           alt="surprised pikachu"
           height={300}

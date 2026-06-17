@@ -1,5 +1,4 @@
 import styles from "./EmptyListPlaceholder.module.css";
-import Image from "next/image";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
 
 interface IProps {
@@ -12,11 +11,9 @@ const EmptyListPlaceholder = ({ text }: IProps) => {
 
   return (
     <div className={styles.container}>
-      <Image
+      <img
         src={gif}
         alt="sleepy pikachu"
-        placeholder="blur"
-        blurDataURL={gif}
         height={200}
         width={width}
         style={{
