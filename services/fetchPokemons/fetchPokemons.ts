@@ -2,6 +2,7 @@ import {
   formatToBasicPokemon,
   formatToFullPokemon,
   formatPokemonEvolutionChain,
+  formatEvolvesFrom,
 } from "../../utils/pokemonFormatter/pokemonFormatter";
 import {
   extractPokemonName,
@@ -71,10 +72,17 @@ export const fetchPokemonDetailsByNameOrId = async (id: string) => {
 export const fetchAllPokemons = async (): Promise<IBasicPokemon[]> => {
   const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${MAX_POKEMON_ID_ALLOWED}`);
   const pokemonsName = pokemonsData.results.map(extractPokemonName);
+  // Two waves (pokemon, then species) instead of one big burst, so the
+  // evolution data can be part of the SSG payload without doubling peak load.
   const pokemonData = await Promise.all<IPokemonResponseType>(pokemonsName.map(fetchPokemonByNameOrId));
-  const formattedPokemons = pokemonData.map(formatToBasicPokemon);
-  
-  return formattedPokemons;
+  // Use each pokemon's own species reference (form names like "wormadam-plant"
+  // don't exist on the species endpoint, so the name can't be reused directly).
+  const speciesData = await Promise.all<Specie>(pokemonData.map((pokemon) => request(pokemon.species.url)));
+
+  return pokemonData.map((pokemon, index) => ({
+    ...formatToBasicPokemon(pokemon),
+    evolvesFrom: formatEvolvesFrom(speciesData[index]),
+  }));
 };
 
 export const fetchPokemonsByType = async (type: string): Promise<IBasicPokemon[]> => {

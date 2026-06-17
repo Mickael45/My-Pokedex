@@ -75,10 +75,33 @@ export const formatToBasicPokemon = (pokemon: IPokemonResponseType): IBasicPokem
   const hdImageUrl = createImageUrl(id, BASIC_PIC);
   const typesName = types.map(extractTypeName).join(",");
   // Stats are already on the /pokemon response, so SSG can include them at no
-  // extra fetch cost (lets the list cards render stats/HP instantly).
-  const stats = extractStatsFromPokemon(pokemon);
+  // extra fetch cost. Shipped as a compact [hp, attack, defense, speed] tuple so
+  // the payload for all 1025 Pokemon stays small.
+  const fullStats = extractStatsFromPokemon(pokemon);
+  const statValue = (label: string) =>
+    fullStats.find((stat) => stat.label.toLowerCase() === label)?.value ?? 0;
+  const stats: PokemonCardStats = [
+    statValue("hp"),
+    statValue("attack"),
+    statValue("defense"),
+    statValue("speed"),
+  ];
 
   return { id, name, pixelImageUrl, hdImageUrl, types: typesName, stats };
+};
+
+const extractIdFromUrl = (url: string) => Number(url.split("/").filter(Boolean).pop());
+
+// The pre-evolution shown on the list card, derived from the species response so
+// the badge can be part of the SSG payload (no client fetch).
+export const formatEvolvesFrom = (species: Specie): IEvolvesFrom | null => {
+  const evolvesFrom = species.evolves_from_species;
+
+  if (!evolvesFrom) {
+    return null;
+  }
+
+  return { name: evolvesFrom.name, image: createImageUrl(extractIdFromUrl(evolvesFrom.url)) };
 };
 
 export const formatToFullPokemon = (

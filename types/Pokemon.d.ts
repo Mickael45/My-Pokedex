@@ -86,16 +86,25 @@ declare global {
     label: string;
     value: number;
   }
+  // Compact [hp, attack, defense, speed] the list cards render, kept tiny so the
+  // SSG payload for all 1025 Pokemon stays small.
+  export type PokemonCardStats = [number, number, number, number];
+  export interface IEvolvesFrom {
+    name: string;
+    image: string;
+  }
   export interface IBasicPokemon {
     id: number;
     name: string;
     types: string;
     pixelImageUrl: string;
     hdImageUrl: string;
-    stats: IPokemonStat[];
+    stats: PokemonCardStats;
+    evolvesFrom?: IEvolvesFrom | null;
   }
 
-  export type IFullPokemon = IBasicPokemon & {
+  export type IFullPokemon = Omit<IBasicPokemon, "stats"> & {
+    stats: IPokemonStat[];
     weaknesses: Weakness[] | [];
     evolutionChain: IBasicPokemon[] | [];
     abilities: string[] | [];

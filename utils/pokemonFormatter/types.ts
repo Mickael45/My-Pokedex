@@ -54,6 +54,7 @@ export type Variety = {
 
 export type Specie = {
   id: string,
+  evolves_from_species: { name: string; url: string } | null;
   evolution_chain: {
     url: string;
   };
@@ -70,4 +71,5 @@ export interface IPokemonResponseType {
   weight: number;
   height: number;
   abilities: Ability[];
+  species: { name: string; url: string };
 }

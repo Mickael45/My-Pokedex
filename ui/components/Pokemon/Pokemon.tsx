@@ -2,26 +2,20 @@ import { memo } from "react";
 import { useRouter } from "next/router";
 import { getPokemonPrimaryTypeColor } from "../../../utils/pokemonFormatter/pokemonFormatter";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
-import { usePokemonDetails } from "../../../hooks/usePokemonDetails";
 import { DETAILS } from "../../../constants/Routes";
 import StatBar from "./StatBar";
 import TypeBadge from "./TypeBadge";
 
-const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats }: IBasicPokemon) => {
+const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFrom }: IBasicPokemon) => {
   const router = useRouter();
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
-  const details = usePokemonDetails(id);
 
   const primaryType = types.split(",")[0];
   const cardColor = getPokemonPrimaryTypeColor(types);
 
-  // Stats ship with the SSG props, so HP and the bars render instantly.
-  const findStat = (label: string) =>
-    stats.find((stat) => stat.label.toLowerCase() === label)?.value ?? null;
-
-  const evolutionChain = details?.evolutionChain ?? [];
-  const currentIndex = evolutionChain.findIndex((pokemon) => pokemon.id === id);
-  const evolvesFrom = currentIndex > 0 ? evolutionChain[currentIndex - 1] : null;
+  // Stats and the pre-evolution ship with the SSG props, so everything renders
+  // instantly. stats is the compact [hp, attack, defense, speed] tuple.
+  const [hp, attack, defense, speed] = stats;
 
   const handleClick = () => router.push(`${DETAILS}${id}`);
 
@@ -39,7 +33,7 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats }: IBasicPo
           </div>
           <div className="flex shrink-0 items-center gap-1">
             <span className="text-[9px] font-bold">HP</span>
-            <span className="card-hp text-[12px] font-bold leading-none">{findStat("hp") ?? "—"}</span>
+            <span className="card-hp text-[12px] font-bold leading-none">{hp}</span>
             <TypeBadge type={primaryType} size={22} className="ml-2" />
           </div>
         </div>
@@ -49,7 +43,7 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats }: IBasicPo
           {evolvesFrom && (
             <div className="absolute top-1.5 left-1.5 w-8 h-8 flex items-center justify-center bg-gray-100 border-2 border-white outline outline-2 outline-yellow-500 rounded-full overflow-hidden top-[-8] left-[-4]">
               <img
-                src={evolvesFrom.pixelImageUrl}
+                src={evolvesFrom.image}
                 alt={evolvesFrom.name}
                 className="w-10 h-10 object-contain"
                 loading="lazy"
@@ -60,9 +54,9 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats }: IBasicPo
 
         <div className="mx-2 p-2 pb-4">
           <div className="space-y-3">
-            <StatBar label="Attack" value={findStat("attack")} />
-            <StatBar label="Defense" value={findStat("defense")} />
-            <StatBar label="Speed" value={findStat("speed")} />
+            <StatBar label="Attack" value={attack} />
+            <StatBar label="Defense" value={defense} />
+            <StatBar label="Speed" value={speed} />
           </div>
         </div>
       </div>
