@@ -202,7 +202,7 @@
 /* ---- stats ---- */
 .statline {
   display: grid;
-  grid-template-columns: 72px 34px 1fr;
+  grid-template-columns: 72px 1fr 34px;
   align-items: center;
   gap: 10px;
   margin: 9px 0;
@@ -210,9 +210,9 @@
   font-weight: 600;
 }
 /* The pixel font is wider, so the longest labels ("Spe. Att" / "Spe. Def")
-   overflow the 72px column and collide with the value — widen it in low-res. */
+   overflow the 72px column — widen it in low-res. */
 :global([data-resolution="low res."]) .statline {
-  grid-template-columns: 104px 30px 1fr;
+  grid-template-columns: 104px 1fr 36px;
 }
 .statLabel {
   white-space: nowrap;

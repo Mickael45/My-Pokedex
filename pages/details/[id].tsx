@@ -151,10 +151,10 @@ const DetailsPage = ({
                   {stats.map((stat) => (
                     <div className={styles.statline} key={stat.label}>
                       <span className={styles.statLabel}>{stat.label}</span>
-                      <span className={styles.statNum}>{stat.value}</span>
                       <div className={styles.bar}>
                         <i style={{ width: `${Math.min((stat.value / MAX_STAT_VALUE) * 100, 100)}%` }} />
                       </div>
+                      <span className={styles.statNum}>{stat.value}</span>
                     </div>
                   ))}
                 </section>
