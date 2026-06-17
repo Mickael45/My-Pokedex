@@ -10,9 +10,12 @@
   font-size: 1.125rem;
 }
 
-[data-resolution="high res."] .card-hp,
+[data-resolution="high res."] .card-hp {
+  font-size: 1.1875rem; /* 19px number */
+}
+
 [data-resolution="high res."] .card-hp-label {
-  font-size: 1rem;
+  font-size: 1rem; /* 16px "HP" string */
 }
 
 html,
