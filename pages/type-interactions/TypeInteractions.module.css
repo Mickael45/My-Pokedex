@@ -109,9 +109,15 @@
   overflow: hidden;
 }
 
-/* The pixel font is wider; shrink it so "Electric"/"Fighting" still fit. */
+/* Low-res (pixel) tuning: roomier rows, taller chips, and a slightly wider
+   value column so the bigger pixel values stay inside it. */
+:global([data-resolution="low res."]) .row {
+  padding: 13px 0;
+  grid-template-columns: 104px 1fr 66px;
+}
 :global([data-resolution="low res."]) .typeChip {
   font-size: 10px;
+  padding: 9px 8px;
 }
 .track {
   height: 14px;
@@ -134,9 +140,8 @@
   white-space: nowrap;
 }
 
-/* Pixel font is wider — shrink so values fit their column and stay right-aligned. */
 :global([data-resolution="low res."]) .mult {
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .empty {
