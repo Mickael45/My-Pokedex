@@ -4,7 +4,11 @@
    shift. Sprites swap with the toggle; the watermark number stays fixed. */
 .wrap {
   --type: #888;
-  --font-scale: 1;
+  /* Single knob to enlarge all detail-page text in both res modes. Every
+     font-size flows through --font-scale, so HD uses the boost directly and
+     low res keeps its 0.8 pixel ratio on top of it. */
+  --font-boost: 1.15;
+  --font-scale: var(--font-boost);
   position: relative;
   min-height: 100vh;
   /* The app container adds 20px padding-bottom; the extra bottom padding here
@@ -18,7 +22,7 @@
     linear-gradient(160deg, var(--type), rgba(0, 0, 0, 0.6));
 }
 :global([data-resolution="low res."]) .wrap {
-  --font-scale: 0.8;
+  --font-scale: calc(0.8 * var(--font-boost));
 }
 /* Per-resolution font with an arial fallback so glyphs the pixel font lacks
    (accents like é, chevrons ‹ ›) still render instead of disappearing. */
