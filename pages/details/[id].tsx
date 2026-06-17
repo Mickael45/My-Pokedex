@@ -1,91 +1,170 @@
-import { useContext, useEffect } from "react";
+import { Fragment, useContext, useEffect, type CSSProperties } from "react";
+import { useRouter } from "next/router";
 
 import styles from "./Details.module.css";
-import { TYPE_INTERACTIONS } from "../../constants/Routes";
+import { DETAILS } from "../../constants/Routes";
+import { MAX_POKEMON_ID_ALLOWED } from "../../constants/FetchPokemons";
 import LoadingContext from "../../context/LoadingContext";
 import { usePokemonPic } from "../../hooks/usePokemonPic";
 import { fetchAllPokemons, fetchPokemonDetailsByNameOrId } from "../../services/fetchPokemons/fetchPokemons";
-import EvolutionChain from "../../ui/components/EvolutionChain/EvolutionChain";
 import Header from "../../ui/components/Header/Header";
-import IdNavigation from "../../ui/components/IdNavigation/IdNavigation";
-import BasicInfo from "../../ui/components/PokemonBasicInfo/PokemonBasicInfo";
-import PokemonTypes from "../../ui/components/PokemonTypes/PokemonTypes";
-import PokemonWeaknesses from "../../ui/components/PokemonWeaknesses/PokemonWeaknesses";
-import Radar from "../../ui/components/Radar/Radar";
+import EvolutionStage from "../../ui/components/EvolutionStage/EvolutionStage";
 import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
 import LoadingScreenWrapper from "../../ui/components/Wrappers/LoadingScreenWrapper/LoadingScreenWrapper";
-import Page from "../../ui/templates/Page/Page";
+import pokemonTypesColor from "../../constants/TypesColor.json";
 import { getPokemonPrimaryTypeColor } from "../../utils/pokemonFormatter/pokemonFormatter";
-import { capitalizeFirstLetter } from "../../utils/stringManipulation";
+import { capitalizeFirstLetter, formatNumberToMatchLength } from "../../utils/stringManipulation";
+import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsString } from "../../utils/unitConverter";
+
+const MAX_STAT_VALUE = 200;
+const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5", 1: "1", 2: "2", 4: "4" };
+
+const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
 const DetailsPage = ({
   id,
-  hdImageUrl,
   pixelImageUrl,
+  hdImageUrl,
   name,
   stats,
   height,
   weight,
   types,
-  weaknesses,
+  defensiveEffectiveness,
+  offensiveEffectiveness,
   evolutionChain,
   abilities,
   description,
   category,
 }: IFullPokemon) => {
-  const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
+  const router = useRouter();
   const { setLoading } = useContext(LoadingContext);
+  const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
   const color = getPokemonPrimaryTypeColor(types);
-  const basicInfo = { description, height, weight, category, types, abilities, color };
+  const typeList = types.split(",");
 
   const setLoadingToFalse = () => setLoading(false);
-
   useEffect(setLoadingToFalse, [id, setLoading]);
+
+  const goTo = (pokemonId: number) => router.push(`${DETAILS}${pokemonId}`);
+
+  const effClass = (factor: number) =>
+    factor === 0 ? styles.immune : factor > 1 ? styles.weak : factor < 1 ? styles.resist : styles.normal;
+
+  const renderEffectivenessGrid = (label: string, list: ITypeEffectiveness[]) => (
+    <div className={styles.effBlock}>
+      <div className={styles.effLabel}>{label}</div>
+      <div className={styles.eff}>
+        {list.map(({ type, factor }) => (
+          <span
+            key={type}
+            className={`${styles.effTile} ${effClass(factor)}`}
+            style={{ background: typeColor(type) }}
+            title={`${capitalizeFirstLetter(type)}: ×${FACTOR_LABEL[factor]}`}
+          >
+            <span className={styles.effType}>{capitalizeFirstLetter(type)}</span>
+            <span className={styles.effMult}>×{FACTOR_LABEL[factor]}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
     <>
       <Header
-        title={`${capitalizeFirstLetter(name)}  Information`}
-        description={"{`Find out about ${name}'s stats, types, weaknesses and much more !`}"}
+        title={`${capitalizeFirstLetter(name)} — Pokédex`}
+        description={`Stats, types, type effectiveness and evolutions for ${capitalizeFirstLetter(name)}.`}
       />
       <ErrorScreenWrapper>
         <LoadingScreenWrapper>
-          <Page>
-            <div>
-              <IdNavigation id={id.toString()} />
-              <div className={styles.container}>
-                <div>
-                  <h2>{capitalizeFirstLetter(name)}</h2>
-                  <h3 id="id-details">{`#${id}`}</h3>
-                </div>
-                <div>
-                  <img
-                    src={imageUrl}
-                    alt={`${name}-pic`}
-                    height={400}
-                    width={400}
-                    style={{
-                      maxWidth: "100%",
-                      height: "auto"
-                    }} />
-                  <BasicInfo {...basicInfo} />
-                  <div>
-                    <Radar title="Stats" axisDataList={stats} color={color} />
+          <div className={styles.wrap} style={{ "--type": color } as CSSProperties}>
+            <div className={styles.inner}>
+              <nav className={styles.nav}>
+                <button type="button" className={styles.navBtn} disabled={id <= 1} onClick={() => goTo(id - 1)}>
+                  ‹ Prev
+                </button>
+                <button
+                  type="button"
+                  className={styles.navBtn}
+                  disabled={id >= MAX_POKEMON_ID_ALLOWED}
+                  onClick={() => goTo(id + 1)}
+                >
+                  Next ›
+                </button>
+              </nav>
+
+              <header className={styles.hero}>
+                <span className={styles.watermark} aria-hidden="true">#{formatNumberToMatchLength(id)}</span>
+                <div className={styles.heroTop}>
+                  <h1>{capitalizeFirstLetter(name)}</h1>
+                  <div className={styles.types}>
+                    {typeList.map((type) => (
+                      <span key={type} className={styles.typeChip} style={{ background: typeColor(type) }}>
+                        {capitalizeFirstLetter(type)}
+                      </span>
+                    ))}
                   </div>
-                  <div>
-                    <h3>Types</h3>
-                    <PokemonTypes id={id} types={types} />
-                    <h3>Weaknesses</h3>
-                    <PokemonWeaknesses id={id.toString()} types={weaknesses} />
-                    <div>
-                      To learn more about type interactions, click <a href={TYPE_INTERACTIONS}>here</a>:
+                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img className={styles.heroImg} src={imageUrl} alt={`${name}-pic`} />
+              </header>
+
+              <div className={styles.panes}>
+                <section className={`${styles.glass} ${styles.entry}`}>
+                  <div className={styles.paneTitle}>Pokédex entry</div>
+                  <p>{description}</p>
+                </section>
+
+                <section className={styles.glass}>
+                  <div className={styles.paneTitle}>Base stats</div>
+                  {stats.map((stat) => (
+                    <div className={styles.statline} key={stat.label}>
+                      <span className={styles.statLabel}>{stat.label}</span>
+                      <span className={styles.statNum}>{stat.value}</span>
+                      <div className={styles.bar}>
+                        <i style={{ width: `${Math.min((stat.value / MAX_STAT_VALUE) * 100, 100)}%` }} />
+                      </div>
                     </div>
+                  ))}
+                </section>
+
+                <section className={styles.glass}>
+                  <div className={styles.paneTitle}>Profile</div>
+                  <div className={styles.spec}>
+                    <b>Height</b><span>{`${convertCmtoMeterString(height)} (${cmToFeetString(height)})`}</span>
+                    <b>Weight</b><span>{`${joinValueWithUnit(weight, "kg")} (${kgToPoundsString(weight)})`}</span>
+                    <b>Category</b><span>{category}</span>
+                    <b>Abilities</b><span>{abilities.map(capitalizeFirstLetter).join(", ")}</span>
                   </div>
-                  <EvolutionChain chain={evolutionChain} />
-                </div>
+                </section>
+
+                <section className={`${styles.glass} ${styles.effWrap}`}>
+                  <div className={styles.paneTitle}>Type effectiveness</div>
+                  {renderEffectivenessGrid("Damage taken", defensiveEffectiveness)}
+                  {renderEffectivenessGrid("Damage dealt", offensiveEffectiveness)}
+                </section>
+
+                {evolutionChain.length > 1 && (
+                  <section className={`${styles.glass} ${styles.evoWrap}`}>
+                    <div className={styles.paneTitle}>Evolution</div>
+                    <div className={styles.evo}>
+                      {evolutionChain.map((stage, index) => (
+                        <Fragment key={stage.id}>
+                          {index > 0 && (
+                            <span className={styles.evoStep}>
+                              <em>{stage.level ? `Lv. ${stage.level}` : "→"}</em>
+                            </span>
+                          )}
+                          <EvolutionStage stage={stage} onSelect={goTo} />
+                        </Fragment>
+                      ))}
+                    </div>
+                  </section>
+                )}
               </div>
             </div>
-          </Page>
+          </div>
         </LoadingScreenWrapper>
       </ErrorScreenWrapper>
     </>
@@ -101,7 +180,7 @@ export async function getStaticPaths() {
   return { paths, fallback: false };
 }
 
-export async function getStaticProps({ params }: { params: { id: string }}) {
+export async function getStaticProps({ params }: { params: { id: string } }) {
   const pokemonData = await fetchPokemonDetailsByNameOrId(params.id);
 
   return { props: { ...pokemonData } };

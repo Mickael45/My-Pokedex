@@ -93,6 +93,10 @@ declare global {
     name: string;
     image: string;
   }
+  export interface ITypeEffectiveness {
+    type: string;
+    factor: DamageFactor;
+  }
   export interface IBasicPokemon {
     id: number;
     name: string;
@@ -102,11 +106,16 @@ declare global {
     stats: PokemonCardStats;
     evolvesFrom?: IEvolvesFrom | null;
   }
+  // A stage in the evolution chain plus the level it evolves at (null for the
+  // base form or non-level evolutions).
+  export type IEvolutionStage = IBasicPokemon & { level: number | null };
 
   export type IFullPokemon = Omit<IBasicPokemon, "stats"> & {
     stats: IPokemonStat[];
     weaknesses: Weakness[] | [];
-    evolutionChain: IBasicPokemon[] | [];
+    defensiveEffectiveness: ITypeEffectiveness[];
+    offensiveEffectiveness: ITypeEffectiveness[];
+    evolutionChain: IEvolutionStage[] | [];
     abilities: string[] | [];
     description: string;
     height: number;

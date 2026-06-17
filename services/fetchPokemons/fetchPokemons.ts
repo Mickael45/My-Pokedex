@@ -41,23 +41,27 @@ const request = async (url: string, attempt = 1): Promise<any> => {
 
 const fetchPokemonByNameOrId = async (name: string) => await request(`${POKE_API_URL}pokemon/${name}`)
 
-const fetchPokemonEvolutionChain = async (pokemonSpeciesData: Specie) => {
+const fetchPokemonEvolutionChain = async (pokemonSpeciesData: Specie): Promise<IEvolutionStage[]> => {
   const pokemonEvolutionData = await request(pokemonSpeciesData.evolution_chain.url);
   const pokemonEvolutionChain = formatPokemonEvolutionChain(pokemonEvolutionData.chain);
-
 
   if (pokemonEvolutionChain.length <= 1) {
     return [];
   }
-  const pokemonEvolutionChainSpeciesPromises = pokemonEvolutionChain.map(request)
-  const evolutionChainPokemonsSpicies = await Promise.all<Specie>(pokemonEvolutionChainSpeciesPromises);
-  const pokemonTrueNames = evolutionChainPokemonsSpicies.map(pokemonSpecie => pokemonSpecie.varieties.find(variety => variety.is_default)?.pokemon.name).filter(name => name !== undefined)
 
-  const evolutionChainPokemonsDataPromises = pokemonTrueNames.map(fetchPokemonByNameOrId);
-  const evolutionChainPokemonsData = await Promise.all<IPokemonResponseType>(evolutionChainPokemonsDataPromises);
-  const formattedEvolutionChainPokemons = evolutionChainPokemonsData.map(formatToBasicPokemon);
+  const species = await Promise.all<Specie>(pokemonEvolutionChain.map((entry) => request(entry.url)));
+  // Keep name and evolution level aligned through the filter (a species may lack
+  // a default variety).
+  const stages = species
+    .map((specie, index) => ({
+      name: specie.varieties.find((variety) => variety.is_default)?.pokemon.name,
+      level: pokemonEvolutionChain[index].level,
+    }))
+    .filter((stage): stage is { name: string; level: number | null } => stage.name !== undefined);
 
-  return formattedEvolutionChainPokemons;
+  const pokemonData = await Promise.all<IPokemonResponseType>(stages.map((stage) => fetchPokemonByNameOrId(stage.name)));
+
+  return pokemonData.map((pokemon, index) => ({ ...formatToBasicPokemon(pokemon), level: stages[index].level }));
 };
 
 export const fetchPokemonDetailsByNameOrId = async (id: string) => {

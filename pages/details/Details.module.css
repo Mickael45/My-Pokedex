@@ -1,49 +1,318 @@
-.container > :first-child {
-  display: flex;
-  justify-content: center;
+/* Full-bleed type-coloured background. Text follows the res toggle (pixel / HD
+   font). The pixel font is ~2x wider per glyph, so low res scales font sizes by
+   --font-scale (~width match) to keep the same footprint and minimise layout
+   shift. Sprites swap with the toggle; the watermark number stays fixed. */
+.wrap {
+  --type: #888;
+  --font-scale: 1;
+  position: relative;
+  min-height: 100vh;
+  /* The app container adds 20px padding-bottom; the extra bottom padding here
+     plus the negative margin lets the gradient paint over it (no white gap). */
+  padding: 18px 0 84px;
+  margin-bottom: -20px;
+  color: #fff;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 80% at 85% -10%, rgba(255, 255, 255, 0.22), transparent 55%),
+    linear-gradient(160deg, var(--type), rgba(0, 0, 0, 0.6));
+}
+:global([data-resolution="low res."]) .wrap {
+  --font-scale: 0.52;
+}
+.inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 18px;
 }
 
-.container > :nth-child(2) {
+/* ---- prev / next ---- */
+.nav {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.navBtn {
+  appearance: none;
+  cursor: pointer;
+  color: #fff;
+  font-weight: bold;
+  font-size: calc(14px * var(--font-scale));
+  padding: 9px 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.navBtn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+.navBtn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---- hero ---- */
+.hero {
+  position: relative;
+  padding: 6px 6px 4px;
+}
+.watermark {
+  position: absolute;
+  right: 4px;
+  top: -40px;
+  /* Fixed font + size so the background number is identical in both resolutions. */
+  font-family: "HdPokemonFont", arial, sans-serif !important;
+  font-size: 190px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -8px;
+  color: #fff;
+  opacity: 0.12;
+  pointer-events: none;
+}
+.heroTop {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
   flex-wrap: wrap;
-  justify-content: space-around;
+}
+.heroTop h1 {
+  margin: 0;
+  font-size: calc(clamp(32px, 6vw, 46px) * var(--font-scale));
+  text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+}
+.types {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.typeChip {
+  color: #fff;
+  font-weight: bold;
+  border-radius: 999px;
+  padding: 6px 16px;
+  font-size: calc(14px * var(--font-scale));
+  text-transform: capitalize;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.45);
+}
+.heroImg {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin: 6px auto 0;
+  height: clamp(190px, 30vw, 270px);
+  width: auto;
+  max-width: 90%;
+  object-fit: contain;
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.32));
 }
 
-.container > :nth-child(2) > :not(:last-child) {
+/* ---- glass panels ---- */
+.panes {
   display: grid;
-  width: 45%;
-  align-content: space-evenly;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-top: 8px;
+}
+.glass {
+  background: rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 18px;
+  padding: 16px 18px;
+}
+.paneTitle {
+  margin: 0 0 12px;
+  font-size: calc(12px * var(--font-scale));
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1.4px;
+  opacity: 0.9;
+}
+.paneTitle small {
+  font-size: calc(10px * var(--font-scale));
+  letter-spacing: 0.6px;
+  opacity: 0.75;
+  text-transform: none;
+  margin-left: 6px;
+}
+.entry {
+  grid-column: 1 / -1;
+}
+.entry p {
+  margin: 0;
+  line-height: 1.55;
+  font-size: calc(15px * var(--font-scale));
 }
 
-.container > :nth-child(2) > :last-child {
-  width: 95%;
+/* ---- stats ---- */
+.statline {
+  display: grid;
+  grid-template-columns: 72px 34px 1fr;
+  align-items: center;
+  gap: 10px;
+  margin: 9px 0;
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 600;
+}
+.statLabel {
+  white-space: nowrap;
+  opacity: 0.9;
+}
+.statNum {
+  text-align: right;
+}
+.bar {
+  height: 9px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.22);
+  overflow: hidden;
+}
+.bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.75), #fff);
+  transition: width 0.6s ease;
 }
 
-@media screen and (max-width: 800px) {
-  .container > :nth-child(2) > :not(:last-child),
-  .container > :nth-child(2) > :last-child {
-    width: 100%;
-  }
-  .container > :nth-child(2) {
-    display: grid;
-    row-gap: 50px;
-    align-content: space-around;
-  }
+/* ---- profile spec ---- */
+.spec {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 9px 16px;
+  font-size: calc(14px * var(--font-scale));
+}
+.spec b {
+  font-weight: 600;
+  opacity: 0.75;
 }
 
-.container > :nth-child(2) > :nth-child(3) > :last-child {
-  background: white;
+/* ---- type effectiveness ---- */
+.effWrap {
+  grid-column: 1 / -1;
+}
+.effBlock + .effBlock {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+}
+.effLabel {
+  font-size: calc(11px * var(--font-scale));
+  font-weight: bold;
+  letter-spacing: 0.6px;
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+.eff {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 6px;
+}
+.effTile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  border-radius: 9px;
+  padding: 7px 2px;
+  color: #fff;
   text-align: center;
-  border-radius: 10px;
-  color: black;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.25);
+}
+.effType {
+  font-size: calc(10px * var(--font-scale));
+  font-weight: 700;
+  text-transform: capitalize;
+}
+.effMult {
+  font-size: calc(13px * var(--font-scale));
+  font-weight: 900;
+}
+.normal {
+  opacity: 0.42;
+}
+.weak {
+  outline: 2px solid #ffd23f;
+  outline-offset: -2px;
+}
+.resist {
+  outline: 2px solid rgba(255, 255, 255, 0.6);
+  outline-offset: -2px;
+}
+.immune {
+  opacity: 0.5;
+}
+.immune .effMult {
+  text-decoration: line-through;
 }
 
-.container > :nth-child(2) > :nth-child(3) :last-child h3 {
-  text-align: left;
-  margin-left: 35px;
+/* ---- evolution ---- */
+.evoWrap {
+  grid-column: 1 / -1;
+}
+.evo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.evoStep {
+  display: grid;
+  place-items: center;
+  color: #fff;
+}
+.evoStep em {
+  font-style: normal;
+  font-size: calc(12px * var(--font-scale));
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: 999px;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+.evoStep::after {
+  content: "▸";
+  font-size: 18px;
+  opacity: 0.75;
+  margin-top: 2px;
 }
 
-.container > :nth-child(1) > :last-child {
-  color: rgb(164, 164, 164);
-  margin-left: 10px;
+/* ---- responsive ---- */
+@media (max-width: 760px) {
+  .hero {
+    padding-top: 30px;
+    text-align: center;
+  }
+  .heroTop {
+    justify-content: center;
+  }
+  .watermark {
+    font-size: 150px;
+    top: -30px;
+    right: 50%;
+    transform: translateX(50%);
+  }
+  .panes {
+    grid-template-columns: 1fr;
+  }
+  .eff {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 380px) {
+  .eff {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

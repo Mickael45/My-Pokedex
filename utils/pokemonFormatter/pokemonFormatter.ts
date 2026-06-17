@@ -46,6 +46,44 @@ const getPokemonWeaknesses = (types: string) => {
   return weakInteractionTypes || [];
 };
 
+// Defending effectiveness (damage taken) against all 18 attacking types.
+export const getPokemonDefensiveEffectiveness = (types: string): ITypeEffectiveness[] => {
+  const areTypesEqual = ({ key }: IPokemonInteractionTypes) => key === types;
+  const typeInteractions = typesInteractionData.flat().find(areTypesEqual);
+
+  if (!typeInteractions) {
+    return [];
+  }
+
+  return typeInteractions.values.map((value: PokemonInteractionTypeHash) => {
+    const type = Object.keys(value)[0];
+    const effectiveness = Object.values(value)[0] as PokemonEffectivenessType;
+
+    return { type, factor: EffectivenessTypeToDamageFactorHashMapType[effectiveness] };
+  });
+};
+
+// Offensive effectiveness (damage dealt) of this Pokemon's STAB types against all
+// 18 defending types — best multiplier across its types (best STAB coverage).
+export const getPokemonOffensiveEffectiveness = (types: string): ITypeEffectiveness[] => {
+  const attackers = types.split(",");
+  const allEntries = typesInteractionData.flat();
+  const ownDefence = allEntries.find(({ key }) => key === types);
+  const defenderTypes = ownDefence ? ownDefence.values.map((value) => Object.keys(value)[0]) : [];
+
+  return defenderTypes.map((defender) => {
+    const defenderEntry = allEntries.find(({ key }) => key === defender);
+    const factors = attackers.map((attacker) => {
+      const hash = defenderEntry?.values.find((value) => Object.keys(value)[0] === attacker);
+      const effectiveness = (hash ? Object.values(hash)[0] : "normal effectiveness") as PokemonEffectivenessType;
+
+      return EffectivenessTypeToDamageFactorHashMapType[effectiveness];
+    });
+
+    return { type: defender, factor: Math.max(...factors) as DamageFactor };
+  });
+};
+
 export const getPokemonPrimaryTypeColor = (types: string) => {
   const primaryType = types.split(",")[0];
   const castedPokemonTypesColor = pokemonTypesColor as HashMap;
@@ -53,11 +91,17 @@ export const getPokemonPrimaryTypeColor = (types: string) => {
   return castedPokemonTypesColor[primaryType];
 };
 
-export const formatPokemonEvolutionChain = ({ evolves_to, species }: EvolutionData, evolutionChain: string[] = []) => {
-  const getNestedEvolutionData = (evolution: EvolvesTo) => formatPokemonEvolutionChain(evolution, evolutionChain);
+export type EvolutionChainEntry = { url: string; level: number | null };
 
-  evolutionChain.push(species.url);
-  evolves_to.forEach(getNestedEvolutionData);
+export const formatPokemonEvolutionChain = (
+  node: EvolutionData | EvolvesTo,
+  level: number | null = null,
+  evolutionChain: EvolutionChainEntry[] = []
+): EvolutionChainEntry[] => {
+  evolutionChain.push({ url: node.species.url, level });
+  node.evolves_to.forEach((evolution) =>
+    formatPokemonEvolutionChain(evolution, evolution.evolution_details?.[0]?.min_level ?? null, evolutionChain)
+  );
 
   return evolutionChain;
 };
@@ -106,12 +150,14 @@ export const formatEvolvesFrom = (species: Specie): IEvolvesFrom | null => {
 
 export const formatToFullPokemon = (
   pokemon: IPokemonResponseType,
-  evolutionChain: IBasicPokemon[],
+  evolutionChain: IEvolutionStage[],
   pokemonSpeciesData: Specie
 ): IFullPokemon => {
   const { height, weight, id } = pokemon;
   const pokemonBasicInfo = formatToBasicPokemon(pokemon);
   const weaknesses = getPokemonWeaknesses(pokemonBasicInfo.types);
+  const defensiveEffectiveness = getPokemonDefensiveEffectiveness(pokemonBasicInfo.types);
+  const offensiveEffectiveness = getPokemonOffensiveEffectiveness(pokemonBasicInfo.types);
   const stats = extractStatsFromPokemon(pokemon);
   const description = extractPokemonDescription(pokemonSpeciesData);
   const category = extractPokemonCategory(pokemonSpeciesData);
@@ -123,6 +169,8 @@ export const formatToFullPokemon = (
     hdImageUrl,
     stats,
     weaknesses,
+    defensiveEffectiveness,
+    offensiveEffectiveness,
     height: height * 10,
     weight: weight / 10,
     evolutionChain,
