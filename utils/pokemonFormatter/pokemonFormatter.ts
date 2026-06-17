@@ -74,8 +74,11 @@ export const formatToBasicPokemon = (pokemon: IPokemonResponseType): IBasicPokem
   const pixelImageUrl = createImageUrl(id);
   const hdImageUrl = createImageUrl(id, BASIC_PIC);
   const typesName = types.map(extractTypeName).join(",");
+  // Stats are already on the /pokemon response, so SSG can include them at no
+  // extra fetch cost (lets the list cards render stats/HP instantly).
+  const stats = extractStatsFromPokemon(pokemon);
 
-  return { id, name, pixelImageUrl, hdImageUrl, types: typesName };
+  return { id, name, pixelImageUrl, hdImageUrl, types: typesName, stats };
 };
 
 export const formatToFullPokemon = (

@@ -92,10 +92,10 @@ declare global {
     types: string;
     pixelImageUrl: string;
     hdImageUrl: string;
+    stats: IPokemonStat[];
   }
 
   export type IFullPokemon = IBasicPokemon & {
-    stats: Stat[] | [];
     weaknesses: Weakness[] | [];
     evolutionChain: IBasicPokemon[] | [];
     abilities: string[] | [];

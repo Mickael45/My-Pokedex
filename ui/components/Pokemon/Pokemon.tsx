@@ -7,7 +7,7 @@ import { DETAILS } from "../../../constants/Routes";
 import StatBar from "./StatBar";
 import TypeBadge from "./TypeBadge";
 
-const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types }: IBasicPokemon) => {
+const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats }: IBasicPokemon) => {
   const router = useRouter();
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
   const details = usePokemonDetails(id);
@@ -15,7 +15,7 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types }: IBasicPokemon) 
   const primaryType = types.split(",")[0];
   const cardColor = getPokemonPrimaryTypeColor(types);
 
-  const stats = (details?.stats ?? []) as unknown as IPokemonStat[];
+  // Stats ship with the SSG props, so HP and the bars render instantly.
   const findStat = (label: string) =>
     stats.find((stat) => stat.label.toLowerCase() === label)?.value ?? null;
 
@@ -34,12 +34,12 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types }: IBasicPokemon) 
         <div className="flex items-center gap-2 p-2">
           {/* Plain div (not <h2>) so the global high-res `h2 { font-size: 30px }`
               rule can't override the fixed size and cause a layout shift. */}
-          <div className="flex-1 min-w-0 whitespace-nowrap text-[12px] font-bold capitalize leading-tight" title={name}>
+          <div className="card-name flex-1 min-w-0 whitespace-nowrap text-[12px] font-bold capitalize leading-tight" title={name}>
             {name}
           </div>
           <div className="flex shrink-0 items-center gap-1">
             <span className="text-[9px] font-bold">HP</span>
-            <span className="text-[12px] font-bold leading-none">{findStat("hp") ?? "—"}</span>
+            <span className="card-hp text-[12px] font-bold leading-none">{findStat("hp") ?? "—"}</span>
             <TypeBadge type={primaryType} size={22} className="ml-2" />
           </div>
         </div>
