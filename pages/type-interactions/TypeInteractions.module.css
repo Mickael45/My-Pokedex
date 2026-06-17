@@ -1,18 +1,13 @@
-/* Type Interactions — a "dossier" for the selected typing: the Pokémon that
-   wield it, who threatens it (defending) and who it beats (attacking), each
-   bucketed by damage multiplier. Colour tokens default to the Daylight (light)
-   theme and are overridden for Carbon Grid (dark); avatars inherit them. */
+/* Type Interactions — the selected typing's matchups as bars: damage it takes
+   (Defending) and deals (Attacking) to every other type. Colour tokens default
+   to the Daylight (light) theme and are overridden for Carbon Grid (dark). */
 .container {
   --panel-bg: #ffffff;
   --panel-border: rgba(20, 30, 60, 0.12);
   --ink: #1a2233;
   --ink-dim: #5a6678;
   --ink-faint: #8a93a8;
-  --line-soft: rgba(20, 30, 60, 0.09);
-  --avatar-bg: #eef1f7;
-  --tooltip-bg: #11141d;
-  --tooltip-ink: #ffffff;
-  --tooltip-border: rgba(255, 255, 255, 0.14);
+  --track-bg: rgba(20, 30, 60, 0.1);
   --t4: #e11d48;
   --t2: #ea6a17;
   --th: #1f9d57;
@@ -31,10 +26,7 @@
   --ink: #e8ecf6;
   --ink-dim: #9aa3b8;
   --ink-faint: #5e6880;
-  --line-soft: rgba(255, 255, 255, 0.07);
-  --avatar-bg: #0d1018;
-  --tooltip-bg: #0d1018;
-  --tooltip-border: rgba(255, 255, 255, 0.16);
+  --track-bg: rgba(255, 255, 255, 0.1);
   --t4: #ff3d63;
   --t2: #ff8a3d;
   --th: #36c98f;
@@ -52,7 +44,6 @@
 .block {
   margin-top: 36px;
 }
-
 .secHead {
   display: flex;
   align-items: center;
@@ -76,51 +67,18 @@
 .panel {
   border: 1px solid var(--panel-border);
   border-radius: 18px;
-  padding: 2px 20px;
+  padding: 12px 20px;
   background: var(--panel-bg);
   box-shadow: 0 18px 50px -34px rgba(0, 0, 0, 0.5);
 }
 
-.cat {
+.row {
   display: grid;
-  grid-template-columns: 152px 1fr;
-  gap: 18px;
+  grid-template-columns: 104px 1fr 52px;
   align-items: center;
-  padding: 16px 0;
-  border-bottom: 1px solid var(--line-soft);
+  gap: 14px;
+  padding: 8px 0;
 }
-.cat:last-child {
-  border-bottom: none;
-}
-
-.catHead {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-}
-.badge {
-  min-width: 44px;
-  font-weight: bold;
-  font-size: 22px;
-  color: var(--cc);
-}
-.catLabel {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.catName {
-  font-weight: bold;
-  font-size: 13px;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  color: var(--ink);
-}
-.catCount {
-  font-size: 10px;
-  color: var(--ink-faint);
-}
-
 .t4 {
   --cc: var(--t4);
 }
@@ -137,54 +95,52 @@
   --cc: var(--t0);
 }
 
-.catBody {
-  min-width: 0;
-}
-
-/* Roster body: no tier label column, so it carries the same vertical padding a
-   .cat row gives the matchup panels. */
-.solo {
-  padding: 16px 0;
-}
-
-.mons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 13px;
-  align-items: flex-start;
-}
-
-.seeMore {
-  margin-top: 13px;
-  padding: 0;
-  background: transparent;
-  border: none;
-  cursor: pointer;
+.typeChip {
+  color: #fff;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
   font-weight: bold;
-  font-size: 12px;
-  color: var(--cc, var(--ink-dim));
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  font-size: 13px;
+  text-transform: capitalize;
+  text-align: center;
+  padding: 5px 8px;
+  border-radius: 8px;
 }
-.seeMore:hover {
-  opacity: 0.8;
+.track {
+  height: 14px;
+  border-radius: 7px;
+  background: var(--track-bg);
+  overflow: hidden;
+}
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: 7px;
+  background: var(--cc);
+  transition: width 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.mult {
+  font-weight: bold;
+  font-size: 15px;
+  color: var(--cc);
+  text-align: right;
 }
 
 .empty {
   color: var(--ink-faint);
   font-size: 13px;
-  padding: 16px 0;
+  padding: 8px 0;
 }
 
 @media (max-width: 640px) {
-  .cat {
-    grid-template-columns: 1fr;
-    gap: 9px;
-  }
   .panel {
-    padding: 2px 14px;
+    padding: 10px 14px;
   }
-  .mons {
+  .row {
+    grid-template-columns: 86px 1fr 46px;
     gap: 10px;
+  }
+  .typeChip {
+    font-size: 12px;
+    padding: 5px 6px;
   }
 }

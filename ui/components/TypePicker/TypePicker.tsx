@@ -23,7 +23,10 @@ const TypePicker = () => {
       ? selected.filter((current) => current !== type)
       : [...selected, type].slice(-2); // drop the oldest once two are picked
 
-    router.push({ pathname: TYPE_INTERACTIONS, search: next.length ? `types=${next.join(",")}` : "" });
+    // Shallow: update the URL without re-running data fetching, so toggling is instant.
+    router.push({ pathname: TYPE_INTERACTIONS, search: next.length ? `types=${next.join(",")}` : "" }, undefined, {
+      shallow: true,
+    });
   };
 
   return (
