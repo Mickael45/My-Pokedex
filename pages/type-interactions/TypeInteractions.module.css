@@ -144,6 +144,12 @@
   min-width: 0;
 }
 
+/* Roster body: no tier label column, so it carries the same vertical padding a
+   .cat row gives the matchup panels. */
+.solo {
+  padding: 16px 0;
+}
+
 .mons {
   display: flex;
   flex-wrap: wrap;

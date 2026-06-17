@@ -32,11 +32,13 @@ const TIER_CLASS: Record<number, string> = { 4: "t4", 2: "t2", 0.5: "th", 0.25: 
 const factorLabel = (factor: number) =>
   factor === 0 ? "0" : factor === 0.25 ? "¼" : factor === 0.5 ? "½" : `${factor}`;
 
-// Renders a list of avatars capped at the responsive limit, with a toggle that
-// reveals the rest. Limit is 10 on desktop, 5 on phones.
+// Renders avatars capped at a responsive limit (10 desktop / 5 mobile) and
+// reveals the rest one chunk per click, so neither a type change nor expanding
+// ever mounts hundreds of nodes at once. Resets to the cap when the list
+// changes (i.e. a new type is picked).
 const AvatarShelf = ({ pokemons }: { pokemons: IBasicPokemon[] }) => {
-  const [expanded, setExpanded] = useState(false);
   const [limit, setLimit] = useState(DESKTOP_LIMIT);
+  const [visible, setVisible] = useState(DESKTOP_LIMIT);
 
   useEffect(() => {
     const query = window.matchMedia("(max-width: 640px)");
@@ -46,8 +48,11 @@ const AvatarShelf = ({ pokemons }: { pokemons: IBasicPokemon[] }) => {
     return () => query.removeEventListener("change", apply);
   }, []);
 
-  const shown = expanded ? pokemons : pokemons.slice(0, limit);
-  const hidden = pokemons.length - limit;
+  useEffect(() => setVisible(limit), [pokemons, limit]);
+
+  const shown = pokemons.slice(0, visible);
+  const allShown = visible >= pokemons.length;
+  const nextChunk = Math.min(limit, pokemons.length - visible);
 
   return (
     <>
@@ -56,9 +61,13 @@ const AvatarShelf = ({ pokemons }: { pokemons: IBasicPokemon[] }) => {
           <PokemonAvatar key={pokemon.id} pokemon={pokemon} />
         ))}
       </div>
-      {hidden > 0 && (
-        <button type="button" className={styles.seeMore} onClick={() => setExpanded((value) => !value)}>
-          {expanded ? "See less" : `See ${hidden} more`}
+      {pokemons.length > limit && (
+        <button
+          type="button"
+          className={styles.seeMore}
+          onClick={() => setVisible((value) => (allShown ? limit : value + limit))}
+        >
+          {allShown ? "See less" : `See ${nextChunk} more`}
         </button>
       )}
     </>
@@ -169,7 +178,7 @@ const TypeInteractionsPage = ({ pokemons }: IProps) => {
                   {buckets.roster.length === 0 ? (
                     <p className={styles.empty}>Try a single type, or a different pairing.</p>
                   ) : (
-                    <div className={styles.catBody}>
+                    <div className={`${styles.catBody} ${styles.solo}`}>
                       <AvatarShelf pokemons={buckets.roster} />
                     </div>
                   )}
