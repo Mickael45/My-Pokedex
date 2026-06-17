@@ -74,7 +74,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 104px 1fr 52px;
+  grid-template-columns: 104px 1fr 60px;
   align-items: center;
   gap: 14px;
   padding: 8px 0;
@@ -104,6 +104,14 @@
   text-align: center;
   padding: 5px 8px;
   border-radius: 8px;
+  /* Keep long names inside the chip instead of spilling into the bar. */
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* The pixel font is wider; shrink it so "Electric"/"Fighting" still fit. */
+:global([data-resolution="low res."]) .typeChip {
+  font-size: 10px;
 }
 .track {
   height: 14px;
@@ -123,6 +131,12 @@
   font-size: 15px;
   color: var(--cc);
   text-align: right;
+  white-space: nowrap;
+}
+
+/* Pixel font is wider — shrink so values fit their column and stay right-aligned. */
+:global([data-resolution="low res."]) .mult {
+  font-size: 11px;
 }
 
 .empty {
@@ -131,12 +145,29 @@
   padding: 8px 0;
 }
 
+/* The HD font reads small at the base sizes — scale the page up in high-res. */
+:global([data-resolution="high res."]) .secDesc {
+  font-size: 16px;
+}
+:global([data-resolution="high res."]) .typeChip {
+  font-size: 16px;
+}
+:global([data-resolution="high res."]) .mult {
+  font-size: 19px;
+}
+:global([data-resolution="high res."]) .prompt {
+  font-size: 18px;
+}
+:global([data-resolution="high res."]) .empty {
+  font-size: 15px;
+}
+
 @media (max-width: 640px) {
   .panel {
     padding: 10px 14px;
   }
   .row {
-    grid-template-columns: 86px 1fr 46px;
+    grid-template-columns: 86px 1fr 54px;
     gap: 10px;
   }
   .typeChip {

@@ -56,6 +56,14 @@
   box-shadow: 0 0 0 2px var(--panel-bg, #fff), 0 0 0 4px var(--c), 0 8px 22px -6px var(--c);
 }
 
+/* Larger chips in high-res to match the bigger HD type elsewhere on the page. */
+:global([data-resolution="high res."]) .chip {
+  font-size: 16px;
+}
+:global([data-resolution="high res."]) .label {
+  font-size: 14px;
+}
+
 @media (max-width: 640px) {
   .chip {
     padding: 7px 12px;

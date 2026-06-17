@@ -13,9 +13,8 @@ import { capitalizeFirstLetter } from "../../utils/stringManipulation";
 const ALL_TYPES = Object.values(Types);
 const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
-// Bar fill per multiplier, on a perceptual (non-linear) scale so resistances
-// and weaknesses both read clearly.
-const BAR_PCT: Record<number, number> = { 0: 6, 0.25: 24, 0.5: 44, 1: 62, 2: 81, 4: 100 };
+// Bar fill is linear against the x4 maximum, so x2 reads as a half bar.
+const MAX_FACTOR = 4;
 const TIER_CLASS: Record<number, string> = { 4: "t4", 2: "t2", 0.5: "th", 0.25: "tq", 0: "t0" };
 
 interface Row {
@@ -55,9 +54,9 @@ const TypeInteractionsPage = () => {
                 {capitalizeFirstLetter(type)}
               </span>
               <span className={styles.track}>
-                <span className={styles.fill} style={{ width: `${BAR_PCT[mult]}%` }} />
+                <span className={styles.fill} style={{ width: `${(mult / MAX_FACTOR) * 100}%` }} />
               </span>
-              <span className={styles.mult}>×{mult}</span>
+              <span className={styles.mult}>x{mult}</span>
             </div>
           ))
         )}
@@ -82,13 +81,13 @@ const TypeInteractionsPage = () => {
               {renderBars(
                 "🛡️",
                 "Defending",
-                `Damage ${combo} takes from each attacking type — biggest weaknesses first.`,
+                `Damage ${combo} takes from each attacking type, worst matchups first.`,
                 defending
               )}
               {renderBars(
                 "⚔️",
                 "Attacking",
-                `Damage ${combo}'s best move deals to each type — best targets first.`,
+                `Damage ${combo} deals to each type with its best move, best matchups first.`,
                 attacking
               )}
             </>
