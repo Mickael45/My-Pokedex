@@ -1,5 +1,5 @@
 import { Fragment, useContext, useEffect, type CSSProperties } from "react";
-import { useRouter } from "next/router";
+import Link from "next/link";
 
 import styles from "./Details.module.css";
 import { DETAILS } from "../../constants/Routes";
@@ -39,7 +39,6 @@ const DetailsPage = ({
   description,
   category,
 }: IFullPokemon) => {
-  const router = useRouter();
   const { setLoading } = useContext(LoadingContext);
   const { resolution } = useContext(ResolutionContext);
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
@@ -67,8 +66,6 @@ const DetailsPage = ({
     preload(id - 1);
     preload(id + 1);
   }, [id, resolution]);
-
-  const goTo = (pokemonId: number) => router.push(`${DETAILS}${pokemonId}`);
 
   const effClass = (factor: number) =>
     factor === 0 ? styles.immune : factor > 1 ? styles.weak : factor < 1 ? styles.resist : styles.normal;
@@ -103,17 +100,28 @@ const DetailsPage = ({
           <div className={styles.wrap} style={{ "--type": color } as CSSProperties}>
             <div className={styles.inner}>
               <nav className={styles.nav}>
-                <button type="button" className={styles.navBtn} disabled={id <= 1} onClick={() => goTo(id - 1)}>
-                  &lt; Prev
-                </button>
-                <button
-                  type="button"
-                  className={styles.navBtn}
-                  disabled={id >= MAX_POKEMON_ID_ALLOWED}
-                  onClick={() => goTo(id + 1)}
-                >
-                  Next &gt;
-                </button>
+                {/* Links (not router.push) so Next prefetches the neighbour's data + chunk
+                    while you're on the page — the first Prev/Next click is then instant
+                    instead of waiting on a fetch. Boundaries stay disabled buttons since
+                    an anchor can't be :disabled. */}
+                {id > 1 ? (
+                  <Link href={`${DETAILS}${id - 1}`} className={styles.navBtn} prefetch>
+                    &lt; Prev
+                  </Link>
+                ) : (
+                  <button type="button" className={styles.navBtn} disabled>
+                    &lt; Prev
+                  </button>
+                )}
+                {id < MAX_POKEMON_ID_ALLOWED ? (
+                  <Link href={`${DETAILS}${id + 1}`} className={styles.navBtn} prefetch>
+                    Next &gt;
+                  </Link>
+                ) : (
+                  <button type="button" className={styles.navBtn} disabled>
+                    Next &gt;
+                  </button>
+                )}
               </nav>
 
               <header className={styles.hero}>
@@ -178,7 +186,7 @@ const DetailsPage = ({
                               <em>{stage.level ? `Lv. ${stage.level}` : "→"}</em>
                             </span>
                           )}
-                          <EvolutionStage stage={stage} onSelect={goTo} />
+                          <EvolutionStage stage={stage} />
                         </Fragment>
                       ))}
                     </div>

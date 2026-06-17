@@ -47,6 +47,12 @@
 .navBtn {
   appearance: none;
   cursor: pointer;
+  /* Shared by the <button> (boundaries) and <a> (Link) variants — keep them
+     visually identical: no underline, same centred box. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   color: #fff;
   font-weight: bold;
   font-size: calc(14px * var(--font-scale));
