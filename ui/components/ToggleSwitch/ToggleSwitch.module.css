@@ -30,12 +30,14 @@
 
 .toggleButton:after,
 .toggleButton:before {
-  display: inline-block;
-  transition: all 0.2s ease;
-  width: 100%;
-  text-align: center;
   position: absolute;
-  line-height: 32px;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
   font-weight: bold;
 }
 
