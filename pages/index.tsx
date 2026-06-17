@@ -6,7 +6,6 @@ import useFiltering from "../hooks/useFiltering";
 import { fetchAllPokemons } from "../services/fetchPokemons/fetchPokemons";
 import EmptyListPlaceholder from "../ui/components/EmptyListPlaceholder/EmptyListPlaceholder";
 import Header from "../ui/components/Header/Header";
-import ListSortingDropdown from "../ui/components/ListSortingDropdown/ListSortingDropdown";
 import Pokemon from "../ui/components/Pokemon/Pokemon";
 import ErrorScreenWrapper from "../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
 import LoadingScreenWrapper from "../ui/components/Wrappers/LoadingScreenWrapper/LoadingScreenWrapper";
@@ -30,8 +29,6 @@ const HomePage = ({ pokemons }: IProps) => {
   const renderPokemon = (pokemon: IBasicPokemon) => <Pokemon key={pokemon.id} {...pokemon} />;
 
   const renderPokemons = () => filteredPokemons.slice(0, numberOfPokemonShown).map(renderPokemon);
-
-  const renderSortDropdown = () => (filteredPokemons.length > 1 ? <ListSortingDropdown /> : <div />);
 
   const areThereMorePokemonsToShow = () => numberOfPokemonShown >= filteredPokemons.length;
 
@@ -59,7 +56,6 @@ const HomePage = ({ pokemons }: IProps) => {
         <LoadingScreenWrapper>
           <Page>
             <div className={styles.container}>
-              {renderSortDropdown()}
               <FlexboxList hasReachedEnd={areThereMorePokemonsToShow()} showMore={incrementNumberOfPokemonShown}>
                 {renderPokemons()}
               </FlexboxList>
