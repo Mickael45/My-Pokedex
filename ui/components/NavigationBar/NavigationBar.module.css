@@ -12,7 +12,7 @@
 }
 
 /* Theme-aware header: Daylight (light) clean white bar; Carbon (dark) near-black
-   bar capped by a thin type-gradient accent line. */
+   bar. Both capped by a thin type-gradient accent line. */
 :global([data-theme="light"]) .container {
   box-shadow: 0 4px 18px rgba(20, 30, 60, 0.1);
   border-bottom: 2px solid transparent;
@@ -25,7 +25,7 @@
   border-image: linear-gradient(90deg, #ff4422, #3399ff, #ffcc33) 1;
 }
 
-/* Single horizontal row: logo · search · filter · [sort · theme · resolution]. */
+/* Single row: logo · tabs · search (fills) · type-filter · [sort · theme · res]. */
 .bar {
   display: flex;
   align-items: center;
@@ -40,46 +40,87 @@
   cursor: pointer;
 }
 
+/* Pokédex / Type Chart segmented tabs */
+.tabs {
+  flex-shrink: 0;
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: #f1f3f8;
+  border: 1px solid #d7dce6;
+}
+.tab {
+  padding: 6px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.tabActive {
+  background: #2b2f3a;
+}
+/* Theme-scoped colours (high specificity to beat the global `[data-theme] a`). */
+:global([data-theme="light"]) .tabs .tab {
+  color: #6b7280;
+}
+:global([data-theme="light"]) .tabs .tabActive {
+  color: #fff;
+}
+:global([data-theme="dark"]) .tabs {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+:global([data-theme="dark"]) .tabs .tab {
+  color: #cfd6e4;
+}
+:global([data-theme="dark"]) .tabs .tabActive {
+  background: #fff;
+  color: #11141b;
+}
+
+/* Search fills the middle so the controls sit flush at the right edge. */
 .searchWrap {
   flex: 1 1 auto;
   min-width: 0;
-  max-width: 440px;
 }
 
-.arrowWrap {
+/* Type-filter funnel button (replaces the old chevron drawer trigger). */
+.filterBtn {
   flex-shrink: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: #f1f3f8;
+  border: 1px solid #d7dce6;
+  color: #6b7280;
+}
+:global([data-theme="dark"]) .filterBtn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #cfd6e4;
+}
+:global([data-theme="light"]) .filterActive {
+  border-color: #e3350d;
+  color: #e3350d;
+}
+:global([data-theme="dark"]) .filterActive {
+  border-color: #26d07c;
+  color: #26d07c;
 }
 
-/* The right-hand control cluster, pushed to the far edge. */
+/* The right-hand control cluster. */
 .controls {
   display: flex;
   align-items: center;
   gap: 14px;
   margin-left: auto;
   flex-shrink: 0;
-}
-
-/* type-filter expander chevron */
-.arrow {
-  width: 11px;
-  height: 11px;
-  margin: 0 auto;
-  border-right: 2px solid #2b2f3a;
-  border-bottom: 2px solid #2b2f3a;
-  border-left: none;
-  border-top: none;
-  transform: rotate(45deg);
-  transition: transform 0.5s;
-  cursor: pointer;
-}
-:global([data-theme="dark"]) .arrow {
-  border-right-color: #cfd6e4;
-  border-bottom-color: #cfd6e4;
-}
-.up {
-  transform: rotate(-135deg);
 }
 
 /* type-filter drawer, expands below the bar */
@@ -92,8 +133,9 @@
   padding: 0 20px;
 }
 .drawer > :first-child {
-  margin: 20px 0;
-  color: white;
+  margin: 18px 0 12px;
+  font-weight: bold;
+  color: #fff;
 }
 :global([data-theme="light"]) .drawer > :first-child {
   color: #2b2f3a;
@@ -121,6 +163,5 @@
   .searchWrap {
     order: 5;
     flex-basis: 100%;
-    max-width: none;
   }
 }
