@@ -9,18 +9,23 @@
   display: none;
 }
 
+/* Pill-shaped, theme-aware toggle (Daylight light / Carbon dark). Keeps the
+   sliding single-label behaviour; the active (checked) state gets an accent. */
 .toggleButton {
+  position: relative;
   display: block;
-  width: 145px;
-  height: 37px;
-  border-radius: 5px;
+  width: 150px;
+  height: 34px;
+  border-radius: 999px;
+  overflow: hidden;
   cursor: pointer;
   user-select: none;
   backface-visibility: hidden;
   transition: all 0.2s ease;
-  background: #ffde00;
-  border: 3px solid #3b4cca;
-  color: #3b4cca;
+  background: #f1f3f8;
+  border: 1px solid #d7dce6;
+  color: #41485a;
+  font-weight: bold;
 }
 
 .toggleButton:after,
@@ -30,7 +35,7 @@
   width: 100%;
   text-align: center;
   position: absolute;
-  line-height: 37px;
+  line-height: 32px;
   font-weight: bold;
 }
 
@@ -49,10 +54,9 @@
 }
 
 .toggle:checked + .toggleButton {
-  background: #3b4cca;
-  color: #ffde00;
-  border: 3px solid #ffde00;
-  overflow: hidden;
+  background: #e3350d;
+  border-color: #e3350d;
+  color: #fff;
 }
 
 .toggle:checked + .toggleButton:before {
@@ -65,6 +69,19 @@
 
 .toggle:checked + .toggleButton:active:after {
   left: 10%;
+}
+
+/* Carbon (dark) variant. */
+:global([data-theme="dark"]) .toggleButton {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #cfd6e4;
+}
+
+:global([data-theme="dark"]) .toggle:checked + .toggleButton {
+  background: #26d07c;
+  border-color: #26d07c;
+  color: #06281a;
 }
 
 @media screen and (max-width: 800px) {

@@ -1,4 +1,5 @@
 import { BaseSyntheticEvent } from "react";
+import styles from "./Dropdown.module.css";
 
 interface IProps {
   options: string[];
@@ -20,7 +21,7 @@ function Dropdown<U>({
   const handleOnChange = (e: BaseSyntheticEvent) => handleOptionSelectionChange(e.target.value as U);
 
   return (
-    <select value={selectedOption as unknown as string} onChange={handleOnChange}>
+    <select className={styles.select} value={selectedOption as unknown as string} onChange={handleOnChange}>
       {renderOptions()}
     </select>
   );

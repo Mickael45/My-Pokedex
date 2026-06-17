@@ -1,0 +1,31 @@
+/* Pill-shaped, theme-aware native select (Daylight light / Carbon dark). */
+.select {
+  height: 38px;
+  padding: 0 34px 0 16px;
+  border-radius: 999px;
+  border: 1px solid #d7dce6;
+  background-color: #f1f3f8;
+  color: #41485a;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+}
+
+/* Carbon (dark) variant. !important is needed to beat the global
+   `[data-theme="dark"] select { background: ... }` shorthand in App.module.css,
+   which would otherwise reset both the colour and the chevron image. */
+:global([data-theme="dark"]) .select {
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #e8ecf3;
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23aab2c2' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>") !important;
+  background-repeat: no-repeat !important;
+  background-position: right 13px center !important;
+}

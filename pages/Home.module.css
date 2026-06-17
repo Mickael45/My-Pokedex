@@ -6,6 +6,6 @@
 }
 
 .container > :first-child {
-  height: 35px;
+  height: 38px;
   justify-self: end;
 }
