@@ -4,13 +4,13 @@ import { useRouter } from "next/router";
 import * as FilteringTypes from "../../../constants/Types";
 import { TYPE_INTERACTIONS } from "../../../constants/Routes";
 import { usePokemonTypesFromQuery } from "../../../hooks/useQueryParams";
+import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { toTypeSlug } from "../../../utils/typeSlug";
-import pokemonTypesColor from "../../../constants/TypesColor.json";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
+import TypeIcon from "../PokemonType/typeIcons";
 import styles from "./TypePicker.module.css";
 
 const OPTIONS = Object.values(FilteringTypes);
-const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
 interface IProps {
   selected?: string[];
@@ -43,9 +43,10 @@ const TypePicker = ({ selected: selectedProp }: IProps) => {
             key={type}
             type="button"
             className={`${styles.chip} ${selected.includes(type) ? styles.on : ""}`}
-            style={{ "--c": typeColor(type) } as CSSProperties}
+            style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
             onClick={() => toggle(type)}
           >
+            <TypeIcon type={type} className={styles.chipIcon} />
             {capitalizeFirstLetter(type)}
           </button>
         ))}

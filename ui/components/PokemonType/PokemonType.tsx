@@ -1,7 +1,6 @@
 import { type CSSProperties } from "react";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import styles from "./PokemonType.module.css";
-import pokemonTypesColor from "../../../constants/TypesColor.json";
 import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { useRouter } from "next/router";
 import { HOME } from "../../../constants/Routes";
@@ -19,8 +18,6 @@ interface IProps {
 
 const PokemonType = ({ type, children = "", handleTypeClick, variant, selected = false }: IProps) => {
   const router = useRouter();
-  const castedPokemonTypesColor = pokemonTypesColor as HashMap;
-  const color = castedPokemonTypesColor[type];
 
   const handleClick = () =>
     handleTypeClick
@@ -34,7 +31,7 @@ const PokemonType = ({ type, children = "", handleTypeClick, variant, selected =
     return (
       <span
         id="type"
-        style={{ background: color, "--c": color } as CSSProperties}
+        style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
         className={`${styles.filterChip} ${selected ? styles.selected : ""}`}
         data-type={type}
         data-checked={selected}

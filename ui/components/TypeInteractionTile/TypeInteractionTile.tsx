@@ -1,6 +1,8 @@
-import { getPokemonPrimaryTypeColor } from "../../../utils/pokemonFormatter/pokemonFormatter";
+import { type CSSProperties } from "react";
+import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import PokemonType from "../PokemonType/PokemonType";
+import TypeIcon from "../PokemonType/typeIcons";
 import styles from "./TypeInteractionTile.module.css";
 import { QUARTER, ZERO, HALF, ONE, FOUR, TWO } from "../../../constants/DamageFactors";
 
@@ -40,13 +42,19 @@ const TypeInteractionTile = ({ type, typeInteractions }: IProps) => {
 
   const renderTypes = () => damageFactors.map(filterTypeInteractionsByDamageFactor).map(renderTypesCategory);
 
-  const color = getPokemonPrimaryTypeColor(type.split(",").reverse()[0]);
+  const typeNames = type.split(",");
+  const primary = [...typeNames].reverse()[0];
 
   return (
     <div className={styles.container}>
       <details>
-        <summary style={{ borderColor: color, background: color }}>
-          {type.split(",").map(capitalizeFirstLetter).join("/")}
+        <summary
+          style={{ "--c": getTypeColor(primary), "--chip": getTypeChipColor(primary) } as CSSProperties}
+        >
+          {typeNames.map((typeName) => (
+            <TypeIcon key={typeName} type={typeName} className={styles.summaryIcon} />
+          ))}
+          {typeNames.map(capitalizeFirstLetter).join("/")}
         </summary>
         <div id="types-interaction-details">{renderTypes()}</div>
       </details>
