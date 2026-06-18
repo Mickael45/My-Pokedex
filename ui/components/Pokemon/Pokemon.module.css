@@ -53,12 +53,12 @@
   font-size: 10px;
 }
 :global([data-resolution="low res."]) .typeChip {
-  font-size: 9px;
-  padding: 4px 10px 4px 8px;
+  font-size: 8px;
+  padding: 4px 9px 4px 7px;
 }
 :global([data-resolution="low res."]) .typeChipIcon {
-  width: 14px;
-  height: 14px;
+  width: 13px;
+  height: 13px;
 }
 
 /* Pokedex number watermark — top-right, behind the sprite. */
