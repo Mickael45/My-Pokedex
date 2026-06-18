@@ -219,3 +219,22 @@
   text-align: right;
   opacity: 0.95;
 }
+
+/* Mobile scroll-spotlight: the card crossing the viewport center gets the same
+   "pop" as desktop hover. Touch-only — desktop drives this via :hover instead. */
+@media (hover: none) and (pointer: coarse) {
+  .card.cardFocused {
+    transform: translateY(-5px);
+    box-shadow: 0 24px 46px rgba(0, 0, 0, 0.55);
+  }
+  .card.cardFocused .heroImg {
+    transform: scale(1.07) translateY(-4px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card.cardFocused,
+  .card.cardFocused .heroImg {
+    transform: none;
+  }
+}

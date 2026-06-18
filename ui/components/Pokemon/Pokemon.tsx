@@ -1,7 +1,8 @@
-import { memo, useState, type CSSProperties } from "react";
+import { memo, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { getPokemonPrimaryTypeColor } from "../../../utils/pokemonFormatter/pokemonFormatter";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
+import useCenterSpotlight from "../../../hooks/useCenterSpotlight";
 import { formatNumberToMatchLength } from "../../../utils/stringManipulation";
 import { DETAILS } from "../../../constants/Routes";
 import pokemonTypesColor from "../../../constants/TypesColor.json";
@@ -23,6 +24,8 @@ const Pokemon = ({
 }: IBasicPokemon & { priority?: boolean }) => {
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
   const [heroLoaded, setHeroLoaded] = useState(false);
+  const cardRef = useRef<HTMLAnchorElement | null>(null);
+  const isFocused = useCenterSpotlight(cardRef);
 
   // If the image is already complete on mount (preloaded or HTTP-cached), the
   // load event has already fired and onLoad never runs — mark it loaded here.
@@ -53,9 +56,10 @@ const Pokemon = ({
 
   return (
     <Link
+      ref={cardRef}
       href={`${DETAILS}${id}`}
       prefetch
-      className={styles.card}
+      className={`${styles.card} ${isFocused ? styles.cardFocused : ""}`}
       style={{ "--type": cardColor } as CSSProperties}
     >
       <span className={styles.watermark} aria-hidden="true">
