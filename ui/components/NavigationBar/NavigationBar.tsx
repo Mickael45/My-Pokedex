@@ -22,6 +22,7 @@ const SCROLL_HIDE_THRESHOLD = 120;
 const NavigationBar = () => {
   const router = useRouter();
   const [hidden, setHidden] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const isTypeChart = router.pathname === TYPE_INTERACTIONS;
   const isHome = router.pathname === HOME;
@@ -50,6 +51,9 @@ const NavigationBar = () => {
 
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close the mobile options sheet whenever the route changes.
+  useEffect(() => setMenuOpen(false), [router.pathname]);
 
   const navigateHome = () => router.push(HOME);
 
@@ -82,46 +86,106 @@ const NavigationBar = () => {
       </div>
     ) : null;
 
+  // The right-hand cluster (sort · theme · resolution). On desktop it sits inline
+  // in the bar; on mobile it is rendered inside the slide-up options sheet.
+  const renderControls = () => (
+    <>
+      {isHome && <ListSortingDropdown />}
+      <ThemeToggleSwitch />
+      <ResolutionToggleSwitch />
+    </>
+  );
+
   return (
-    <nav className={`${styles.container} ${hidden ? styles.hidden : ""}`}>
-      <div className={styles.bar}>
-        <img className={styles.logo} src="/icons/logo.svg" alt="logo" onClick={navigateHome} />
+    <>
+      <nav className={`${styles.container} ${hidden ? styles.hidden : ""}`}>
+        <div className={styles.bar}>
+          <img className={styles.logo} src="/icons/logo.svg" alt="logo" onClick={navigateHome} />
 
-        <div className={styles.tabs}>
-          <Link href={HOME} className={`${styles.tab} ${!isTypeChart ? styles.tabActive : ""}`}>
-            Pokédex
-          </Link>
-          <Link href={TYPE_INTERACTIONS} className={`${styles.tab} ${isTypeChart ? styles.tabActive : ""}`}>
-            Type Chart
-          </Link>
-        </div>
+          {/* Desktop-only segmented tabs (mobile uses the bottom tab bar). */}
+          <div className={styles.tabs}>
+            <Link href={HOME} className={`${styles.tab} ${!isTypeChart ? styles.tabActive : ""}`}>
+              Pokédex
+            </Link>
+            <Link href={TYPE_INTERACTIONS} className={`${styles.tab} ${isTypeChart ? styles.tabActive : ""}`}>
+              Type Chart
+            </Link>
+          </div>
 
-        <div className={styles.searchWrap}>
-          <SearchInput />
-        </div>
+          <div className={styles.searchWrap}>
+            <SearchInput />
+          </div>
 
-        {showTypeFilter && (
+          {/* Desktop-only type-filter funnel (mobile folds this into the sheet). */}
+          {showTypeFilter && (
+            <button
+              type="button"
+              id={FILTER_ELEMENT_ID}
+              className={styles.filterBtn}
+              onClick={toggleDrawer}
+              aria-label="Filter by type"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+              </svg>
+            </button>
+          )}
+
+          {/* Desktop-only control cluster. */}
+          <div className={styles.controls}>{renderControls()}</div>
+
+          {/* Mobile-only overflow menu trigger. */}
           <button
             type="button"
-            id={FILTER_ELEMENT_ID}
-            className={styles.filterBtn}
-            onClick={toggleDrawer}
-            aria-label="Filter by type"
+            className={`${styles.menuBtn} ${menuOpen ? styles.menuActive : ""}`}
+            onClick={() => setMenuOpen((open) => !open)}
+            aria-label="Options"
+            aria-expanded={menuOpen}
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="5" r="1.6" />
+              <circle cx="12" cy="12" r="1.6" />
+              <circle cx="12" cy="19" r="1.6" />
             </svg>
           </button>
-        )}
+        </div>
+        {renderDrawer()}
+      </nav>
 
-        <div className={styles.controls}>
-          {isHome && <ListSortingDropdown />}
-          <ThemeToggleSwitch />
-          <ResolutionToggleSwitch />
+      {/* Mobile-only options sheet: type filter + sort + theme + resolution. */}
+      <div
+        className={`${styles.sheetOverlay} ${menuOpen ? styles.sheetOpen : ""}`}
+        onClick={() => setMenuOpen(false)}
+      >
+        <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
+          <div className={styles.sheetHandle} />
+          <div className={styles.sheetControls}>{renderControls()}</div>
+          {showTypeFilter && (
+            <div className={styles.sheetFilter}>
+              <p>Filter Pokémon by type</p>
+              <TypesSelector />
+            </div>
+          )}
         </div>
       </div>
-      {renderDrawer()}
-    </nav>
+
+      {/* Mobile-only bottom tab bar. */}
+      <nav className={styles.bottomTabs}>
+        <Link href={HOME} className={`${styles.bottomTab} ${!isTypeChart ? styles.bottomTabActive : ""}`}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="4" width="18" height="16" rx="2" />
+            <path d="M3 10h18" />
+          </svg>
+          Pokédex
+        </Link>
+        <Link href={TYPE_INTERACTIONS} className={`${styles.bottomTab} ${isTypeChart ? styles.bottomTabActive : ""}`}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          Type Chart
+        </Link>
+      </nav>
+    </>
   );
 };
 
