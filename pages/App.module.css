@@ -41,7 +41,10 @@
   font-size: 11px;
 }
 
-.container[data-resolution="low res."] [alt$="pic"] {
+/* Keep pixel sprites crisp when scaled. Match both alt suffixes the app uses
+   for Pokémon art: details/evolution use "…-pic", list cards use "… artwork". */
+.container[data-resolution="low res."] [alt$="pic"],
+.container[data-resolution="low res."] [alt$="artwork"] {
   image-rendering: pixelated;
 }
 
@@ -82,7 +85,8 @@
   font-size: 17px;
 }
 
-.container[data-resolution="high res."] [alt$="pic"] {
+.container[data-resolution="high res."] [alt$="pic"],
+.container[data-resolution="high res."] [alt$="artwork"] {
   image-rendering: crisp-edges;
 }
 

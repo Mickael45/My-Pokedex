@@ -378,6 +378,15 @@
   .eff {
     grid-template-columns: repeat(3, 1fr);
   }
+  /* Stack the evolution line vertically on narrow screens and point the
+     connector downward to match the new flow. */
+  .evo {
+    flex-direction: column;
+  }
+  .evoStep::after {
+    content: "▾";
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 380px) {

@@ -52,10 +52,7 @@ const Header = ({
       <meta name="twitter:image" content={ogImage} />
 
       <meta name="theme-color" content="#b91c1c" />
-      <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
-      <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
-      <link rel="apple-touch-icon" href="/icons/icon-512.png" />
-      <link rel="manifest" href="/site.webmanifest" />
+      <link rel="icon" href="/surprised-pikachu.png" />
 
       <link rel="preload" href="/fonts/pixelPokemonFont.ttf" as="font" crossOrigin="" />
       <link rel="preload" href="/fonts/hdPokemonFont.woff" as="font" crossOrigin="" />

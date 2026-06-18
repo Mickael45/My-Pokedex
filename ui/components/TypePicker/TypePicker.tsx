@@ -1,4 +1,4 @@
-import { type CSSProperties } from "react";
+import { useEffect, type CSSProperties } from "react";
 import { useRouter } from "next/router";
 
 import * as FilteringTypes from "../../../constants/Types";
@@ -23,13 +23,25 @@ const TypePicker = ({ selected: selectedProp }: IProps) => {
   const querySelected = usePokemonTypesFromQuery().split(",").filter(Boolean);
   const selected = selectedProp ?? querySelected;
 
-  const toggle = (type: string) => {
+  // The destination each chip navigates to (toggle in/out, cap at two).
+  const hrefFor = (type: string) => {
     const next = selected.includes(type)
       ? selected.filter((current) => current !== type)
       : [...selected, type].slice(-2);
 
-    router.push(next.length ? `${TYPE_INTERACTIONS}/${toTypeSlug(next)}` : TYPE_INTERACTIONS);
+    return next.length ? `${TYPE_INTERACTIONS}/${toTypeSlug(next)}` : TYPE_INTERACTIONS;
   };
+
+  // The combo pages are pre-rendered at build time, but a chip tap was still
+  // waiting on their page-data + shared chunk to download on the click itself.
+  // Warm every reachable target up front (and again when the selection changes)
+  // so the navigation is instant. router.prefetch is a no-op in dev.
+  useEffect(() => {
+    OPTIONS.forEach((type) => router.prefetch(hrefFor(type)));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected.join(",")]);
+
+  const toggle = (type: string) => router.push(hrefFor(type));
 
   return (
     <div className={styles.picker}>

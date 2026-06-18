@@ -310,6 +310,15 @@
 :global([data-theme="dark"]) .bottomTabActive {
   color: #ffcc33;
 }
+/* Light mode: both bottom tabs carry the Pokédex-logo blue (the active one a
+   touch deeper). Scoped through .bottomTabs so they out-specify the global
+   `[data-theme="light"] a` link colour that would otherwise paint them red. */
+:global([data-theme="light"]) .bottomTabs .bottomTab {
+  color: #6f8cc9;
+}
+:global([data-theme="light"]) .bottomTabs .bottomTabActive {
+  color: #376db9;
+}
 .bottomTabActive::before {
   content: "";
   position: absolute;
@@ -329,6 +338,20 @@
   cursor: pointer;
   padding: 4px 6px;
   white-space: nowrap;
+}
+
+/* Pin the navigation chrome to one fixed font in BOTH resolution modes. The
+   global `[data-resolution="low res."] *` rule swaps the whole app to the much
+   wider pixel font; letting it reach the bar/sheet/tab-bar made their items jump
+   width when toggling pixel/HD. Element-qualified selectors (nav./div.) lift the
+   specificity just above that universal rule so the nav font never changes. */
+:global([data-resolution]) nav.container,
+:global([data-resolution]) nav.container *,
+:global([data-resolution]) div.sheetOverlay,
+:global([data-resolution]) div.sheetOverlay *,
+:global([data-resolution]) nav.bottomTabs,
+:global([data-resolution]) nav.bottomTabs * {
+  font-family: "HdPokemonFont", arial, sans-serif;
 }
 
 @media screen and (max-width: 900px) {

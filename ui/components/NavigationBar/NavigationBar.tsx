@@ -27,7 +27,10 @@ const NavigationBar = () => {
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
-  const isTypeChart = router.pathname === TYPE_INTERACTIONS;
+  // Also true on the per-combo pages (/type-interactions/[combo]) so the tab
+  // stays highlighted after picking a type.
+  const isTypeChart =
+    router.pathname === TYPE_INTERACTIONS || router.pathname.startsWith(`${TYPE_INTERACTIONS}/`);
   const isHome = router.pathname === HOME;
   const showTypeFilter = !isTypeChart;
 
