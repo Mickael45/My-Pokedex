@@ -19,6 +19,7 @@ import { getTypeColor, getTypeChipColor } from "../../utils/typeColors";
 import TypeIcon from "../../ui/components/PokemonType/typeIcons";
 import { capitalizeFirstLetter, formatNumberToMatchLength } from "../../utils/stringManipulation";
 import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsString } from "../../utils/unitConverter";
+import { breadcrumbJsonLd } from "../../utils/structuredData";
 
 const MAX_STAT_VALUE = 200;
 const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5", 1: "1", 2: "2", 4: "4" };
@@ -90,8 +91,18 @@ const DetailsPage = ({
   return (
     <>
       <Header
-        title={`${capitalizeFirstLetter(name)} — Pokédex`}
-        description={`Stats, types, type effectiveness and evolutions for ${capitalizeFirstLetter(name)}.`}
+        title={`${capitalizeFirstLetter(name)} (#${formatNumberToMatchLength(id)}) — Stats, Types, Weaknesses & Evolution | Pokédex`}
+        description={`${capitalizeFirstLetter(name)} is a ${types
+          .split(",")
+          .map(capitalizeFirstLetter)
+          .join("/")}-type Pokémon (#${formatNumberToMatchLength(id)}). See base stats, type weaknesses and resistances, abilities, and its full evolution line.`}
+        canonicalPath={`/details/${id}`}
+        image={hdImageUrl}
+        ogType="article"
+        jsonLd={breadcrumbJsonLd([
+          { name: "Pokédex", path: "/" },
+          { name: capitalizeFirstLetter(name), path: `/details/${id}` },
+        ])}
       />
       <ErrorScreenWrapper>
         <LoadingScreenWrapper>
@@ -140,7 +151,7 @@ const DetailsPage = ({
                   </div>
                 </div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className={styles.heroImg} src={imageUrl} alt={`${name}-pic`} />
+                <img className={styles.heroImg} src={imageUrl} alt={`${capitalizeFirstLetter(name)} official artwork`} />
               </header>
 
               <div className={styles.panes}>

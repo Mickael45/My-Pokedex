@@ -180,3 +180,22 @@
     padding: 5px 6px;
   }
 }
+
+.pageTitle {
+  margin: 4px 0 0;
+  font-weight: bold;
+  font-size: 26px;
+  color: var(--ink);
+}
+
+.intro {
+  color: var(--ink-dim);
+  font-size: 14px;
+  line-height: 1.55;
+  max-width: 70ch;
+  margin: 10px 0 4px;
+}
+
+:global([data-resolution="high res."]) .intro {
+  font-size: 17px;
+}

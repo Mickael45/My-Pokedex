@@ -25,7 +25,10 @@ const Pokemon = ({
   // Same resolution-aware swap for the pre-evolution badge (called
   // unconditionally to satisfy the rules of hooks; empty when there is none).
   const evoImageUrl = usePokemonPic(evolvesFrom?.pixelImage ?? "", evolvesFrom?.hdImage ?? "");
-  const [heroLoaded, setHeroLoaded] = useState(false);
+  // Above-the-fold heroes start "loaded" so they paint as soon as their bytes
+  // arrive — the opacity:0 → 1 fade is gated on React state, and waiting for
+  // hydration to flip it pushes LCP out to several seconds on mobile.
+  const [heroLoaded, setHeroLoaded] = useState(priority);
   const cardRef = useRef<HTMLAnchorElement | null>(null);
   const isFocused = useCenterSpotlight(cardRef);
 
@@ -71,7 +74,7 @@ const Pokemon = ({
       {evolvesFrom && (
         <span className={styles.evoBadge} title={`Evolves from ${evolvesFrom.name}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={evoImageUrl} alt={`${evolvesFrom.name}-pic`} loading="lazy" />
+          <img src={evoImageUrl} alt={`${evolvesFrom.name} artwork`} loading="lazy" />
         </span>
       )}
 
@@ -81,7 +84,7 @@ const Pokemon = ({
           ref={heroRef}
           className={`${styles.heroImg} ${heroLoaded ? styles.heroImgLoaded : ""}`}
           src={imageUrl}
-          alt={`${name}-pic`}
+          alt={`${name} artwork`}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           onLoad={() => setHeroLoaded(true)}

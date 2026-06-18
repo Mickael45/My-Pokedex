@@ -22,8 +22,8 @@
   display: block;
 }
 .iconFlip[data-on="true"] {
-  border-color: #e3350d;
-  color: #e3350d;
+  border-color: #3399ff;
+  color: #3399ff;
 }
 
 :global([data-theme="dark"]) .iconFlip {
@@ -32,6 +32,6 @@
   color: #cfd6e4;
 }
 :global([data-theme="dark"]) .iconFlip[data-on="true"] {
-  border-color: #26d07c;
-  color: #26d07c;
+  border-color: #ffcc33;
+  color: #ffcc33;
 }
