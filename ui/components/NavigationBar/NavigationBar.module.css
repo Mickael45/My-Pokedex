@@ -106,12 +106,12 @@
   color: #cfd6e4;
 }
 :global([data-theme="light"]) .filterActive {
-  border-color: #e3350d;
-  color: #e3350d;
+  border-color: #3399ff;
+  color: #3399ff;
 }
 :global([data-theme="dark"]) .filterActive {
-  border-color: #26d07c;
-  color: #26d07c;
+  border-color: #ffcc33;
+  color: #ffcc33;
 }
 
 /* The right-hand control cluster. */
@@ -185,12 +185,12 @@
   color: #cfd6e4;
 }
 :global([data-theme="light"]) .menuActive {
-  border-color: #e3350d;
-  color: #e3350d;
+  border-color: #3399ff;
+  color: #3399ff;
 }
 :global([data-theme="dark"]) .menuActive {
-  border-color: #26d07c;
-  color: #26d07c;
+  border-color: #ffcc33;
+  color: #ffcc33;
 }
 
 /* Slide-up options sheet (dimmed backdrop + bottom card). */
@@ -213,12 +213,18 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: #ffffff;
   border-radius: 22px 22px 0 0;
   padding: 10px 20px calc(20px + env(safe-area-inset-bottom));
   box-shadow: 0 -10px 30px rgba(20, 30, 60, 0.25);
-  border-top: 2px solid transparent;
-  border-image: linear-gradient(90deg, #ff4422, #3399ff, #ffcc33) 1;
+  /* Gradient top border that follows the rounded corners. border-image ignores
+     border-radius (it left the line straight while the sheet was curved), so
+     paint it via layered backgrounds instead: solid fill clipped to the
+     padding-box over the gradient clipped to the border-box. */
+  border: solid transparent;
+  border-width: 2px 0 0 0;
+  background:
+    linear-gradient(#ffffff, #ffffff) padding-box,
+    linear-gradient(90deg, #ff4422, #3399ff, #ffcc33) border-box;
   transform: translateY(100%);
   transition: transform 0.3s ease;
 }
@@ -226,7 +232,9 @@
   transform: translateY(0);
 }
 :global([data-theme="dark"]) .sheet {
-  background: #121620;
+  background:
+    linear-gradient(#121620, #121620) padding-box,
+    linear-gradient(90deg, #ff4422, #3399ff, #ffcc33) border-box;
 }
 .sheetHandle {
   width: 42px;
@@ -297,10 +305,10 @@
 }
 .bottomTabActive {
   position: relative;
-  color: #e3350d;
+  color: #3399ff;
 }
 :global([data-theme="dark"]) .bottomTabActive {
-  color: #26d07c;
+  color: #ffcc33;
 }
 .bottomTabActive::before {
   content: "";
