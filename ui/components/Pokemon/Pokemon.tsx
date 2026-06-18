@@ -59,7 +59,7 @@ const Pokemon = ({
       ref={cardRef}
       href={`${DETAILS}${id}`}
       prefetch
-      className={`${styles.card} ${isFocused ? styles.cardFocused : ""}`}
+      className={isFocused ? `${styles.card} ${styles.cardFocused}` : styles.card}
       style={{ "--type": cardColor } as CSSProperties}
     >
       <span className={styles.watermark} aria-hidden="true">

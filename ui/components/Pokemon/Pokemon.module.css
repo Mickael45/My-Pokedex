@@ -233,7 +233,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card.cardFocused,
+  .card.cardFocused {
+    transform: none;
+    /* Reset the shadow too — a shadow fade as the card crosses center is still
+       a "pop", which opt-out users shouldn't get. */
+    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45);
+  }
   .card.cardFocused .heroImg {
     transform: none;
   }
