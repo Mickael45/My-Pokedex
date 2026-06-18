@@ -4,6 +4,7 @@ import styles from "./TypeInteractions.module.css";
 import Header from "../../ui/components/Header/Header";
 import TypePicker from "../../ui/components/TypePicker/TypePicker";
 import TypeMatchups from "../../ui/components/TypeMatchups/TypeMatchups";
+import TypeIntro from "../../ui/components/TypeMatchups/TypeIntro";
 import Page from "../../ui/templates/Page/Page";
 import { allTypeSlugs, parseTypeSlug } from "../../utils/typeSlug";
 import { breadcrumbJsonLd } from "../../utils/structuredData";
@@ -32,6 +33,7 @@ const ComboPage = ({ combo, types }: IProps) => {
       />
       <Page>
         <div className={styles.container}>
+          <TypeIntro selected={types} />
           <TypePicker selected={types} />
           <TypeMatchups selected={types} />
         </div>

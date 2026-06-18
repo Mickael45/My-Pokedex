@@ -4,6 +4,7 @@ import styles from "./TypeInteractions.module.css";
 import Header from "../../ui/components/Header/Header";
 import TypePicker from "../../ui/components/TypePicker/TypePicker";
 import TypeMatchups from "../../ui/components/TypeMatchups/TypeMatchups";
+import TypeIntro from "../../ui/components/TypeMatchups/TypeIntro";
 import Page from "../../ui/templates/Page/Page";
 import { usePokemonTypesFromQuery } from "../../hooks/useQueryParams";
 import { toTypeSlug } from "../../utils/typeSlug";
@@ -26,6 +27,7 @@ const TypeInteractionsPage = () => {
       />
       <Page>
         <div className={styles.container}>
+          <TypeIntro selected={selected} />
           <TypePicker selected={selected} />
           <TypeMatchups selected={selected} />
         </div>
