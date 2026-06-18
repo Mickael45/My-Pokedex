@@ -320,6 +320,17 @@
   background: currentColor;
 }
 
+.cookieBtn {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 12px;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 4px 6px;
+  white-space: nowrap;
+}
+
 @media screen and (max-width: 900px) {
   .logo {
     height: 30px;

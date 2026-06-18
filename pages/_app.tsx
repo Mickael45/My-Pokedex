@@ -11,7 +11,10 @@ import ResolutionContext from "../context/ResolutionContext";
 import ThemeContext from "../context/ThemeContext";
 import usePokemons from "../hooks/usePokemons";
 import NavigationBar from "../ui/components/NavigationBar/NavigationBar";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import ConsentContext from "../context/ConsentContext";
+import useConsent from "../hooks/useConsent";
+import ConsentScripts from "../ui/components/ConsentScripts/ConsentScripts";
+import CookieConsentBanner from "../ui/components/CookieConsentBanner/CookieConsentBanner";
 
 const App = ({ Component, pageProps }: AppProps) => {
   const [filteredPokemons, pokemons, setPokemons] = usePokemons();
@@ -19,10 +22,11 @@ const App = ({ Component, pageProps }: AppProps) => {
   const [resolution, setResolution] = useState<RESOLUTION>(LOW_RESOLUTION);
   const [theme, setTheme] = useState<THEME>(LIGHT);
   const [error, setError] = useState<ErrorType | null>(null);
+  const { consent, setConsent } = useConsent();
 
   return (
-    <>
-      <GoogleAnalytics gaId="G-6FS0YBDE8T" />
+    <ConsentContext.Provider value={{ consent, setConsent }}>
+      <ConsentScripts />
       <div data-resolution={resolution} className={styles.container} data-theme={theme}>
         <ResolutionContext.Provider value={{ resolution, setResolution }}>
           <ThemeContext.Provider value={{ theme, setTheme }}>
@@ -34,6 +38,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                     <main>
                       <Component {...pageProps} />
                     </main>
+                    <CookieConsentBanner />
                   </>
                 </PokemonContext.Provider>
               </LoadingContext.Provider>
@@ -41,7 +46,7 @@ const App = ({ Component, pageProps }: AppProps) => {
           </ThemeContext.Provider>
         </ResolutionContext.Provider>
       </div>
-    </>
+    </ConsentContext.Provider>
   );
 };
 

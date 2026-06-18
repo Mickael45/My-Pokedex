@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
@@ -14,6 +14,8 @@ import styles from "./NavigationBar.module.css";
 import ResolutionToggleSwitch from "../ResolutionToggleSwitch/ResolutionToggleSwitch";
 import ThemeToggleSwitch from "../ThemeToggleSwitch/ThemeToggleSwitch";
 import { HOME, TYPE_INTERACTIONS } from "../../../constants/Routes";
+import ConsentContext from "../../../context/ConsentContext";
+import { UNSET } from "../../../constants/Consent";
 
 const DRAWER_ELEMENT_ID = "drawerElementId";
 const FILTER_ELEMENT_ID = "filterButtonId";
@@ -21,6 +23,7 @@ const SCROLL_HIDE_THRESHOLD = 120;
 
 const NavigationBar = () => {
   const router = useRouter();
+  const { setConsent } = useContext(ConsentContext);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -95,6 +98,13 @@ const NavigationBar = () => {
         <ThemeToggleSwitch />
         <ResolutionToggleSwitch />
       </div>
+      <button
+        type="button"
+        className={styles.cookieBtn}
+        onClick={() => setConsent(UNSET)}
+      >
+        Cookie settings
+      </button>
     </>
   );
 
