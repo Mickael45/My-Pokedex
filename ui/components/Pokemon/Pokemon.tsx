@@ -23,6 +23,9 @@ const Pokemon = ({
   priority = false,
 }: IBasicPokemon & { priority?: boolean }) => {
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
+  // Same resolution-aware swap for the pre-evolution badge (called
+  // unconditionally to satisfy the rules of hooks; empty when there is none).
+  const evoImageUrl = usePokemonPic(evolvesFrom?.pixelImage ?? "", evolvesFrom?.hdImage ?? "");
   const [heroLoaded, setHeroLoaded] = useState(false);
   const cardRef = useRef<HTMLAnchorElement | null>(null);
   const isFocused = useCenterSpotlight(cardRef);
@@ -69,7 +72,7 @@ const Pokemon = ({
       {evolvesFrom && (
         <span className={styles.evoBadge} title={`Evolves from ${evolvesFrom.name}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={evolvesFrom.image} alt={`${evolvesFrom.name}-pic`} loading="lazy" />
+          <img src={evoImageUrl} alt={`${evolvesFrom.name}-pic`} loading="lazy" />
         </span>
       )}
 
