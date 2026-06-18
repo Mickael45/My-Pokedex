@@ -328,8 +328,4 @@
   .bottomTabs {
     display: flex;
   }
-  /* Keep page content clear of the fixed bottom tab bar. */
-  :global(body) {
-    padding-bottom: calc(60px + env(safe-area-inset-bottom));
-  }
 }

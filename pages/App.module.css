@@ -3,6 +3,15 @@
   padding-bottom: 20px;
 }
 
+/* Reserve room for the fixed mobile bottom tab bar on the page container itself
+   (not on <body>) so the dotted background fills the reserved strip — otherwise a
+   bare white band shows below the grid. */
+@media screen and (max-width: 800px) {
+  .container {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  }
+}
+
 .container[id="loading-screen"],
 .container[id="error-screen"] {
   background: rgba(236, 236, 236);
