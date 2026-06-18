@@ -1,4 +1,4 @@
-import { memo, type CSSProperties } from "react";
+import { memo, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { getPokemonPrimaryTypeColor } from "../../../utils/pokemonFormatter/pokemonFormatter";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
@@ -13,6 +13,7 @@ const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#88
 
 const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFrom }: IBasicPokemon) => {
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
+  const [heroLoaded, setHeroLoaded] = useState(false);
 
   const typeList = types.split(",");
   const cardColor = getPokemonPrimaryTypeColor(types);
@@ -53,8 +54,16 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
         </span>
       )}
 
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img className={styles.heroImg} src={imageUrl} alt={`${name}-pic`} loading="lazy" />
+      <span className={`${styles.heroWrap} ${heroLoaded ? styles.heroWrapLoaded : ""}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          className={`${styles.heroImg} ${heroLoaded ? styles.heroImgLoaded : ""}`}
+          src={imageUrl}
+          alt={`${name}-pic`}
+          loading="lazy"
+          onLoad={() => setHeroLoaded(true)}
+        />
+      </span>
 
       <div className={styles.head}>
         {/* Plain span (not a heading) so the global high-res heading sizes can't
