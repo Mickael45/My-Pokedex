@@ -153,15 +153,183 @@
   transition: all 0.5s ease-out;
 }
 
+/* =====================================================================
+   Mobile-only chrome (overflow menu trigger, options sheet, bottom tabs).
+   Hidden on desktop; switched on inside the max-width media query below.
+   ===================================================================== */
+.menuBtn {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  background: #f1f3f8;
+  border: 1px solid #d7dce6;
+  color: #6b7280;
+}
+:global([data-theme="dark"]) .menuBtn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #cfd6e4;
+}
+:global([data-theme="light"]) .menuActive {
+  border-color: #e3350d;
+  color: #e3350d;
+}
+:global([data-theme="dark"]) .menuActive {
+  border-color: #26d07c;
+  color: #26d07c;
+}
+
+/* Slide-up options sheet (dimmed backdrop + bottom card). */
+.sheetOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(10, 14, 22, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.sheetOpen {
+  opacity: 1;
+  pointer-events: auto;
+}
+.sheet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ffffff;
+  border-radius: 22px 22px 0 0;
+  padding: 10px 20px calc(20px + env(safe-area-inset-bottom));
+  box-shadow: 0 -10px 30px rgba(20, 30, 60, 0.25);
+  border-top: 2px solid transparent;
+  border-image: linear-gradient(90deg, #ff4422, #3399ff, #ffcc33) 1;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+}
+.sheetOpen .sheet {
+  transform: translateY(0);
+}
+:global([data-theme="dark"]) .sheet {
+  background: #121620;
+}
+.sheetHandle {
+  width: 42px;
+  height: 4px;
+  border-radius: 999px;
+  background: #d7dce6;
+  margin: 2px auto 16px;
+}
+:global([data-theme="dark"]) .sheetHandle {
+  background: rgba(255, 255, 255, 0.2);
+}
+.sheetControls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+.sheetFilter {
+  display: grid;
+  justify-items: center;
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid #e1e5ee;
+}
+:global([data-theme="dark"]) .sheetFilter {
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+.sheetFilter > p {
+  margin: 0 0 12px;
+  font-weight: bold;
+  color: #2b2f3a;
+}
+:global([data-theme="dark"]) .sheetFilter > p {
+  color: #fff;
+}
+
+/* Fixed bottom tab bar. */
+.bottomTabs {
+  display: none;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  height: calc(60px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: #ffffff;
+  border-top: 1px solid #e1e5ee;
+  box-shadow: 0 -6px 20px rgba(20, 30, 60, 0.08);
+}
+:global([data-theme="dark"]) .bottomTabs {
+  background: #121620;
+  border-top-color: rgba(255, 255, 255, 0.1);
+}
+.bottomTab {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #9aa3b2;
+}
+:global([data-theme="dark"]) .bottomTab {
+  color: #8b94a8;
+}
+.bottomTabActive {
+  position: relative;
+  color: #e3350d;
+}
+:global([data-theme="dark"]) .bottomTabActive {
+  color: #26d07c;
+}
+.bottomTabActive::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 34px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
+}
+
 @media screen and (max-width: 800px) {
-  .bar {
-    flex-wrap: wrap;
-  }
   .logo {
     height: 30px;
   }
+  /* Search-first single row: logo · search · overflow menu. */
+  .tabs,
+  .filterBtn,
+  .controls {
+    display: none;
+  }
   .searchWrap {
-    order: 5;
-    flex-basis: 100%;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .menuBtn {
+    display: inline-flex;
+  }
+  .sheetOverlay {
+    display: block;
+  }
+  .bottomTabs {
+    display: flex;
+  }
+  /* Keep page content clear of the fixed bottom tab bar. */
+  :global(body) {
+    padding-bottom: calc(60px + env(safe-area-inset-bottom));
   }
 }
