@@ -4,9 +4,10 @@
   "private": true,
   "scripts": {
     "images": "node scripts/downloadPokemonImages.mjs",
-    "predev": "node scripts/downloadPokemonImages.mjs",
+    "sitemap": "node scripts/generateSitemap.mjs",
+    "predev": "node scripts/downloadPokemonImages.mjs && node scripts/generateSitemap.mjs",
     "dev": "next dev --turbopack",
-    "prebuild": "node scripts/downloadPokemonImages.mjs",
+    "prebuild": "node scripts/downloadPokemonImages.mjs && node scripts/generateSitemap.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
