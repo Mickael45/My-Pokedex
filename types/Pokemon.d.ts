@@ -91,7 +91,8 @@ declare global {
   export type PokemonCardStats = [number, number, number, number];
   export interface IEvolvesFrom {
     name: string;
-    image: string;
+    pixelImage: string;
+    hdImage: string;
   }
   export interface ITypeEffectiveness {
     type: string;

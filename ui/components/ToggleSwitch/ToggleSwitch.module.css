@@ -1,104 +1,14 @@
-.container {
-  display: grid;
-  align-content: center;
-  align-items: center;
-  overflow: hidden;
-}
-
-.toggle {
-  display: none;
-}
-
-/* Pill-shaped, theme-aware toggle (Daylight light / Carbon dark). Keeps the
-   sliding single-label behaviour; the active (checked) state gets an accent. */
-.toggleButton {
-  position: relative;
-  display: block;
-  width: 150px;
-  height: 34px;
-  border-radius: 999px;
-  overflow: hidden;
-  cursor: pointer;
-  user-select: none;
-  backface-visibility: hidden;
-  transition: all 0.2s ease;
-  background: #f1f3f8;
-  border: 1px solid #d7dce6;
-  color: #41485a;
-  font-weight: bold;
-}
-
-.toggleButton:after,
-.toggleButton:before {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-  font-weight: bold;
-}
-
-.toggleButton:after {
-  left: 100%;
-  content: attr(data-tg-on);
-}
-
-.toggleButton:before {
-  left: 0;
-  content: attr(data-tg-off);
-}
-
-.toggleButton:active:before {
-  left: -10%;
-}
-
-.toggle:checked + .toggleButton {
-  background: #e3350d;
-  border-color: #e3350d;
-  color: #fff;
-}
-
-.toggle:checked + .toggleButton:before {
-  left: -100%;
-}
-
-.toggle:checked + .toggleButton:after {
-  left: 0;
-}
-
-.toggle:checked + .toggleButton:active:after {
-  left: 10%;
-}
-
-/* Carbon (dark) variant. */
-:global([data-theme="dark"]) .toggleButton {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.14);
-  color: #cfd6e4;
-}
-
-:global([data-theme="dark"]) .toggle:checked + .toggleButton {
-  background: #26d07c;
-  border-color: #26d07c;
-  color: #06281a;
-}
-
-/* ---------------------------------------------------------------------------
-   Mobile: hide the text pill (its labels clip when squeezed) and show a round
-   icon flip-button instead. Accent follows the theme: red Daylight, green Carbon.
-   --------------------------------------------------------------------------- */
-.iconFlipWrap {
-  display: none;
-}
+/* Round icon flip-button used for theme & resolution, on every screen size.
+   Sized to match the type-filter funnel button (36x36). Accent follows the
+   active theme: red in Daylight, green in Carbon. */
 .iconFlip {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   border-radius: 999px;
   cursor: pointer;
   background: #f1f3f8;
@@ -107,19 +17,13 @@
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 }
 .iconFlip svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   display: block;
 }
 .iconFlip[data-on="true"] {
-  border-color: #e3350d;
-  color: #e3350d;
-}
-.iconFlipCap {
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: capitalize;
-  color: #6b7280;
+  border-color: #3399ff;
+  color: #3399ff;
 }
 
 :global([data-theme="dark"]) .iconFlip {
@@ -128,21 +32,6 @@
   color: #cfd6e4;
 }
 :global([data-theme="dark"]) .iconFlip[data-on="true"] {
-  border-color: #26d07c;
-  color: #26d07c;
-}
-:global([data-theme="dark"]) .iconFlipCap {
-  color: #8b94a8;
-}
-
-@media screen and (max-width: 800px) {
-  .toggle,
-  .toggleButton {
-    display: none;
-  }
-  .iconFlipWrap {
-    display: grid;
-    justify-items: center;
-    gap: 6px;
-  }
+  border-color: #ffcc33;
+  color: #ffcc33;
 }

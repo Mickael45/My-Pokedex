@@ -11,7 +11,6 @@ import EmptyListPlaceholder from "../ui/components/EmptyListPlaceholder/EmptyLis
 import Header from "../ui/components/Header/Header";
 import Pokemon from "../ui/components/Pokemon/Pokemon";
 import ErrorScreenWrapper from "../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
-import LoadingScreenWrapper from "../ui/components/Wrappers/LoadingScreenWrapper/LoadingScreenWrapper";
 import FlexboxList from "../ui/templates/FlexboxList/FlexboxList";
 import Page from "../ui/templates/Page/Page";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../constants/Seo";
@@ -27,9 +26,15 @@ const ABOVE_THE_FOLD = 6;
 const HomePage = ({ pokemons }: IProps) => {
   const filteredPokemons = useFiltering();
   const { resolution } = useContext(ResolutionContext);
-  const { setPokemons } = useContext(PokemonContext);
+  const { setPokemons, pokemons: ctxPokemons } = useContext(PokemonContext);
   const { setLoading, loading } = useContext(LoadingContext);
   const [numberOfPokemonShown, setNumberOfPokemonShown] = useState(POKEMON_STACK_SIZE);
+
+  // The context is seeded client-side (useEffect below), so on the server and the
+  // first client render it's empty. Fall back to the SSG `pokemons` prop so the
+  // first cards — including the LCP hero image — are in the server HTML and paint
+  // without waiting for hydration. Once seeded, defer to the filtered list.
+  const listSource = ctxPokemons.length ? filteredPokemons : pokemons;
 
   const incrementNumberOfPokemonShown = () => setNumberOfPokemonShown(numberOfPokemonShown + POKEMON_STACK_SIZE);
 
@@ -39,9 +44,9 @@ const HomePage = ({ pokemons }: IProps) => {
     <Pokemon key={pokemon.id} priority={index < ABOVE_THE_FOLD} {...pokemon} />
   );
 
-  const renderPokemons = () => filteredPokemons.slice(0, numberOfPokemonShown).map(renderPokemon);
+  const renderPokemons = () => listSource.slice(0, numberOfPokemonShown).map(renderPokemon);
 
-  const areThereMorePokemonsToShow = () => numberOfPokemonShown >= filteredPokemons.length;
+  const areThereMorePokemonsToShow = () => numberOfPokemonShown >= listSource.length;
 
   const updatePokemons = () => {
     if (pokemons) {
@@ -59,7 +64,7 @@ const HomePage = ({ pokemons }: IProps) => {
     });
   }, [filteredPokemons, resolution]);
 
-  if (!filteredPokemons.length && !loading) {
+  if (!listSource.length && !loading) {
     return <EmptyListPlaceholder text="No Pokemon Found..." />;
   }
 
@@ -72,15 +77,15 @@ const HomePage = ({ pokemons }: IProps) => {
         jsonLd={[websiteJsonLd(), organizationJsonLd()]}
       />
       <ErrorScreenWrapper>
-        <LoadingScreenWrapper>
-          <Page>
-            <div className={styles.container}>
-              <FlexboxList hasReachedEnd={areThereMorePokemonsToShow()} showMore={incrementNumberOfPokemonShown}>
-                {renderPokemons()}
-              </FlexboxList>
-            </div>
-          </Page>
-        </LoadingScreenWrapper>
+        {/* No loading gate here: the home page is SSG, so the cards (and the LCP
+            hero image) are available immediately and must be server-rendered. */}
+        <Page>
+          <div className={styles.container}>
+            <FlexboxList hasReachedEnd={areThereMorePokemonsToShow()} showMore={incrementNumberOfPokemonShown}>
+              {renderPokemons()}
+            </FlexboxList>
+          </div>
+        </Page>
       </ErrorScreenWrapper>
     </>
   );

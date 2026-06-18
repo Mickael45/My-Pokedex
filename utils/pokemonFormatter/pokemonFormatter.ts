@@ -143,7 +143,9 @@ export const formatEvolvesFrom = (species: Specie): IEvolvesFrom | null => {
     return null;
   }
 
-  return { name: evolvesFrom.name, image: createImageUrl(extractIdFromUrl(evolvesFrom.url)) };
+  const id = extractIdFromUrl(evolvesFrom.url);
+
+  return { name: evolvesFrom.name, pixelImage: createImageUrl(id), hdImage: createImageUrl(id, BASIC_PIC) };
 };
 
 export const formatToFullPokemon = (

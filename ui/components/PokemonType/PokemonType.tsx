@@ -2,6 +2,7 @@ import { type CSSProperties } from "react";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import styles from "./PokemonType.module.css";
 import pokemonTypesColor from "../../../constants/TypesColor.json";
+import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { useRouter } from "next/router";
 import { HOME } from "../../../constants/Routes";
 import TypeIcon from "./typeIcons";
@@ -48,11 +49,12 @@ const PokemonType = ({ type, children = "", handleTypeClick, variant, selected =
   return (
     <span
       id="type"
-      style={{ background: color }}
+      style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
       className={styles.typeContainer}
       data-type={type}
       onClick={handleClick}
     >
+      <TypeIcon type={type} className={styles.typeIcon} />
       {capitalizeFirstLetter(type)}
       {children}
     </span>

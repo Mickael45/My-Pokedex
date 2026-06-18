@@ -1,15 +1,15 @@
-import { memo, useState, type CSSProperties } from "react";
+import { memo, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { getPokemonPrimaryTypeColor } from "../../../utils/pokemonFormatter/pokemonFormatter";
+import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
+import useCenterSpotlight from "../../../hooks/useCenterSpotlight";
 import { formatNumberToMatchLength } from "../../../utils/stringManipulation";
 import { DETAILS } from "../../../constants/Routes";
-import pokemonTypesColor from "../../../constants/TypesColor.json";
+import TypeIcon from "../PokemonType/typeIcons";
 import styles from "./Pokemon.module.css";
 
 const MAX_STAT_VALUE = 255;
-
-const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
 const Pokemon = ({
   name,
@@ -22,7 +22,15 @@ const Pokemon = ({
   priority = false,
 }: IBasicPokemon & { priority?: boolean }) => {
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
-  const [heroLoaded, setHeroLoaded] = useState(false);
+  // Same resolution-aware swap for the pre-evolution badge (called
+  // unconditionally to satisfy the rules of hooks; empty when there is none).
+  const evoImageUrl = usePokemonPic(evolvesFrom?.pixelImage ?? "", evolvesFrom?.hdImage ?? "");
+  // Above-the-fold heroes start "loaded" so they paint as soon as their bytes
+  // arrive — the opacity:0 → 1 fade is gated on React state, and waiting for
+  // hydration to flip it pushes LCP out to several seconds on mobile.
+  const [heroLoaded, setHeroLoaded] = useState(priority);
+  const cardRef = useRef<HTMLAnchorElement | null>(null);
+  const isFocused = useCenterSpotlight(cardRef);
 
   // If the image is already complete on mount (preloaded or HTTP-cached), the
   // load event has already fired and onLoad never runs — mark it loaded here.
@@ -53,9 +61,10 @@ const Pokemon = ({
 
   return (
     <Link
+      ref={cardRef}
       href={`${DETAILS}${id}`}
       prefetch
-      className={styles.card}
+      className={isFocused ? `${styles.card} ${styles.cardFocused}` : styles.card}
       style={{ "--type": cardColor } as CSSProperties}
     >
       <span className={styles.watermark} aria-hidden="true">
@@ -65,11 +74,11 @@ const Pokemon = ({
       {evolvesFrom && (
         <span className={styles.evoBadge} title={`Evolves from ${evolvesFrom.name}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={evolvesFrom.image} alt={`${evolvesFrom.name} artwork`} loading="lazy" />
+          <img src={evoImageUrl} alt={`${evolvesFrom.name} artwork`} loading="lazy" />
         </span>
       )}
 
-      <span className={`${styles.heroWrap} ${heroLoaded ? styles.heroWrapLoaded : ""}`}>
+      <span className={styles.heroWrap}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           ref={heroRef}
@@ -94,7 +103,12 @@ const Pokemon = ({
       <div className={styles.glass}>
         <div className={styles.types}>
           {typeList.map((type) => (
-            <span key={type} className={styles.typeChip} style={{ background: typeColor(type) }}>
+            <span
+              key={type}
+              className={styles.typeChip}
+              style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
+            >
+              <TypeIcon type={type} className={styles.typeChipIcon} />
               {type}
             </span>
           ))}

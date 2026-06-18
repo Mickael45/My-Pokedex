@@ -14,6 +14,9 @@ const isTouchDevice = (): boolean =>
 // Used to mirror the desktop hover "pop" as the user scrolls the list.
 const useCenterSpotlight = (ref: RefObject<Element | null>): boolean => {
   // Evaluated once after mount (avoids SSR/client mismatch and desktop work).
+  // Not reactive to mid-session input changes (e.g. attaching a keyboard to a
+  // tablet) — touch-capability rarely flips while browsing, so a listener isn't
+  // worth the cost.
   const [touch, setTouch] = useState(false);
   useEffect(() => setTouch(isTouchDevice()), []);
 

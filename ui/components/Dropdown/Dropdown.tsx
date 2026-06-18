@@ -3,11 +3,13 @@ import styles from "./Dropdown.module.css";
 
 interface IProps {
   options: string[];
+  label: string;
 }
 
 function Dropdown<U>({
   selectedOption,
   options,
+  label,
   handleOptionSelectionChange,
 }: IProps & { handleOptionSelectionChange: (option: U) => void; selectedOption: U }) {
   const renderOption = (option: string) => (
@@ -21,7 +23,12 @@ function Dropdown<U>({
   const handleOnChange = (e: BaseSyntheticEvent) => handleOptionSelectionChange(e.target.value as U);
 
   return (
-    <select className={styles.select} value={selectedOption as unknown as string} onChange={handleOnChange}>
+    <select
+      className={styles.select}
+      aria-label={label}
+      value={selectedOption as unknown as string}
+      onChange={handleOnChange}
+    >
       {renderOptions()}
     </select>
   );
