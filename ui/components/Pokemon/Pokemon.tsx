@@ -65,7 +65,7 @@ const Pokemon = ({
       {evolvesFrom && (
         <span className={styles.evoBadge} title={`Evolves from ${evolvesFrom.name}`}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={evolvesFrom.image} alt={`${evolvesFrom.name}-pic`} loading="lazy" />
+          <img src={evolvesFrom.image} alt={`${evolvesFrom.name} artwork`} loading="lazy" />
         </span>
       )}
 
@@ -75,7 +75,7 @@ const Pokemon = ({
           ref={heroRef}
           className={`${styles.heroImg} ${heroLoaded ? styles.heroImgLoaded : ""}`}
           src={imageUrl}
-          alt={`${name}-pic`}
+          alt={`${name} artwork`}
           loading={priority ? "eager" : "lazy"}
           fetchPriority={priority ? "high" : "auto"}
           onLoad={() => setHeroLoaded(true)}

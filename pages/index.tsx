@@ -14,6 +14,7 @@ import ErrorScreenWrapper from "../ui/components/Wrappers/ErrorScreenWrapper/Err
 import LoadingScreenWrapper from "../ui/components/Wrappers/LoadingScreenWrapper/LoadingScreenWrapper";
 import FlexboxList from "../ui/templates/FlexboxList/FlexboxList";
 import Page from "../ui/templates/Page/Page";
+import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../constants/Seo";
 
 interface IProps {
   pokemons: IBasicPokemon[];
@@ -63,11 +64,7 @@ const HomePage = ({ pokemons }: IProps) => {
 
   return (
     <>
-      <Header
-        title="Pokedex"
-        description="Use the Advanced Search to explore Pokémon by type, weakness, Ability, and more! Search for a Pokémon by name
-        or using its National Pokédex number."
-      />
+      <Header title={DEFAULT_TITLE} description={DEFAULT_DESCRIPTION} canonicalPath="/" />
       <ErrorScreenWrapper>
         <LoadingScreenWrapper>
           <Page>

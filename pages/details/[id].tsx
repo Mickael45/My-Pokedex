@@ -90,8 +90,14 @@ const DetailsPage = ({
   return (
     <>
       <Header
-        title={`${capitalizeFirstLetter(name)} — Pokédex`}
-        description={`Stats, types, type effectiveness and evolutions for ${capitalizeFirstLetter(name)}.`}
+        title={`${capitalizeFirstLetter(name)} (#${formatNumberToMatchLength(id)}) — Stats, Types, Weaknesses & Evolution | Pokédex`}
+        description={`${capitalizeFirstLetter(name)} is a ${types
+          .split(",")
+          .map(capitalizeFirstLetter)
+          .join("/")}-type Pokémon (#${formatNumberToMatchLength(id)}). See base stats, type weaknesses and resistances, abilities, and its full evolution line.`}
+        canonicalPath={`/details/${id}`}
+        image={hdImageUrl}
+        ogType="article"
       />
       <ErrorScreenWrapper>
         <LoadingScreenWrapper>
@@ -135,7 +141,7 @@ const DetailsPage = ({
                   </div>
                 </div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className={styles.heroImg} src={imageUrl} alt={`${name}-pic`} />
+                <img className={styles.heroImg} src={imageUrl} alt={`${capitalizeFirstLetter(name)} official artwork`} />
               </header>
 
               <div className={styles.panes}>
