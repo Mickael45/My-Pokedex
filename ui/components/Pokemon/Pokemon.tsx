@@ -1,16 +1,15 @@
 import { memo, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { getPokemonPrimaryTypeColor } from "../../../utils/pokemonFormatter/pokemonFormatter";
+import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
 import useCenterSpotlight from "../../../hooks/useCenterSpotlight";
 import { formatNumberToMatchLength } from "../../../utils/stringManipulation";
 import { DETAILS } from "../../../constants/Routes";
-import pokemonTypesColor from "../../../constants/TypesColor.json";
+import TypeIcon from "../PokemonType/typeIcons";
 import styles from "./Pokemon.module.css";
 
 const MAX_STAT_VALUE = 255;
-
-const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
 const Pokemon = ({
   name,
@@ -76,7 +75,7 @@ const Pokemon = ({
         </span>
       )}
 
-      <span className={`${styles.heroWrap} ${heroLoaded ? styles.heroWrapLoaded : ""}`}>
+      <span className={styles.heroWrap}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           ref={heroRef}
@@ -101,7 +100,12 @@ const Pokemon = ({
       <div className={styles.glass}>
         <div className={styles.types}>
           {typeList.map((type) => (
-            <span key={type} className={styles.typeChip} style={{ background: typeColor(type) }}>
+            <span
+              key={type}
+              className={styles.typeChip}
+              style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
+            >
+              <TypeIcon type={type} className={styles.typeChipIcon} />
               {type}
             </span>
           ))}

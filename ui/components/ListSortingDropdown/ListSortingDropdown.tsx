@@ -33,6 +33,7 @@ const ListSortingDropdown = () => {
     <Dropdown<SortingType>
       selectedOption={sortingType}
       options={sortingOptions}
+      label="Sort Pokémon list"
       handleOptionSelectionChange={handleOptionSelectionChange}
     />
   );
