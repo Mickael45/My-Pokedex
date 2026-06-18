@@ -35,6 +35,32 @@
   --font-scale: 0.8;
 }
 
+/* The wider pixel font only renders crisply at whole-pixel sizes; the fractional
+   calc() sizes (e.g. 12px * 0.8 = 9.6px) made the low-res card text blurry. Pin
+   the text to integer sizes in low-res, and shrink the type chips (smaller text,
+   icon and padding) so a dual-type row — e.g. Electric + Fighting — fits on one
+   line instead of wrapping. */
+:global([data-resolution="low res."]) .name {
+  font-size: 14px;
+}
+:global([data-resolution="low res."]) .hp {
+  font-size: 10px;
+}
+:global([data-resolution="low res."]) .watermark {
+  font-size: 54px;
+}
+:global([data-resolution="low res."]) .stat {
+  font-size: 10px;
+}
+:global([data-resolution="low res."]) .typeChip {
+  font-size: 9px;
+  padding: 4px 10px 4px 8px;
+}
+:global([data-resolution="low res."]) .typeChipIcon {
+  width: 14px;
+  height: 14px;
+}
+
 /* Pokedex number watermark — top-right, behind the sprite. */
 .watermark {
   position: absolute;
