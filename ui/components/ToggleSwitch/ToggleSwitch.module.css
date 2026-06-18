@@ -1,18 +1,14 @@
 /* Round icon flip-button used for theme & resolution, on every screen size.
-   Accent follows the active theme: red in Daylight, green in Carbon. */
-.container {
-  display: grid;
-  justify-items: center;
-  align-content: center;
-  gap: 6px;
-}
-
+   Sized to match the type-filter funnel button (36x36). Accent follows the
+   active theme: red in Daylight, green in Carbon. */
 .iconFlip {
+  flex-shrink: 0;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  width: 36px;
+  height: 36px;
+  padding: 0;
   border-radius: 999px;
   cursor: pointer;
   background: #f1f3f8;
@@ -21,19 +17,13 @@
   transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
 }
 .iconFlip svg {
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   display: block;
 }
 .iconFlip[data-on="true"] {
   border-color: #e3350d;
   color: #e3350d;
-}
-.iconFlipCap {
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: capitalize;
-  color: #6b7280;
 }
 
 :global([data-theme="dark"]) .iconFlip {
@@ -44,7 +34,4 @@
 :global([data-theme="dark"]) .iconFlip[data-on="true"] {
   border-color: #26d07c;
   color: #26d07c;
-}
-:global([data-theme="dark"]) .iconFlipCap {
-  color: #8b94a8;
 }

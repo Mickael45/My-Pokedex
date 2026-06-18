@@ -13,9 +13,9 @@ const PixelIcon = (
 );
 
 const HdIcon = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
-    <rect x="4" y="4" width="16" height="16" rx="5" />
-    <path d="M8 14c2-3.5 6-3.5 8 0" />
+  <svg viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2l1.9 6.1L20 10l-6.1 1.9L12 18l-1.9-6.1L4 10l6.1-1.9z" />
+    <path d="M18.5 14l.9 2.6L22 17.5l-2.6.9L18.5 21l-.9-2.6L15 17.5l2.6-.9z" />
   </svg>
 );
 

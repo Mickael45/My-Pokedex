@@ -1,5 +1,4 @@
 import { type ReactNode } from "react";
-import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import styles from "./ToggleSwitch.module.css";
 
 interface IProps {
@@ -12,18 +11,15 @@ interface IProps {
 }
 
 const ToggleSwitch = ({ handleClick, onLabel, offLabel, checked, icons }: IProps) => (
-  <div className={styles.container}>
-    <button
-      type="button"
-      className={styles.iconFlip}
-      data-on={checked}
-      onClick={handleClick}
-      aria-label={checked ? offLabel : onLabel}
-    >
-      {checked ? icons.on : icons.off}
-    </button>
-    <span className={styles.iconFlipCap}>{capitalizeFirstLetter(checked ? offLabel : onLabel)}</span>
-  </div>
+  <button
+    type="button"
+    className={styles.iconFlip}
+    data-on={checked}
+    onClick={handleClick}
+    aria-label={checked ? offLabel : onLabel}
+  >
+    {checked ? icons.on : icons.off}
+  </button>
 );
 
 export default ToggleSwitch;
