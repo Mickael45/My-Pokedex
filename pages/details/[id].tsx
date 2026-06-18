@@ -1,4 +1,5 @@
 import { Fragment, useContext, useEffect, type CSSProperties } from "react";
+import ReactDOM from "react-dom";
 import Link from "next/link";
 
 import styles from "./Details.module.css";
@@ -58,10 +59,7 @@ const DetailsPage = ({
       if (resolution !== LOW_RESOLUTION) {
         urls.push(`/pokemon/full/${formatNumberToMatchLength(targetId)}.png`);
       }
-      urls.forEach((src) => {
-        const img = new window.Image();
-        img.src = src;
-      });
+      urls.forEach((src) => ReactDOM.preload(src, { as: "image" }));
     };
     preload(id - 1);
     preload(id + 1);

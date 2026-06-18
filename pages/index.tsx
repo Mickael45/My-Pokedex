@@ -1,7 +1,10 @@
 import React, { useState, useContext, memo, useEffect } from "react";
+import ReactDOM from "react-dom";
 import styles from "./Home.module.css";
 import LoadingContext from "../context/LoadingContext";
 import PokemonContext from "../context/PokemonContext";
+import ResolutionContext from "../context/ResolutionContext";
+import { LOW_RESOLUTION } from "../constants/Resolution";
 import useFiltering from "../hooks/useFiltering";
 import { fetchAllPokemons } from "../services/fetchPokemons/fetchPokemons";
 import EmptyListPlaceholder from "../ui/components/EmptyListPlaceholder/EmptyListPlaceholder";
@@ -20,6 +23,7 @@ const POKEMON_STACK_SIZE = 12;
 
 const HomePage = ({ pokemons }: IProps) => {
   const filteredPokemons = useFiltering();
+  const { resolution } = useContext(ResolutionContext);
   const { setPokemons } = useContext(PokemonContext);
   const { setLoading, loading } = useContext(LoadingContext);
   const [numberOfPokemonShown, setNumberOfPokemonShown] = useState(POKEMON_STACK_SIZE);
@@ -40,6 +44,13 @@ const HomePage = ({ pokemons }: IProps) => {
   };
 
   useEffect(updatePokemons, [pokemons, setLoading, setPokemons]);
+
+  useEffect(() => {
+    filteredPokemons.slice(0, POKEMON_STACK_SIZE).forEach((pokemon) => {
+      const url = resolution === LOW_RESOLUTION ? pokemon.pixelImageUrl : pokemon.hdImageUrl;
+      ReactDOM.preload(url, { as: "image", fetchPriority: "high" });
+    });
+  }, [filteredPokemons, resolution]);
 
   if (!filteredPokemons.length && !loading) {
     return <EmptyListPlaceholder text="No Pokemon Found..." />;
