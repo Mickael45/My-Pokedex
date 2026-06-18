@@ -4,12 +4,12 @@ import { useRouter } from "next/router";
 import * as FilteringTypes from "../../../constants/Types";
 import { TYPE_INTERACTIONS } from "../../../constants/Routes";
 import { usePokemonTypesFromQuery } from "../../../hooks/useQueryParams";
-import pokemonTypesColor from "../../../constants/TypesColor.json";
+import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
+import TypeIcon from "../PokemonType/typeIcons";
 import styles from "./TypePicker.module.css";
 
 const OPTIONS = Object.values(FilteringTypes);
-const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
 // Pill selector for the Type Interactions dossier. Caps the selection at two
 // (a Pokémon has at most two types) and mirrors it into the `?types=` query so
@@ -41,9 +41,10 @@ const TypePicker = () => {
             key={type}
             type="button"
             className={`${styles.chip} ${selected.includes(type) ? styles.on : ""}`}
-            style={{ "--c": typeColor(type) } as CSSProperties}
+            style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
             onClick={() => toggle(type)}
           >
+            <TypeIcon type={type} className={styles.chipIcon} />
             {capitalizeFirstLetter(type)}
           </button>
         ))}

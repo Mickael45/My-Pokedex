@@ -14,15 +14,14 @@ import Header from "../../ui/components/Header/Header";
 import EvolutionStage from "../../ui/components/EvolutionStage/EvolutionStage";
 import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
 import LoadingScreenWrapper from "../../ui/components/Wrappers/LoadingScreenWrapper/LoadingScreenWrapper";
-import pokemonTypesColor from "../../constants/TypesColor.json";
 import { getPokemonPrimaryTypeColor } from "../../utils/pokemonFormatter/pokemonFormatter";
+import { getTypeColor, getTypeChipColor } from "../../utils/typeColors";
+import TypeIcon from "../../ui/components/PokemonType/typeIcons";
 import { capitalizeFirstLetter, formatNumberToMatchLength } from "../../utils/stringManipulation";
 import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsString } from "../../utils/unitConverter";
 
 const MAX_STAT_VALUE = 200;
 const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5", 1: "1", 2: "2", 4: "4" };
-
-const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
 const DetailsPage = ({
   id,
@@ -76,9 +75,10 @@ const DetailsPage = ({
           <span
             key={type}
             className={`${styles.effTile} ${effClass(factor)}`}
-            style={{ background: typeColor(type) }}
+            style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
             title={`${capitalizeFirstLetter(type)}: x${FACTOR_LABEL[factor]}`}
           >
+            <TypeIcon type={type} className={styles.effIcon} />
             <span className={styles.effType}>{capitalizeFirstLetter(type)}</span>
             <span className={styles.effMult}>x{FACTOR_LABEL[factor]}</span>
           </span>
@@ -128,7 +128,12 @@ const DetailsPage = ({
                   <h1>{capitalizeFirstLetter(name)}</h1>
                   <div className={styles.types}>
                     {typeList.map((type) => (
-                      <span key={type} className={styles.typeChip} style={{ background: typeColor(type) }}>
+                      <span
+                        key={type}
+                        className={styles.typeChip}
+                        style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
+                      >
+                        <TypeIcon type={type} className={styles.typeChipIcon} />
                         {capitalizeFirstLetter(type)}
                       </span>
                     ))}

@@ -46,17 +46,17 @@
   text-transform: capitalize;
   cursor: pointer;
   user-select: none;
-  background: var(--c, #888);
-  opacity: 0.55;
-  filter: saturate(0.8);
-  transition: transform 0.14s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
+  /* Option D: deep, AA-safe fill (white label/icon passes). Unselected recedes
+     via desaturation — never opacity — so the text keeps its contrast. */
+  background: linear-gradient(160deg, var(--chip, #888), color-mix(in srgb, var(--chip, #888) 80%, #000));
+  filter: saturate(0.55) brightness(0.93);
+  transition: transform 0.14s ease, box-shadow 0.2s ease, filter 0.2s ease;
 }
 .filterChip:hover {
   transform: translateY(-2px);
-  opacity: 0.85;
+  filter: saturate(0.85);
 }
 .filterChip.selected {
-  opacity: 1;
   filter: saturate(1.1);
   /* panel-coloured gap, then a type-coloured ring + soft glow */
   box-shadow: 0 0 0 2px var(--ring-gap, #fff), 0 0 0 4px var(--c), 0 8px 22px -6px var(--c);
