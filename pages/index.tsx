@@ -20,6 +20,7 @@ interface IProps {
 }
 
 const POKEMON_STACK_SIZE = 12;
+const ABOVE_THE_FOLD = 6;
 
 const HomePage = ({ pokemons }: IProps) => {
   const filteredPokemons = useFiltering();
@@ -30,7 +31,11 @@ const HomePage = ({ pokemons }: IProps) => {
 
   const incrementNumberOfPokemonShown = () => setNumberOfPokemonShown(numberOfPokemonShown + POKEMON_STACK_SIZE);
 
-  const renderPokemon = (pokemon: IBasicPokemon) => <Pokemon key={pokemon.id} {...pokemon} />;
+  // The first row is the LCP candidate: render those heroes eagerly with high
+  // fetch priority instead of lazy, so the browser doesn't deprioritize them.
+  const renderPokemon = (pokemon: IBasicPokemon, index: number) => (
+    <Pokemon key={pokemon.id} priority={index < ABOVE_THE_FOLD} {...pokemon} />
+  );
 
   const renderPokemons = () => filteredPokemons.slice(0, numberOfPokemonShown).map(renderPokemon);
 
