@@ -137,12 +137,16 @@
   font-weight: bold;
   text-transform: capitalize;
   text-shadow: 0 2px 0 rgba(0, 0, 0, 0.18);
+  /* Force white: the card is an <a>, and the global `[data-theme] a` rule
+     (red in light, yellow in dark) otherwise leaks into the card text. */
+  color: #fff;
 }
 .hp {
   flex-shrink: 0;
   font-size: calc(13px * var(--font-scale));
   font-weight: bold;
   opacity: 0.92;
+  color: #fff;
 }
 
 .glass {
@@ -183,6 +187,8 @@
   margin-top: 7px;
   font-size: calc(12px * var(--font-scale));
   font-weight: bold;
+  /* White stat label + value regardless of the global link-colour rule. */
+  color: #fff;
 }
 .stat:first-child {
   margin-top: 0;

@@ -86,8 +86,63 @@
   color: #06281a;
 }
 
+/* ---------------------------------------------------------------------------
+   Mobile: hide the text pill (its labels clip when squeezed) and show a round
+   icon flip-button instead. Accent follows the theme: red Daylight, green Carbon.
+   --------------------------------------------------------------------------- */
+.iconFlipWrap {
+  display: none;
+}
+.iconFlip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 999px;
+  cursor: pointer;
+  background: #f1f3f8;
+  border: 1px solid #d7dce6;
+  color: #41485a;
+  transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+}
+.iconFlip svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+}
+.iconFlip[data-on="true"] {
+  border-color: #e3350d;
+  color: #e3350d;
+}
+.iconFlipCap {
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: capitalize;
+  color: #6b7280;
+}
+
+:global([data-theme="dark"]) .iconFlip {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+  color: #cfd6e4;
+}
+:global([data-theme="dark"]) .iconFlip[data-on="true"] {
+  border-color: #26d07c;
+  color: #26d07c;
+}
+:global([data-theme="dark"]) .iconFlipCap {
+  color: #8b94a8;
+}
+
 @media screen and (max-width: 800px) {
+  .toggle,
   .toggleButton {
-    width: 50px !important;
+    display: none;
+  }
+  .iconFlipWrap {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
   }
 }
