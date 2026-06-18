@@ -11,7 +11,9 @@ import { toTypeSlug } from "../../utils/typeSlug";
 import { breadcrumbJsonLd } from "../../utils/structuredData";
 
 const TypeInteractionsPage = () => {
-  const selected = usePokemonTypesFromQuery().split(",").filter(Boolean);
+  // Sort so a legacy ?types=water,fire URL renders the same label/order as the
+  // canonical /type-interactions/fire-water page it points at.
+  const selected = usePokemonTypesFromQuery().split(",").filter(Boolean).sort();
   const canonicalPath = selected.length ? `/type-interactions/${toTypeSlug(selected)}` : "/type-interactions";
 
   return (
