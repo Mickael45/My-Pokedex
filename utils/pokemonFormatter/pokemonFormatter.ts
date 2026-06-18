@@ -105,10 +105,10 @@ export const formatPokemonEvolutionChain = (
 // and padding here MUST match that download script.
 const createImageUrl = (id: number, imgType: PIC_TYPE = PIXELATED) => {
   if (imgType === PIXELATED) {
-    return `/pokemon/pixel/${id}.png`;
+    return `/pokemon/pixel/${id}.webp`;
   }
   const folder = imgType === BASIC_PIC ? "basic" : "full";
-  return `/pokemon/${folder}/${formatNumberToMatchLength(id)}.png`;
+  return `/pokemon/${folder}/${formatNumberToMatchLength(id)}.webp`;
 };
 
 export const formatToBasicPokemon = (pokemon: IPokemonResponseType): IBasicPokemon => {

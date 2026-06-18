@@ -55,9 +55,9 @@ const DetailsPage = ({
   useEffect(() => {
     const preload = (targetId: number) => {
       if (targetId < 1 || targetId > MAX_POKEMON_ID_ALLOWED) return;
-      const urls = [`/pokemon/pixel/${targetId}.png`];
+      const urls = [`/pokemon/pixel/${targetId}.webp`];
       if (resolution !== LOW_RESOLUTION) {
-        urls.push(`/pokemon/full/${formatNumberToMatchLength(targetId)}.png`);
+        urls.push(`/pokemon/full/${formatNumberToMatchLength(targetId)}.webp`);
       }
       urls.forEach((src) => ReactDOM.preload(src, { as: "image" }));
     };

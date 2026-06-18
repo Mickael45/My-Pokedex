@@ -1,8 +1,11 @@
 // Downloads every Pokemon image referenced by the app into public/pokemon so the
 // SSG output serves them same-origin (no runtime CDN fetch). Three sets are pulled:
-//   - pixel : low-res sprite, used everywhere      -> public/pokemon/pixel/{id}.png
-//   - basic : HD "detail" art, used on the list     -> public/pokemon/basic/{paddedId}.png
-//   - full  : HD "full" art, used on the details    -> public/pokemon/full/{paddedId}.png
+//   - pixel : low-res sprite, used everywhere      -> public/pokemon/pixel/{id}.webp
+//   - basic : HD "detail" art, used on the list     -> public/pokemon/basic/{paddedId}.webp
+//   - full  : HD "full" art, used on the details    -> public/pokemon/full/{paddedId}.webp
+//
+// The source CDNs serve PNGs; each one is re-encoded to WebP before being written
+// (pixel lossless to keep sprites crisp, HD art at quality 82).
 //
 // The URLs/padding here MUST stay in sync with createImageUrl() in
 // utils/pokemonFormatter/pokemonFormatter.ts and the constants in
@@ -13,6 +16,7 @@
 
 import { mkdir, writeFile, access } from "node:fs/promises";
 import { join } from "node:path";
+import sharp from "sharp";
 
 const MAX_POKEMON_ID_ALLOWED = 1025;
 const CONCURRENCY = 16;
@@ -26,17 +30,20 @@ const SOURCES = [
   {
     dir: "pixel",
     url: (id) => `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`,
-    file: (id) => `${id}.png`,
+    file: (id) => `${id}.webp`,
+    webp: { lossless: true },
   },
   {
     dir: "basic",
     url: (id) => `https://assets.pokemon.com/assets/cms2/img/pokedex/detail/${pad(id)}.png`,
-    file: (id) => `${pad(id)}.png`,
+    file: (id) => `${pad(id)}.webp`,
+    webp: { quality: 82 },
   },
   {
     dir: "full",
     url: (id) => `https://assets.pokemon.com/assets/cms2/img/pokedex/full/${pad(id)}.png`,
-    file: (id) => `${pad(id)}.png`,
+    file: (id) => `${pad(id)}.webp`,
+    webp: { quality: 82 },
   },
 ];
 
@@ -54,6 +61,7 @@ const buildTasks = () => {
         url: source.url(id),
         path: join(OUT_DIR, source.dir, source.file(id)),
         label: `${source.dir}/${source.file(id)}`,
+        webp: source.webp,
       });
     }
   }
@@ -74,7 +82,8 @@ const downloadOne = async (task, stats) => {
       return;
     }
     const buffer = Buffer.from(await response.arrayBuffer());
-    await writeFile(task.path, buffer);
+    const webp = await sharp(buffer).webp(task.webp).toBuffer();
+    await writeFile(task.path, webp);
     stats.downloaded++;
   } catch (error) {
     stats.failed++;
