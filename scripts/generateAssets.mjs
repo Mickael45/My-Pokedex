@@ -28,12 +28,26 @@ async function run() {
     .png()
     .toFile("public/images/og-default.png");
 
-  await sharp("public/images/surprised-pikachu-hd.png")
-    .resize(512, 512, { fit: "contain", background: { r: 185, g: 28, b: 28, alpha: 1 } })
-    .png()
-    .toFile("public/icons/icon-512.png");
+  // Icon set (square, red background to match the brand). 512 → apple-touch +
+  // manifest, 192 → manifest, 32/16 → browser favicons.
+  const red = { r: 185, g: 28, b: 28, alpha: 1 };
+  const icon = (size, file) =>
+    sharp("public/images/surprised-pikachu-hd.png")
+      .resize(size, size, { fit: "contain", background: red })
+      .png()
+      .toFile(file);
 
-  console.log("Wrote public/images/og-default.png and public/icons/icon-512.png");
+  await Promise.all([
+    icon(512, "public/icons/icon-512.png"),
+    icon(192, "public/icons/icon-192.png"),
+    icon(32, "public/icons/favicon-32.png"),
+    icon(16, "public/icons/favicon-16.png"),
+  ]);
+
+  console.log("Wrote og-default.png and icons (512/192/32/16)");
 }
 
-run();
+run().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

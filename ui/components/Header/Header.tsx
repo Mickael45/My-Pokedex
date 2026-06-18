@@ -14,6 +14,7 @@ interface IProps {
   canonicalPath?: string;
   image?: string;
   ogType?: string;
+  twitterCard?: "summary" | "summary_large_image";
   jsonLd?: JsonLd | JsonLd[];
 }
 
@@ -23,6 +24,7 @@ const Header = ({
   canonicalPath = "/",
   image = DEFAULT_OG_IMAGE,
   ogType = "website",
+  twitterCard = "summary_large_image",
   jsonLd,
 }: IProps) => {
   const canonical = absoluteUrl(canonicalPath);
@@ -44,14 +46,16 @@ const Header = ({
       <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:locale" content={SITE_LOCALE} />
 
-      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:card" content={twitterCard} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={ogImage} />
 
       <meta name="theme-color" content="#b91c1c" />
-      <link rel="icon" href="/surprised-pikachu.png" />
+      <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+      <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
       <link rel="apple-touch-icon" href="/icons/icon-512.png" />
+      <link rel="manifest" href="/site.webmanifest" />
 
       <link rel="preload" href="/fonts/pixelPokemonFont.ttf" as="font" crossOrigin="" />
       <link rel="preload" href="/fonts/hdPokemonFont.woff" as="font" crossOrigin="" />
