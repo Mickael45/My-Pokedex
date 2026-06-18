@@ -91,8 +91,10 @@ const NavigationBar = () => {
   const renderControls = () => (
     <>
       {isHome && <ListSortingDropdown />}
-      <ThemeToggleSwitch />
-      <ResolutionToggleSwitch />
+      <div className={styles.toggleGroup}>
+        <ThemeToggleSwitch />
+        <ResolutionToggleSwitch />
+      </div>
     </>
   );
 
