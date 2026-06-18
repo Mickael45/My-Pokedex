@@ -99,6 +99,7 @@ const DetailsPage = ({
         canonicalPath={`/details/${id}`}
         image={hdImageUrl}
         ogType="article"
+        twitterCard="summary"
         jsonLd={breadcrumbJsonLd([
           { name: "Pokédex", path: "/" },
           { name: capitalizeFirstLetter(name), path: `/details/${id}` },
