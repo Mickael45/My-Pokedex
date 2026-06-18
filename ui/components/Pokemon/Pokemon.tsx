@@ -15,6 +15,12 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
   const [heroLoaded, setHeroLoaded] = useState(false);
 
+  // If the image is already complete on mount (preloaded or HTTP-cached), the
+  // load event has already fired and onLoad never runs — mark it loaded here.
+  const heroRef = (node: HTMLImageElement | null) => {
+    if (node && node.complete && node.naturalWidth > 0) setHeroLoaded(true);
+  };
+
   const typeList = types.split(",");
   const cardColor = getPokemonPrimaryTypeColor(types);
 
@@ -57,6 +63,7 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
       <span className={`${styles.heroWrap} ${heroLoaded ? styles.heroWrapLoaded : ""}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
+          ref={heroRef}
           className={`${styles.heroImg} ${heroLoaded ? styles.heroImgLoaded : ""}`}
           src={imageUrl}
           alt={`${name}-pic`}
