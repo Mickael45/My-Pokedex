@@ -31,7 +31,9 @@ const App = ({ Component, pageProps }: AppProps) => {
                 <PokemonContext.Provider value={{ filteredPokemons, pokemons, setPokemons }}>
                   <>
                     <NavigationBar />
-                    <Component {...pageProps} />
+                    <main>
+                      <Component {...pageProps} />
+                    </main>
                   </>
                 </PokemonContext.Provider>
               </LoadingContext.Provider>
