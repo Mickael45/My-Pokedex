@@ -15,6 +15,7 @@ import LoadingScreenWrapper from "../ui/components/Wrappers/LoadingScreenWrapper
 import FlexboxList from "../ui/templates/FlexboxList/FlexboxList";
 import Page from "../ui/templates/Page/Page";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../constants/Seo";
+import { websiteJsonLd, organizationJsonLd } from "../utils/structuredData";
 
 interface IProps {
   pokemons: IBasicPokemon[];
@@ -64,7 +65,12 @@ const HomePage = ({ pokemons }: IProps) => {
 
   return (
     <>
-      <Header title={DEFAULT_TITLE} description={DEFAULT_DESCRIPTION} canonicalPath="/" />
+      <Header
+        title={DEFAULT_TITLE}
+        description={DEFAULT_DESCRIPTION}
+        canonicalPath="/"
+        jsonLd={[websiteJsonLd(), organizationJsonLd()]}
+      />
       <ErrorScreenWrapper>
         <LoadingScreenWrapper>
           <Page>

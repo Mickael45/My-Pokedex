@@ -18,6 +18,7 @@ import pokemonTypesColor from "../../constants/TypesColor.json";
 import { getPokemonPrimaryTypeColor } from "../../utils/pokemonFormatter/pokemonFormatter";
 import { capitalizeFirstLetter, formatNumberToMatchLength } from "../../utils/stringManipulation";
 import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsString } from "../../utils/unitConverter";
+import { breadcrumbJsonLd } from "../../utils/structuredData";
 
 const MAX_STAT_VALUE = 200;
 const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5", 1: "1", 2: "2", 4: "4" };
@@ -98,6 +99,10 @@ const DetailsPage = ({
         canonicalPath={`/details/${id}`}
         image={hdImageUrl}
         ogType="article"
+        jsonLd={breadcrumbJsonLd([
+          { name: "Pokédex", path: "/" },
+          { name: capitalizeFirstLetter(name), path: `/details/${id}` },
+        ])}
       />
       <ErrorScreenWrapper>
         <LoadingScreenWrapper>
