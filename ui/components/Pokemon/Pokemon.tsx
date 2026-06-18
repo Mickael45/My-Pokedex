@@ -11,7 +11,16 @@ const MAX_STAT_VALUE = 255;
 
 const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
-const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFrom }: IBasicPokemon) => {
+const Pokemon = ({
+  name,
+  id,
+  pixelImageUrl,
+  hdImageUrl,
+  types,
+  stats,
+  evolvesFrom,
+  priority = false,
+}: IBasicPokemon & { priority?: boolean }) => {
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
   const [heroLoaded, setHeroLoaded] = useState(false);
 
@@ -67,7 +76,8 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
           className={`${styles.heroImg} ${heroLoaded ? styles.heroImgLoaded : ""}`}
           src={imageUrl}
           alt={`${name}-pic`}
-          loading="lazy"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
           onLoad={() => setHeroLoaded(true)}
         />
       </span>

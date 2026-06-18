@@ -100,7 +100,14 @@ const NavigationBar = () => {
     <>
       <nav className={`${styles.container} ${hidden ? styles.hidden : ""}`}>
         <div className={styles.bar}>
-          <img className={styles.logo} src="/icons/logo.svg" alt="logo" onClick={navigateHome} />
+          <img
+            className={styles.logo}
+            src="/icons/logo.svg"
+            alt="logo"
+            width={400}
+            height={143}
+            onClick={navigateHome}
+          />
 
           {/* Desktop-only segmented tabs (mobile uses the bottom tab bar). */}
           <div className={styles.tabs}>
