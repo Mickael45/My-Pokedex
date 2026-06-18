@@ -5,6 +5,8 @@
 .card {
   --type: #888;
   --font-scale: 1;
+  display: block;
+  text-decoration: none;
   position: relative;
   width: 17.5rem;
   margin-top: 34px;
@@ -24,6 +26,9 @@
 }
 .card:hover .heroImg {
   transform: scale(1.07) translateY(-4px);
+}
+.card:active {
+  transform: scale(0.97);
 }
 
 :global([data-resolution="low res."]) .card {

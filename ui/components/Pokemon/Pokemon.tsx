@@ -1,5 +1,5 @@
 import { memo, type CSSProperties } from "react";
-import { useRouter } from "next/router";
+import Link from "next/link";
 import { getPokemonPrimaryTypeColor } from "../../../utils/pokemonFormatter/pokemonFormatter";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
 import { formatNumberToMatchLength } from "../../../utils/stringManipulation";
@@ -12,7 +12,6 @@ const MAX_STAT_VALUE = 255;
 const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
 const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFrom }: IBasicPokemon) => {
-  const router = useRouter();
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
 
   const typeList = types.split(",");
@@ -21,8 +20,6 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
   // Stats and the pre-evolution ship with the SSG props, so everything renders
   // instantly. stats is the compact [hp, attack, defense, speed] tuple.
   const [hp, attack, defense, speed] = stats;
-
-  const handleClick = () => router.push(`${DETAILS}${id}`);
 
   const renderStat = (label: string, value: number | null) => {
     const barWidth = value === null ? 0 : Math.min((value / MAX_STAT_VALUE) * 100, 100);
@@ -39,7 +36,12 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
   };
 
   return (
-    <div className={styles.card} style={{ "--type": cardColor } as CSSProperties} onClick={handleClick}>
+    <Link
+      href={`${DETAILS}${id}`}
+      prefetch
+      className={styles.card}
+      style={{ "--type": cardColor } as CSSProperties}
+    >
       <span className={styles.watermark} aria-hidden="true">
         #{formatNumberToMatchLength(id)}
       </span>
@@ -75,7 +77,7 @@ const Pokemon = ({ name, id, pixelImageUrl, hdImageUrl, types, stats, evolvesFro
         {renderStat("Defense", defense)}
         {renderStat("Speed", speed)}
       </div>
-    </div>
+    </Link>
   );
 };
 
