@@ -13,7 +13,6 @@ import { fetchAllPokemons, fetchPokemonDetailsByNameOrId } from "../../services/
 import Header from "../../ui/components/Header/Header";
 import EvolutionStage from "../../ui/components/EvolutionStage/EvolutionStage";
 import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
-import LoadingScreenWrapper from "../../ui/components/Wrappers/LoadingScreenWrapper/LoadingScreenWrapper";
 import { getPokemonPrimaryTypeColor } from "../../utils/pokemonFormatter/pokemonFormatter";
 import { getTypeColor, getTypeChipColor } from "../../utils/typeColors";
 import TypeIcon from "../../ui/components/PokemonType/typeIcons";
@@ -98,6 +97,7 @@ const DetailsPage = ({
           .join("/")}-type Pokémon (#${formatNumberToMatchLength(id)}). See base stats, type weaknesses and resistances, abilities, and its full evolution line.`}
         canonicalPath={`/details/${id}`}
         image={hdImageUrl}
+        imageAlt={`${capitalizeFirstLetter(name)} official artwork`}
         ogType="article"
         twitterCard="summary"
         jsonLd={breadcrumbJsonLd([
@@ -106,8 +106,11 @@ const DetailsPage = ({
         ])}
       />
       <ErrorScreenWrapper>
-        <LoadingScreenWrapper>
-          <div className={styles.wrap} style={{ "--type": color } as CSSProperties}>
+        {/* No loading gate: the page is SSG and every field comes from
+            getStaticProps, so the H1, Pokédex entry, base stats and matchups must
+            be server-rendered into the HTML — not hidden behind the client-only
+            Pikachu loader — for crawlers and AI features to read them. */}
+        <div className={styles.wrap} style={{ "--type": color } as CSSProperties}>
             <div className={styles.inner}>
               <nav className={styles.nav}>
                 {/* Links (not router.push) so Next prefetches the neighbour's data + chunk
@@ -210,7 +213,6 @@ const DetailsPage = ({
               </div>
             </div>
           </div>
-        </LoadingScreenWrapper>
       </ErrorScreenWrapper>
     </>
   );

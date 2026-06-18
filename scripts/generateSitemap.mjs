@@ -7,6 +7,13 @@ const MAX_POKEMON_ID = 1025;
 // Mirror of constants/Types.ts — Pokémon's 18 types are fixed.
 const TYPES = ["normal","fire","water","electric","grass","ice","fighting","poison","ground","flying","psychic","bug","rock","ghost","dragon","dark","steel","fairy"];
 
+// Stable last-modified date for every URL. Bump this ONLY when page content
+// actually changes (new Pokémon, data, or layout). It is a constant — not
+// `new Date()` — so rebuilding/redeploying does not stamp today's date on 1,198
+// unchanged URLs, which Google's John Mueller calls out as a lazy signal that
+// erodes lastmod trust and wastes crawl budget.
+export const LASTMOD = "2026-06-18";
+
 const toSlug = (types) => [...types].sort().join("-");
 
 export const typeSlugs = () => {
@@ -26,7 +33,7 @@ export const buildUrls = () => {
   return urls;
 };
 
-export const buildSitemap = (lastmod) => {
+export const buildSitemap = (lastmod = LASTMOD) => {
   const body = buildUrls()
     .map((path) => `  <url>\n    <loc>${ORIGIN}${path}</loc>\n    <lastmod>${lastmod}</lastmod>\n  </url>`)
     .join("\n");
@@ -35,8 +42,7 @@ export const buildSitemap = (lastmod) => {
 
 // Write only when executed directly, so the test can import the helpers safely.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
-  const lastmod = new Date().toISOString().slice(0, 10);
   const out = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "sitemap.xml");
-  writeFileSync(out, buildSitemap(lastmod));
+  writeFileSync(out, buildSitemap());
   console.log(`Wrote ${buildUrls().length} URLs to public/sitemap.xml`);
 }

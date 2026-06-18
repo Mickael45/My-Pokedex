@@ -80,11 +80,23 @@ const HomePage = ({ pokemons }: IProps) => {
         {/* No loading gate here: the home page is SSG, so the cards (and the LCP
             hero image) are available immediately and must be server-rendered. */}
         <Page>
-          <div className={styles.container}>
-            <FlexboxList hasReachedEnd={areThereMorePokemonsToShow()} showMore={incrementNumberOfPokemonShown}>
-              {renderPokemons()}
-            </FlexboxList>
-          </div>
+          <>
+            {/* The home page's only unique prose. SSG-rendered so the H1 and copy
+                are in the HTML for crawlers and AI features, not just a card grid. */}
+            <header className={styles.pageHeader}>
+              <h1 className={styles.pageTitle}>Pokédex</h1>
+              <p className={styles.intro}>
+                Search every Pokémon by name or National Pokédex number, filter the list by
+                type, and open any entry for its base stats, type weaknesses and resistances,
+                abilities and full evolution line.
+              </p>
+            </header>
+            <div className={styles.container}>
+              <FlexboxList hasReachedEnd={areThereMorePokemonsToShow()} showMore={incrementNumberOfPokemonShown}>
+                {renderPokemons()}
+              </FlexboxList>
+            </div>
+          </>
         </Page>
       </ErrorScreenWrapper>
     </>
