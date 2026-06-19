@@ -41,6 +41,11 @@
 .inner {
   max-width: 1000px;
   width: 100%;
+  /* Tailwind preflight is disabled site-wide (box-sizing stays content-box), so
+     width:100% + horizontal padding would make this 36px wider than .wrap. The
+     wrap clips the overflow (overflow:hidden), cropping right-edge content like
+     the "Next" button on mobile. border-box keeps the padding inside the width. */
+  box-sizing: border-box;
   margin: 0 auto;
   padding: 0 18px;
   /* Grow to push the embedded footer to the bottom of the themed wrap. */
