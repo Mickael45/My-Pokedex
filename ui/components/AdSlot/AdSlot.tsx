@@ -6,8 +6,10 @@ interface IProps {
   name: AdSlotName;
 }
 
-// CLS-safe: reserves `height` at all times. Renders a live <ins> ad unit only
-// when ads are enabled AND the slot has a real id; otherwise an empty reserved box.
+// Renders nothing while ads are disabled, so it adds no visible gap to the page.
+// CLS reservation only matters once ads actually load, so it kicks in only when
+// ADS_ENABLED is true: an unconfigured slot reserves height (dev preview), and a
+// configured slot renders the live <ins> with the same reserved height.
 const AdSlot = ({ name }: IProps) => {
   const { slot, height } = AD_SLOTS[name];
   const active = ADS_ENABLED && slot !== "";
@@ -21,6 +23,11 @@ const AdSlot = ({ name }: IProps) => {
       // loader not present yet — no-op
     }
   }, [active]);
+
+  // Ads off entirely: render nothing (no reserved blank space in the layout).
+  if (!ADS_ENABLED) {
+    return null;
+  }
 
   if (!active) {
     return (

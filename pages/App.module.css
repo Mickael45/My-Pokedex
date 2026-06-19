@@ -1,6 +1,15 @@
 .container {
   min-height: 100vh;
   padding-bottom: 20px;
+  /* Flex column so the footer is pushed to the bottom on short pages: <main>
+     grows to absorb the slack, the footer trails after it. The sticky nav and
+     the fixed banner sit outside normal flow, so they don't fight this. */
+  display: flex;
+  flex-direction: column;
+}
+
+.container > main {
+  flex: 1 0 auto;
 }
 
 /* Reserve room for the fixed mobile bottom tab bar on the page container itself

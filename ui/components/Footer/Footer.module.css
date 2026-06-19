@@ -19,3 +19,18 @@
   margin: 0 auto 0.5rem;
   opacity: 0.75;
 }
+
+/* Blend the legal links into the footer's own text tone instead of the loud
+   site-wide link colour (red on light, yellow on dark), so the footer reads as a
+   quiet utility band on every page — including the vividly themed detail pages.
+   The :global([data-theme]) prefix outranks the themed `a` colour rule. */
+:global([data-theme]) .footer .links a {
+  color: inherit;
+  opacity: 0.85;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+:global([data-theme]) .footer .links a:hover {
+  opacity: 1;
+}

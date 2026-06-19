@@ -178,8 +178,6 @@ const DetailsPage = ({
                   ))}
                 </section>
 
-                <AdSlot name="detailBelowStats" />
-
                 <section className={styles.glass}>
                   <div className={styles.paneTitle}>Profile</div>
                   <div className={styles.spec}>
@@ -214,6 +212,10 @@ const DetailsPage = ({
                   </section>
                 )}
               </div>
+
+              {/* Full-width ad band below the panels — kept out of the 1fr 1fr
+                  grid so Stats|Profile stay side by side when ads are enabled. */}
+              <AdSlot name="detailBelowStats" />
             </div>
           </div>
       </ErrorScreenWrapper>
