@@ -13,6 +13,8 @@
    inherits the white text and sits on the themed background — a faint light rule
    separates it from the content above instead of a standalone band. */
 .embedded {
+  /* Space above the divider so it isn't cramped against the content panels. */
+  margin-top: 32px;
   border-top: 1px solid rgba(255, 255, 255, 0.25);
 }
 

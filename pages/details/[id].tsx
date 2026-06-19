@@ -217,11 +217,11 @@ const DetailsPage = ({
               {/* Full-width ad band below the panels — kept out of the 1fr 1fr
                   grid so Stats|Profile stay side by side when ads are enabled. */}
               <AdSlot name="detailBelowStats" />
-
-              {/* Footer lives inside the type-coloured content area on detail
-                  pages (the global one is suppressed in _app for this route). */}
-              <Footer embedded />
             </div>
+
+            {/* Footer lives inside the type-coloured area (the global one is
+                suppressed in _app for this route) and pins to the bottom of it. */}
+            <Footer embedded />
           </div>
       </ErrorScreenWrapper>
     </>

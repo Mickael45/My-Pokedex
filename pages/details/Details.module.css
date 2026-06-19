@@ -11,9 +11,13 @@
   --font-scale: var(--font-boost);
   position: relative;
   min-height: 100vh;
-  /* The app container adds 20px padding-bottom; the extra bottom padding here
+  /* Flex column so the embedded footer pins to the bottom of the themed area
+     (.inner grows to absorb the slack) — no large green void below the footer. */
+  display: flex;
+  flex-direction: column;
+  /* The app container adds 20px padding-bottom; the small bottom padding here
      plus the negative margin lets the gradient paint over it (no white gap). */
-  padding: 18px 0 84px;
+  padding: 18px 0 16px;
   margin-bottom: -20px;
   color: #fff;
   overflow: hidden;
@@ -36,8 +40,11 @@
 }
 .inner {
   max-width: 1000px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 18px;
+  /* Grow to push the embedded footer to the bottom of the themed wrap. */
+  flex: 1 0 auto;
 }
 
 /* The immersive hero is always dark, so its links (Prev / Next, evolution names)
