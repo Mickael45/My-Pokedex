@@ -11,6 +11,7 @@ import ResolutionContext from "../context/ResolutionContext";
 import ThemeContext from "../context/ThemeContext";
 import usePokemons from "../hooks/usePokemons";
 import NavigationBar from "../ui/components/NavigationBar/NavigationBar";
+import Footer from "../ui/components/Footer/Footer";
 import ConsentContext from "../context/ConsentContext";
 import useConsent from "../hooks/useConsent";
 import ConsentScripts from "../ui/components/ConsentScripts/ConsentScripts";
@@ -38,6 +39,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                     <main>
                       <Component {...pageProps} />
                     </main>
+                    <Footer />
                     <CookieConsentBanner />
                   </>
                 </PokemonContext.Provider>
