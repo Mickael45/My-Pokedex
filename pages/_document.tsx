@@ -23,6 +23,24 @@ class MyDocument extends Document {
               only landed in the head via browser error-recovery. */}
           <meta name="google-adsense-account" content="ca-pub-3950888851778991" />
           <meta name="google-site-verification" content="Frk8KQk9JRTwCY5Sz2HlwbSwTdIZPlsu6lcC7M1AMrY" />
+
+          {/* Consent Mode v2 — deny by default before any tag loads. The cookie
+              banner calls gtag('consent','update',…) once the user decides.
+              Must stay ABOVE GA/AdSense in load order (this is in the initial HTML). */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "window.dataLayer=window.dataLayer||[];" +
+                "function gtag(){dataLayer.push(arguments);}" +
+                "window.gtag=gtag;" +
+                "gtag('consent','default',{" +
+                "ad_storage:'denied'," +
+                "ad_user_data:'denied'," +
+                "ad_personalization:'denied'," +
+                "analytics_storage:'denied'," +
+                "wait_for_update:500});",
+            }}
+          />
         </Head>
         <body>
           <Main />
