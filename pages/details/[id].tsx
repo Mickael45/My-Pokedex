@@ -49,6 +49,17 @@ const DetailsPage = ({
   const setLoadingToFalse = () => setLoading(false);
   useEffect(setLoadingToFalse, [id, setLoading]);
 
+  // Publish this Pokémon's colour so the global footer can tint itself to match
+  // and flow out of the themed page. Cleared on unmount so other pages (which
+  // never set it) keep the neutral footer.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.style.setProperty("--page-accent", color);
+    return () => {
+      root.style.removeProperty("--page-accent");
+    };
+  }, [color]);
+
   // Warm the browser cache for the neighbouring Pokemon so Prev/Next shows the
   // image instantly instead of waiting on a fresh request. Pixel art is tiny so it
   // is always prefetched; the heavier HD art is only prefetched in high-res mode.
