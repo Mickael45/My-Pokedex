@@ -31,6 +31,28 @@ const App = ({ Component, pageProps }: AppProps) => {
   // so the standalone global footer is suppressed there to avoid two footers.
   const isDetailPage = useRouter().pathname === "/details/[id]";
 
+  // Register the PWA service worker (production only — the dev server emits a
+  // fresh, uncacheable bundle every reload, and a SW there mostly gets in the
+  // way). Registered after `load` so it never competes with the first paint.
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production") return;
+    if (!("serviceWorker" in navigator)) return;
+    const register = () => {
+      navigator.serviceWorker.register("/sw.js").catch(() => {
+        /* registration failed — app still works, just no offline */
+      });
+    };
+    // On a hard navigation the window `load` event can fire before React
+    // hydrates this effect, so a plain addEventListener("load") would miss it
+    // and never register. Register straight away if loading is already done.
+    if (document.readyState === "complete") {
+      register();
+      return;
+    }
+    window.addEventListener("load", register, { once: true });
+    return () => window.removeEventListener("load", register);
+  }, []);
+
   // Mirror the banner decision into Consent Mode v2 (covers both a fresh click
   // and a granted/denied value restored from localStorage on load).
   useEffect(() => {
