@@ -26,8 +26,12 @@ export const typeSlugs = () => {
   return [...TYPES, ...pairs];
 };
 
+// Static routes that aren't data-generated: home, the type hub, and the
+// legal/trust pages (pages/{about,privacy,contact,terms}.tsx).
+const STATIC_PAGES = ["/", "/type-interactions", "/about", "/privacy", "/contact", "/terms"];
+
 export const buildUrls = () => {
-  const urls = ["/", "/type-interactions"];
+  const urls = [...STATIC_PAGES];
   for (let id = 1; id <= MAX_POKEMON_ID; id++) urls.push(`/details/${id}`);
   typeSlugs().forEach((slug) => urls.push(`/type-interactions/${slug}`));
   return urls;

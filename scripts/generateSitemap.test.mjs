@@ -9,12 +9,13 @@ test("pairs alphabetical + unique", () => {
   assert.ok(!s.includes("water-fire"));
   assert.equal(new Set(s).size, s.length);
 });
-test("total urls = 2 + 1025 + 171", () => assert.equal(buildUrls().length, 1198));
-test("includes home, type hub, a detail page, a type page", () => {
+test("total urls = 6 static + 1025 + 171", () => assert.equal(buildUrls().length, 1202));
+test("includes home, type hub, legal pages, a detail page, a type page", () => {
   const urls = buildUrls();
-  ["/", "/type-interactions", "/details/1", "/details/1025", "/type-interactions/fire"].forEach((u) =>
-    assert.ok(urls.includes(u), `missing ${u}`)
-  );
+  [
+    "/", "/type-interactions", "/about", "/privacy", "/contact", "/terms",
+    "/details/1", "/details/1025", "/type-interactions/fire",
+  ].forEach((u) => assert.ok(urls.includes(u), `missing ${u}`));
 });
 test("lastmod is a stable fixed date, not today-on-every-build", () => {
   // A constant — bumped only when page content changes — so rebuilds don't churn
