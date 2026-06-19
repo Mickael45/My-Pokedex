@@ -1,6 +1,7 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import styles from "./App.module.css";
 import { LOW_RESOLUTION } from "../constants/Resolution";
 import { LIGHT } from "../constants/Theme";
@@ -26,6 +27,9 @@ const App = ({ Component, pageProps }: AppProps) => {
   const [theme, setTheme] = useState<THEME>(LIGHT);
   const [error, setError] = useState<ErrorType | null>(null);
   const { consent, setConsent, hydrated } = useConsent();
+  // Detail pages render their own footer inside the type-coloured content area,
+  // so the standalone global footer is suppressed there to avoid two footers.
+  const isDetailPage = useRouter().pathname === "/details/[id]";
 
   // Mirror the banner decision into Consent Mode v2 (covers both a fresh click
   // and a granted/denied value restored from localStorage on load).
@@ -48,7 +52,7 @@ const App = ({ Component, pageProps }: AppProps) => {
                     <main>
                       <Component {...pageProps} />
                     </main>
-                    <Footer />
+                    {!isDetailPage && <Footer />}
                     <CookieConsentBanner />
                   </>
                 </PokemonContext.Provider>

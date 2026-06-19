@@ -7,15 +7,13 @@
   text-align: center;
   font-size: 0.8rem;
   line-height: 1.5;
-  /* On detail pages --page-accent carries the Pokémon's colour: the footer fades
-     in from a tint of it at the top into the neutral page below, so it flows out
-     of the themed content. On every other page the var is unset → transparent →
-     no tint, leaving the plain footer. */
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--page-accent, transparent) 30%, transparent),
-    transparent 160px
-  );
+}
+
+/* Detail pages render the footer INSIDE their type-coloured content area, so it
+   inherits the white text and sits on the themed background — a faint light rule
+   separates it from the content above instead of a standalone band. */
+.embedded {
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
 }
 
 .links {

@@ -13,6 +13,7 @@ import { fetchAllPokemons, fetchPokemonDetailsByNameOrId } from "../../services/
 import Header from "../../ui/components/Header/Header";
 import EvolutionStage from "../../ui/components/EvolutionStage/EvolutionStage";
 import AdSlot from "../../ui/components/AdSlot/AdSlot";
+import Footer from "../../ui/components/Footer/Footer";
 import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
 import { getPokemonPrimaryTypeColor } from "../../utils/pokemonFormatter/pokemonFormatter";
 import { getTypeColor, getTypeChipColor } from "../../utils/typeColors";
@@ -48,17 +49,6 @@ const DetailsPage = ({
 
   const setLoadingToFalse = () => setLoading(false);
   useEffect(setLoadingToFalse, [id, setLoading]);
-
-  // Publish this Pokémon's colour so the global footer can tint itself to match
-  // and flow out of the themed page. Cleared on unmount so other pages (which
-  // never set it) keep the neutral footer.
-  useEffect(() => {
-    const root = document.documentElement;
-    root.style.setProperty("--page-accent", color);
-    return () => {
-      root.style.removeProperty("--page-accent");
-    };
-  }, [color]);
 
   // Warm the browser cache for the neighbouring Pokemon so Prev/Next shows the
   // image instantly instead of waiting on a fresh request. Pixel art is tiny so it
@@ -227,6 +217,10 @@ const DetailsPage = ({
               {/* Full-width ad band below the panels — kept out of the 1fr 1fr
                   grid so Stats|Profile stay side by side when ads are enabled. */}
               <AdSlot name="detailBelowStats" />
+
+              {/* Footer lives inside the type-coloured content area on detail
+                  pages (the global one is suppressed in _app for this route). */}
+              <Footer embedded />
             </div>
           </div>
       </ErrorScreenWrapper>
