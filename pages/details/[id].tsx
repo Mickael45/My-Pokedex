@@ -12,6 +12,7 @@ import { usePokemonPic } from "../../hooks/usePokemonPic";
 import { fetchAllPokemons, fetchPokemonDetailsByNameOrId } from "../../services/fetchPokemons/fetchPokemons";
 import Header from "../../ui/components/Header/Header";
 import EvolutionStage from "../../ui/components/EvolutionStage/EvolutionStage";
+import AdSlot from "../../ui/components/AdSlot/AdSlot";
 import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
 import { getPokemonPrimaryTypeColor } from "../../utils/pokemonFormatter/pokemonFormatter";
 import { getTypeColor, getTypeChipColor } from "../../utils/typeColors";
@@ -176,6 +177,8 @@ const DetailsPage = ({
                     </div>
                   ))}
                 </section>
+
+                <AdSlot name="detailBelowStats" />
 
                 <section className={styles.glass}>
                   <div className={styles.paneTitle}>Profile</div>
