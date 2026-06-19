@@ -11,6 +11,12 @@ class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+          {/* PWA: link the manifest + installability hints. The manifest and all
+              icon sizes already live in /public; they just weren't referenced. */}
+          <link rel="manifest" href="/site.webmanifest" />
+          <meta name="theme-color" content="#b91c1c" />
+          <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
           {/* Warm cross-origin ad/analytics connections so they stop competing
               with image + navigation fetches for the ~6-connection budget on 3G. */}
           <link rel="preconnect" href="https://pagead2.googlesyndication.com" crossOrigin="anonymous" />
