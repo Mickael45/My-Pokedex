@@ -14,8 +14,8 @@ const ContactPage = () => (
       <LegalLayout heading="Contact" updated="June 19, 2026">
         <p>
           For questions, data corrections, or feedback about {SITE_NAME}, email{" "}
-          <a href="mailto:mickaelgomesconsulting@gmail.com">
-            mickaelgomesconsulting@gmail.com
+          <a href="mailto:doozy_34@proton.me">
+            doozy_34@proton.me
           </a>
           .
         </p>

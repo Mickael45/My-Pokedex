@@ -8,12 +8,16 @@ const isValid = (value: string | null): value is CONSENT =>
 const useConsent = () => {
   // Always start UNSET so server and first client render match (no hydration drift).
   const [consent, setConsentState] = useState<CONSENT>(UNSET);
+  // Flips true once we've read localStorage, so the banner doesn't flash before
+  // a returning user's stored choice is applied.
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
     const stored = window.localStorage.getItem(CONSENT_STORAGE_KEY);
     if (isValid(stored)) {
       setConsentState(stored);
     }
+    setHydrated(true);
   }, []);
 
   const setConsent = (next: CONSENT) => {
@@ -25,7 +29,7 @@ const useConsent = () => {
     }
   };
 
-  return { consent, setConsent };
+  return { consent, setConsent, hydrated };
 };
 
 export default useConsent;

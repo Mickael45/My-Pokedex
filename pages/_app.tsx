@@ -25,7 +25,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   const [resolution, setResolution] = useState<RESOLUTION>(LOW_RESOLUTION);
   const [theme, setTheme] = useState<THEME>(LIGHT);
   const [error, setError] = useState<ErrorType | null>(null);
-  const { consent, setConsent } = useConsent();
+  const { consent, setConsent, hydrated } = useConsent();
 
   // Mirror the banner decision into Consent Mode v2 (covers both a fresh click
   // and a granted/denied value restored from localStorage on load).
@@ -35,7 +35,7 @@ const App = ({ Component, pageProps }: AppProps) => {
   }, [consent]);
 
   return (
-    <ConsentContext.Provider value={{ consent, setConsent }}>
+    <ConsentContext.Provider value={{ consent, setConsent, hydrated }}>
       <ConsentScripts />
       <div data-resolution={resolution} className={styles.container} data-theme={theme}>
         <ResolutionContext.Provider value={{ resolution, setResolution }}>

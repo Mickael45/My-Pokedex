@@ -21,7 +21,10 @@ interface IProps {
   pokemons: IBasicPokemon[];
 }
 
-const POKEMON_STACK_SIZE = 12;
+// Render 16 up front so the first paint already overflows the viewport. Fewer
+// leaves no scrollbar, then loading more pops it in and the layout jumps; 16
+// keeps the scrollbar present and stable from the first render.
+const POKEMON_STACK_SIZE = 16;
 const ABOVE_THE_FOLD = 6;
 
 const HomePage = ({ pokemons }: IProps) => {

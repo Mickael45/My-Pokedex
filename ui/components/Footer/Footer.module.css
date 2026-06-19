@@ -1,6 +1,9 @@
 .footer {
-  border-top: 1px solid color-mix(in srgb, currentColor 15%, transparent);
-  padding: 1.5rem 1rem 5rem;
+  /* No top border and a quiet tone so the footer blends into the page rather
+     than reading as a separate band — matters most on the vividly themed detail
+     pages. Bottom padding kept small; the App container already reserves space
+     for the fixed mobile tab bar, so a big bottom pad here just left a dead gap. */
+  padding: 1.25rem 1rem;
   text-align: center;
   font-size: 0.8rem;
   line-height: 1.5;

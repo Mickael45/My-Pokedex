@@ -4,9 +4,11 @@ import { GRANTED, DENIED, UNSET } from "../../../constants/Consent";
 import styles from "./CookieConsentBanner.module.css";
 
 const CookieConsentBanner = () => {
-  const { consent, setConsent } = useContext(ConsentContext);
+  const { consent, setConsent, hydrated } = useContext(ConsentContext);
 
-  if (consent !== UNSET) {
+  // Wait for localStorage to be read before showing anything, so a returning
+  // user who already chose never sees the banner flash in and out.
+  if (!hydrated || consent !== UNSET) {
     return null;
   }
 
