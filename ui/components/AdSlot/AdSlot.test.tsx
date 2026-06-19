@@ -22,7 +22,6 @@ describe("AdSlot (ads enabled + slot id)", () => {
       ADSENSE_CLIENT: "ca-pub-3950888851778991",
       AD_SLOTS: { detailBelowStats: { slot: "1234567890", height: 280 } },
     }));
-    // @ts-expect-error test global
     window.adsbygoogle = [];
 
     const { default: AdSlot } = await import("./AdSlot");
