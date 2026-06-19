@@ -68,9 +68,10 @@ const Header = ({
       <meta name="twitter:image:alt" content={ogImageAlt} />
 
       <meta name="theme-color" content="#b91c1c" />
+      <link rel="icon" href="/favicon.ico" sizes="any" />
       <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
       <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16.png" />
-      <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+      <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
       <link rel="manifest" href="/site.webmanifest" />
 
       <link rel="preload" href="/fonts/pixelPokemonFont.ttf" as="font" crossOrigin="" />
