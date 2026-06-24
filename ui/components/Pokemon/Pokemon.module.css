@@ -246,10 +246,9 @@
   .card.cardFocused {
     transform: translateY(-10px) scale(1.03);
     /* Stronger than desktop hover so the centered card clearly stands out from
-       its neighbours: deeper drop shadow + a light ring + a type-coloured glow.
-       Glow/ring live in box-shadow so the reduced-motion reset below clears them. */
+       its neighbours: deeper drop shadow + a type-coloured glow.
+       The glow lives in box-shadow so the reduced-motion reset below clears it. */
     box-shadow:
-      0 0 0 3px rgba(255, 255, 255, 0.9),
       0 30px 54px rgba(0, 0, 0, 0.62),
       0 0 42px -2px var(--type);
   }
