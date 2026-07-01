@@ -27,7 +27,7 @@ class MyDocument extends Document {
           {/* Site-wide verification/monetization metas must live inside <head>.
               Placed between </Head> and <body> they were invalid stray nodes that
               only landed in the head via browser error-recovery. */}
-          <meta name="google-adsense-account" content="ca-pub-3950888851778991" />
+          <meta name="google-adsense-account" content="ca-pub-6421306327536314" />
           <meta name="google-site-verification" content="Frk8KQk9JRTwCY5Sz2HlwbSwTdIZPlsu6lcC7M1AMrY" />
 
           {/* Consent Mode v2 — deny by default before any tag loads. The cookie

@@ -7,7 +7,7 @@ describe("ads config", () => {
   });
 
   it("uses the correct publisher id", () => {
-    expect(ADSENSE_CLIENT).toBe("ca-pub-3950888851778991");
+    expect(ADSENSE_CLIENT).toBe("ca-pub-6421306327536314");
   });
 
   it("reserves a positive height for every slot and has no live slot ids yet", () => {

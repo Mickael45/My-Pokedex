@@ -4,7 +4,7 @@
 // See docs/superpowers/plans — "Owner runbook: enabling ads" before flipping.
 export const ADS_ENABLED = false;
 
-export const ADSENSE_CLIENT = "ca-pub-3950888851778991";
+export const ADSENSE_CLIENT = "ca-pub-6421306327536314";
 
 export interface AdSlotConfig {
   // AdSense ad-unit slot id; empty until the unit is created in the console.
