@@ -18,9 +18,12 @@ type Args = {
   overrides: FrOverrides;
 };
 
+// A scaffolded-but-untranslated stub (value starting with "__STUB__ ") counts as
+// MISSING so the build stays honest until Mickael fills in a real French string.
 const overrideValue = ({ entityType, id, field, overrides }: Args): string | null => {
   const value = overrides?.[entityType]?.[id]?.[field];
-  return value && value.trim() ? value : null;
+  if (!value || !value.trim() || value.startsWith("__STUB__ ")) return null;
+  return value;
 };
 
 const apiOrNull = (apiValue: string | null): string | null => (apiValue && apiValue.trim() ? apiValue : null);

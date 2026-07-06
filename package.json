@@ -7,7 +7,8 @@
     "sitemap": "node scripts/generateSitemap.mjs",
     "predev": "node scripts/downloadPokemonImages.mjs && node scripts/generateSitemap.mjs",
     "dev": "next dev --turbopack",
-    "prebuild": "node scripts/downloadPokemonImages.mjs && node scripts/generateSitemap.mjs",
+    "prebuild": "node scripts/downloadPokemonImages.mjs && node scripts/generateSitemap.mjs && npm run check-fr-coverage",
+    "check-fr-coverage": "tsx scripts/checkFrCoverage.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -38,6 +39,7 @@
     "jsdom": "^29.1.1",
     "postcss": "^8.5.10",
     "tailwindcss": "^3.4.1",
+    "tsx": "^4.23.0",
     "typescript": "^5",
     "vitest": "^4.1.9"
   },

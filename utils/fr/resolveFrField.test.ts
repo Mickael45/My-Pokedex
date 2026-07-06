@@ -16,6 +16,10 @@ describe("resolveFrField", () => {
   it("throws FrCoverageError when neither source has a value", () => {
     expect(() => resolveFrField({ entityType: "flavorText", id: "999", field: "text", apiValue: null, overrides })).toThrow(FrCoverageError);
   });
+  it("treats a scaffolded __STUB__ override value as missing (still unfilled)", () => {
+    const stubOverrides = { flavorText: { "906": { text: "__STUB__ Some English entry." } } };
+    expect(() => resolveFrField({ entityType: "flavorText", id: "906", field: "text", apiValue: null, overrides: stubOverrides })).toThrow(FrCoverageError);
+  });
 });
 
 describe("collectFrGap", () => {
@@ -24,5 +28,9 @@ describe("collectFrGap", () => {
   });
   it("returns a gap descriptor when the field would throw", () => {
     expect(collectFrGap({ entityType: "flavorText", id: "999", field: "text", apiValue: null, overrides })).toEqual({ entityType: "flavorText", id: "999", field: "text" });
+  });
+  it("collects a __STUB__ override value as a gap", () => {
+    const stubOverrides = { flavorText: { "906": { text: "__STUB__ Some English entry." } } };
+    expect(collectFrGap({ entityType: "flavorText", id: "906", field: "text", apiValue: null, overrides: stubOverrides })).toEqual({ entityType: "flavorText", id: "906", field: "text" });
   });
 });
