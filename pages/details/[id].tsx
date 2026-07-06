@@ -10,6 +10,7 @@ import LoadingContext from "../../context/LoadingContext";
 import ResolutionContext from "../../context/ResolutionContext";
 import { usePokemonPic } from "../../hooks/usePokemonPic";
 import { fetchAllPokemons, fetchPokemonDetailsByNameOrId } from "../../services/fetchPokemons/fetchPokemons";
+import { buildFrSlugMaps } from "../../services/fetchPokemons/fetchPokemonsFr";
 import Header from "../../ui/components/Header/Header";
 import EvolutionStage from "../../ui/components/EvolutionStage/EvolutionStage";
 import AdSlot from "../../ui/components/AdSlot/AdSlot";
@@ -21,9 +22,14 @@ import TypeIcon from "../../ui/components/PokemonType/typeIcons";
 import { capitalizeFirstLetter, formatNumberToMatchLength } from "../../utils/stringManipulation";
 import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsString } from "../../utils/unitConverter";
 import { breadcrumbJsonLd } from "../../utils/structuredData";
+import { hreflangAlternates } from "../../utils/hreflang";
 
 const MAX_STAT_VALUE = 200;
 const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5", 1: "1", 2: "2", 4: "4" };
+
+// `frSlug` is the French detail slug for this id, resolved at build time solely to
+// emit the reciprocal `fr` hreflang alternate — it does not affect the visible page.
+type DetailsPageProps = IFullPokemon & { frSlug: string };
 
 const DetailsPage = ({
   id,
@@ -40,7 +46,8 @@ const DetailsPage = ({
   abilities,
   description,
   category,
-}: IFullPokemon) => {
+  frSlug,
+}: DetailsPageProps) => {
   const { setLoading } = useContext(LoadingContext);
   const { resolution } = useContext(ResolutionContext);
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
@@ -98,6 +105,7 @@ const DetailsPage = ({
           .map(capitalizeFirstLetter)
           .join("/")}-type Pokémon (#${formatNumberToMatchLength(id)}). See base stats, type weaknesses and resistances, abilities, and its full evolution line.`}
         canonicalPath={`/details/${id}`}
+        alternates={hreflangAlternates(`/details/${id}`, `/fr/pokemon/${frSlug}`)}
         image={hdImageUrl}
         imageAlt={`${capitalizeFirstLetter(name)} official artwork`}
         ogType="article"
@@ -239,6 +247,10 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }: { params: { id: string } }) {
   const pokemonData = await fetchPokemonDetailsByNameOrId(params.id);
+  // Resolve the French slug for this id so the head can emit the reciprocal `fr`
+  // hreflang alternate. Build-time only; the visible EN page is unaffected.
+  const { idToSlug } = await buildFrSlugMaps();
+  const frSlug = idToSlug[Number(params.id)];
 
-  return { props: { ...pokemonData } };
+  return { props: { ...pokemonData, frSlug } };
 }

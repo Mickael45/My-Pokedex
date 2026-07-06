@@ -7,7 +7,9 @@ import TypeMatchups from "../../ui/components/TypeMatchups/TypeMatchups";
 import TypeIntro from "../../ui/components/TypeMatchups/TypeIntro";
 import Page from "../../ui/templates/Page/Page";
 import { allTypeSlugs, parseTypeSlug } from "../../utils/typeSlug";
+import { toFrTypeSlug } from "../../utils/frTypeSlug";
 import { breadcrumbJsonLd } from "../../utils/structuredData";
+import { hreflangAlternates } from "../../utils/hreflang";
 import { capitalizeFirstLetter } from "../../utils/stringManipulation";
 
 interface IProps {
@@ -25,6 +27,7 @@ const ComboPage = ({ combo, types }: IProps) => {
         title={`${label} ${noun} — Weaknesses, Resistances & Best Matchups | Pokédex`}
         description={`Type effectiveness for ${label}: which types it is weak to, which it resists, and which it deals the most damage against.`}
         canonicalPath={`/type-interactions/${combo}`}
+        alternates={hreflangAlternates(`/type-interactions/${combo}`, `/fr/type-interactions/${toFrTypeSlug(types)}`)}
         jsonLd={breadcrumbJsonLd([
           { name: "Pokédex", path: "/" },
           { name: "Type Interactions", path: "/type-interactions" },

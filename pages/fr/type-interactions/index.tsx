@@ -9,6 +9,8 @@ import AdSlot from "../../../ui/components/AdSlot/AdSlot";
 import Page from "../../../ui/templates/Page/Page";
 import { usePokemonTypesFromQuery } from "../../../hooks/useQueryParams";
 import { toFrTypeSlug } from "../../../utils/frTypeSlug";
+import { toTypeSlug } from "../../../utils/typeSlug";
+import { hreflangAlternates } from "../../../utils/hreflang";
 
 const FrTypeInteractionsPage = () => {
   // Sort so a legacy ?types=water,fire URL renders the same label/order as the
@@ -18,6 +20,10 @@ const FrTypeInteractionsPage = () => {
   const canonicalPath = selected.length
     ? `/fr/type-interactions/${toFrTypeSlug(selected)}`
     : "/fr/type-interactions";
+  // Mirror the selected combo across locales; with nothing selected, pair the
+  // bare index pages. `selected` is english, so the EN side is toTypeSlug.
+  const enHref = selected.length ? `/type-interactions/${toTypeSlug(selected)}` : "/type-interactions";
+  const frHref = canonicalPath;
 
   return (
     <>
@@ -25,6 +31,8 @@ const FrTypeInteractionsPage = () => {
         title="Interactions de types Pokémon — Faiblesses & Résistances | Pokédex"
         description="Choisissez un type (ou deux) pour voir les dégâts qu'il subit et inflige à chaque autre type. Tableau complet d'efficacité des types Pokémon."
         canonicalPath={canonicalPath}
+        alternates={hreflangAlternates(enHref, frHref)}
+        ogLocale="fr_FR"
       />
       {/* Plan 6: hreflang/og:locale/breadcrumb */}
       <Page>

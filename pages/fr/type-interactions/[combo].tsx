@@ -7,8 +7,10 @@ import TypeMatchups from "../../../ui/components/TypeMatchups/TypeMatchups";
 import TypeIntro from "../../../ui/components/TypeMatchups/TypeIntro";
 import Page from "../../../ui/templates/Page/Page";
 import { allFrTypeSlugs, parseFrTypeSlug } from "../../../utils/frTypeSlug";
+import { toTypeSlug } from "../../../utils/typeSlug";
 import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
+import { hreflangAlternates } from "../../../utils/hreflang";
 
 interface IProps {
   combo: string;
@@ -24,6 +26,8 @@ const FrComboPage = ({ combo, types }: IProps) => {
         title={`${label} — Faiblesses, Résistances & Meilleurs Matchups | Pokédex`}
         description={`Efficacité des types pour ${label} : à quels types il est faible, lesquels il résiste, et contre lesquels il inflige le plus de dégâts.`}
         canonicalPath={`/fr/type-interactions/${combo}`}
+        alternates={hreflangAlternates(`/type-interactions/${toTypeSlug(types)}`, `/fr/type-interactions/${combo}`)}
+        ogLocale="fr_FR"
       />
       {/* Plan 6: hreflang/og:locale/breadcrumb */}
       <Page>

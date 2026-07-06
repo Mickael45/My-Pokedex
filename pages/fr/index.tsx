@@ -16,6 +16,7 @@ import AdSlot from "../../ui/components/AdSlot/AdSlot";
 import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
 import FlexboxList from "../../ui/templates/FlexboxList/FlexboxList";
 import Page from "../../ui/templates/Page/Page";
+import { hreflangAlternates } from "../../utils/hreflang";
 
 interface IProps {
   pokemons: IBasicPokemon[];
@@ -79,6 +80,8 @@ const HomePageFr = ({ pokemons }: IProps) => {
         title="Pokédex en français — stats, types, faiblesses, évolutions"
         description="Le Pokédex en français : recherchez chaque Pokémon par nom ou numéro, filtrez par type et consultez statistiques, faiblesses, talents et évolutions."
         canonicalPath="/fr"
+        alternates={hreflangAlternates("/", "/fr")}
+        ogLocale="fr_FR"
       />
       {/* Plan 6: hreflang, og:locale fr_FR, self-canonical, JSON-LD */}
       <ErrorScreenWrapper>

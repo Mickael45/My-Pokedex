@@ -16,6 +16,7 @@ import FlexboxList from "../ui/templates/FlexboxList/FlexboxList";
 import Page from "../ui/templates/Page/Page";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../constants/Seo";
 import { websiteJsonLd, organizationJsonLd } from "../utils/structuredData";
+import { hreflangAlternates } from "../utils/hreflang";
 
 interface IProps {
   pokemons: IBasicPokemon[];
@@ -78,6 +79,7 @@ const HomePage = ({ pokemons }: IProps) => {
         title={DEFAULT_TITLE}
         description={DEFAULT_DESCRIPTION}
         canonicalPath="/"
+        alternates={hreflangAlternates("/", "/fr")}
         jsonLd={[websiteJsonLd(), organizationJsonLd()]}
       />
       <ErrorScreenWrapper>

@@ -23,6 +23,7 @@ import { capitalizeFirstLetter, formatNumberToMatchLength } from "../../../utils
 import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsString } from "../../../utils/unitConverter";
 import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
 import { FR_STAT_LABELS } from "../../../constants/FrStatLabels";
+import { hreflangAlternates } from "../../../utils/hreflang";
 
 const MAX_STAT_VALUE = 200;
 const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5", 1: "1", 2: "2", 4: "4" };
@@ -114,6 +115,8 @@ const FrDetailsPage = ({
           .map(typeLabel)
           .join("/")} (#${formatNumberToMatchLength(id)}). Découvrez ses statistiques de base, ses faiblesses et résistances de type, ses talents et sa chaîne d'évolution complète.`}
         canonicalPath={`/fr/pokemon/${slug}`}
+        alternates={hreflangAlternates(`/details/${id}`, `/fr/pokemon/${slug}`)}
+        ogLocale="fr_FR"
         image={hdImageUrl}
         imageAlt={`${displayName} official artwork`}
         ogType="article"
