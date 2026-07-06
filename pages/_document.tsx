@@ -1,15 +1,25 @@
-import Document, { DocumentContext, Html, Head, Main, NextScript } from "next/document";
+import Document, { DocumentContext, DocumentInitialProps, Html, Head, Main, NextScript } from "next/document";
 
-class MyDocument extends Document {
-  static async getInitialProps(ctx: DocumentContext) {
+/**
+ * Pure helper: map a Next route pattern (ctx.pathname, e.g. "/fr/pokemon/[slug]")
+ * to the document language. "fr" for the /fr locale subtree, "en" otherwise.
+ */
+export const langForPathname = (pathname: string): "en" | "fr" =>
+  pathname === "/fr" || pathname.startsWith("/fr/") ? "fr" : "en";
+
+type MyDocumentProps = DocumentInitialProps & { lang: "en" | "fr" };
+
+class MyDocument extends Document<MyDocumentProps> {
+  static async getInitialProps(ctx: DocumentContext): Promise<MyDocumentProps> {
     const initialProps = await Document.getInitialProps(ctx);
+    const lang = langForPathname(ctx.pathname);
 
-    return initialProps;
+    return { ...initialProps, lang };
   }
 
   render() {
     return (
-      <Html lang="en">
+      <Html lang={this.props.lang ?? "en"}>
         <Head>
           {/* PWA: link the manifest + installability hints. The manifest and all
               icon sizes already live in /public; they just weren't referenced. */}
