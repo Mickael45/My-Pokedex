@@ -2,6 +2,8 @@ import styles from "../../../pages/type-interactions/TypeInteractions.module.css
 import pokemonTypesColor from "../../../constants/TypesColor.json";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import { defendingRows, attackingRows, MatchupRow } from "../../../utils/pokemonTypes/matchups";
+import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
+import { useLocale, useStrings } from "../../../hooks/useLocale";
 
 const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
 
@@ -13,7 +15,11 @@ interface IProps {
 }
 
 const TypeMatchups = ({ selected }: IProps) => {
-  const combo = selected.map(capitalizeFirstLetter).join(" / ");
+  const locale = useLocale();
+  const strings = useStrings();
+  const typeLabel = (type: string) =>
+    locale === "fr" ? (FR_TYPE_LABELS[type] ?? capitalizeFirstLetter(type)) : capitalizeFirstLetter(type);
+  const combo = selected.map(typeLabel).join(" / ");
   const defending = selected.length ? defendingRows(selected) : [];
   const attacking = selected.length ? attackingRows(selected) : [];
 
@@ -28,12 +34,12 @@ const TypeMatchups = ({ selected }: IProps) => {
       <p className={styles.secDesc}>{description}</p>
       <div className={styles.panel}>
         {data.length === 0 ? (
-          <p className={styles.empty}>Only neutral matchups for this selection.</p>
+          <p className={styles.empty}>{strings.typeChartNeutralOnly}</p>
         ) : (
           data.map(({ type, mult }) => (
             <div key={type} className={`${styles.row} ${styles[TIER_CLASS[mult]]}`}>
               <span className={styles.typeChip} style={{ background: typeColor(type) }}>
-                {capitalizeFirstLetter(type)}
+                {typeLabel(type)}
               </span>
               <span className={styles.track}>
                 <span className={styles.fill} style={{ width: `${(mult / MAX_FACTOR) * 100}%` }} />
@@ -47,13 +53,23 @@ const TypeMatchups = ({ selected }: IProps) => {
   );
 
   if (!selected.length) {
-    return <p className={styles.prompt}>Select a type (or two) above to see its matchups.</p>;
+    return <p className={styles.prompt}>{strings.typeChartPrompt}</p>;
   }
 
   return (
     <>
-      {renderBars("🛡️", "Defending", `Damage ${combo} takes from each attacking type, worst matchups first.`, defending)}
-      {renderBars("⚔️", "Attacking", `Damage ${combo} deals to each type with its best move, best matchups first.`, attacking)}
+      {renderBars(
+        "🛡️",
+        strings.typeChartDefending,
+        strings.typeChartDefendingDesc.replace("{combo}", combo),
+        defending
+      )}
+      {renderBars(
+        "⚔️",
+        strings.typeChartAttacking,
+        strings.typeChartAttackingDesc.replace("{combo}", combo),
+        attacking
+      )}
     </>
   );
 };

@@ -38,6 +38,14 @@ export type UiStrings = {
   detailPrev: string;
   detailNext: string;
   detailLevelPrefix: string;
+  typeChartDefending: string;
+  typeChartAttacking: string;
+  typeChartDefendingDesc: string;
+  typeChartAttackingDesc: string;
+  typeChartNeutralOnly: string;
+  typeChartPrompt: string;
+  typePickerLabel: string;
+  typePickerHint: string;
 };
 
 export const UI_STRINGS: Record<Locale, UiStrings> = {
@@ -81,6 +89,14 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     detailPrev: "< Prev",
     detailNext: "Next >",
     detailLevelPrefix: "Lv.",
+    typeChartDefending: "Defending",
+    typeChartAttacking: "Attacking",
+    typeChartDefendingDesc: "Damage {combo} takes from each attacking type, worst matchups first.",
+    typeChartAttackingDesc: "Damage {combo} deals to each type with its best move, best matchups first.",
+    typeChartNeutralOnly: "Only neutral matchups for this selection.",
+    typeChartPrompt: "Select a type (or two) above to see its matchups.",
+    typePickerLabel: "Type(s)",
+    typePickerHint: "select up to 2",
   },
   fr: {
     navPokedex: "Pokédex",
@@ -122,5 +138,13 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     detailPrev: "< Préc.",
     detailNext: "Suiv. >",
     detailLevelPrefix: "Niv.",
+    typeChartDefending: "Défense",
+    typeChartAttacking: "Attaque",
+    typeChartDefendingDesc: "Dégâts subis par {combo} de la part de chaque type attaquant, pires en premier.",
+    typeChartAttackingDesc: "Dégâts infligés par {combo} à chaque type avec sa meilleure attaque, meilleurs en premier.",
+    typeChartNeutralOnly: "Uniquement des matchups neutres pour cette sélection.",
+    typeChartPrompt: "Sélectionnez un ou deux types ci-dessus pour voir ses matchups.",
+    typePickerLabel: "Type(s)",
+    typePickerHint: "2 max",
   },
 };

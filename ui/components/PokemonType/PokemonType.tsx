@@ -57,7 +57,7 @@ const PokemonType = ({ type, children = "", handleTypeClick, variant, selected =
       onClick={handleClick}
     >
       <TypeIcon type={type} className={styles.typeIcon} />
-      {capitalizeFirstLetter(type)}
+      {locale === "fr" ? (FR_TYPE_LABELS[type] ?? capitalizeFirstLetter(type)) : capitalizeFirstLetter(type)}
       {children}
     </span>
   );

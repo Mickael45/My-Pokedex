@@ -2,11 +2,14 @@ import { useEffect, type CSSProperties } from "react";
 import { useRouter } from "next/router";
 
 import * as FilteringTypes from "../../../constants/Types";
-import { TYPE_INTERACTIONS } from "../../../constants/Routes";
+import { TYPE_INTERACTIONS, FR_TYPE_INTERACTIONS } from "../../../constants/Routes";
 import { usePokemonTypesFromQuery } from "../../../hooks/useQueryParams";
 import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { toTypeSlug } from "../../../utils/typeSlug";
+import { toFrTypeSlug } from "../../../utils/frTypeSlug";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
+import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
+import { useLocale, useStrings } from "../../../hooks/useLocale";
 import TypeIcon from "../PokemonType/typeIcons";
 import styles from "./TypePicker.module.css";
 
@@ -20,6 +23,8 @@ interface IProps {
 // navigates to the canonical static slug page so every matchup has one indexable URL.
 const TypePicker = ({ selected: selectedProp }: IProps) => {
   const router = useRouter();
+  const locale = useLocale();
+  const strings = useStrings();
   const querySelected = usePokemonTypesFromQuery().split(",").filter(Boolean);
   const selected = selectedProp ?? querySelected;
 
@@ -29,6 +34,9 @@ const TypePicker = ({ selected: selectedProp }: IProps) => {
       ? selected.filter((current) => current !== type)
       : [...selected, type].slice(-2);
 
+    if (locale === "fr") {
+      return next.length ? `${FR_TYPE_INTERACTIONS}/${toFrTypeSlug(next)}` : FR_TYPE_INTERACTIONS;
+    }
     return next.length ? `${TYPE_INTERACTIONS}/${toTypeSlug(next)}` : TYPE_INTERACTIONS;
   };
 
@@ -46,8 +54,8 @@ const TypePicker = ({ selected: selectedProp }: IProps) => {
   return (
     <div className={styles.picker}>
       <div className={styles.label}>
-        <span>Type(s)</span>
-        <span className={styles.hint}>select up to 2</span>
+        <span>{strings.typePickerLabel}</span>
+        <span className={styles.hint}>{strings.typePickerHint}</span>
       </div>
       <div className={styles.chips}>
         {OPTIONS.map((type) => (
@@ -59,7 +67,7 @@ const TypePicker = ({ selected: selectedProp }: IProps) => {
             onClick={() => toggle(type)}
           >
             <TypeIcon type={type} className={styles.chipIcon} />
-            {capitalizeFirstLetter(type)}
+            {locale === "fr" ? (FR_TYPE_LABELS[type] ?? capitalizeFirstLetter(type)) : capitalizeFirstLetter(type)}
           </button>
         ))}
       </div>
