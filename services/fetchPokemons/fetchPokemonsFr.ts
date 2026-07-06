@@ -95,11 +95,16 @@ export const fetchAllPokemonsFr = async (): Promise<IBasicPokemon[]> => {
 // Build-time slug↔id maps, MODULE-MEMOIZED so later consumers (Plan 3's
 // getStaticPaths, the language switcher, the Task-7 home) reuse a single fetch.
 // Only species are fetched here — the lighter payload map-only callers need.
-let cache: { slugToId: Record<string, number>; idToSlug: Record<number, string> } | null = null;
+let cache: {
+  slugToId: Record<string, number>;
+  idToSlug: Record<number, string>;
+  idToFrName: Record<number, string>;
+} | null = null;
 
 export const buildFrSlugMaps = async (): Promise<{
   slugToId: Record<string, number>;
   idToSlug: Record<number, string>;
+  idToFrName: Record<number, string>;
 }> => {
   if (cache) {
     return cache;
@@ -108,17 +113,20 @@ export const buildFrSlugMaps = async (): Promise<{
   const ids = Array.from({ length: MAX_POKEMON_ID_ALLOWED }, (_, i) => i + 1);
   const species = await Promise.all<Specie>(ids.map((id) => request(`${POKE_API_URL}pokemon-species/${id}`)));
 
-  const entries = species.map((specie, index) => ({
-    id: ids[index],
-    frName: resolveFrField({
+  const idToFrName: Record<number, string> = {};
+  const entries = species.map((specie, index) => {
+    const frName = resolveFrField({
       entityType: "names",
       id: String(ids[index]),
       field: "name",
       apiValue: extractPokemonNameFr(specie as unknown as SpecieFr),
       overrides,
-    }),
-  }));
+    });
+    idToFrName[ids[index]] = frName;
+    return { id: ids[index], frName };
+  });
 
-  cache = buildSlugIdMap(entries);
+  const { slugToId, idToSlug } = buildSlugIdMap(entries);
+  cache = { slugToId, idToSlug, idToFrName };
   return cache;
 };
