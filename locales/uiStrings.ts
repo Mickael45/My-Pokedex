@@ -23,7 +23,20 @@ export type UiStrings = {
   footerTerms: string;
   footerNavLabel: string;
   footerDisclaimer: string;
-  // extend in later tasks (detail pane titles…)
+  detailPokedexEntry: string;
+  detailBaseStats: string;
+  detailProfile: string;
+  detailTypeEffectiveness: string;
+  detailDamageTaken: string;
+  detailDamageDealt: string;
+  detailEvolution: string;
+  detailHeight: string;
+  detailWeight: string;
+  detailCategory: string;
+  detailAbilities: string;
+  detailPrev: string;
+  detailNext: string;
+  detailLevelPrefix: string;
 };
 
 export const UI_STRINGS: Record<Locale, UiStrings> = {
@@ -52,6 +65,20 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     footerNavLabel: "Footer",
     footerDisclaimer:
       "is an unofficial fan-made reference. It is not affiliated with, endorsed by, or sponsored by Nintendo, Game Freak, or The Pokémon Company. Pokémon and Pokémon character names are trademarks of Nintendo. All stat tables and type-matchup data on this site are independently compiled facts.",
+    detailPokedexEntry: "Pokedex entry",
+    detailBaseStats: "Base stats",
+    detailProfile: "Profile",
+    detailTypeEffectiveness: "Type effectiveness",
+    detailDamageTaken: "Damage taken",
+    detailDamageDealt: "Damage dealt",
+    detailEvolution: "Evolution",
+    detailHeight: "Height",
+    detailWeight: "Weight",
+    detailCategory: "Category",
+    detailAbilities: "Abilities",
+    detailPrev: "< Prev",
+    detailNext: "Next >",
+    detailLevelPrefix: "Lv.",
   },
   fr: {
     navPokedex: "Pokédex",
@@ -78,5 +105,19 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     footerNavLabel: "Pied de page",
     footerDisclaimer:
       "est une référence non officielle créée par des fans. Ce site n'est ni affilié, ni approuvé, ni sponsorisé par Nintendo, Game Freak ou The Pokémon Company. Pokémon et les noms des personnages Pokémon sont des marques de Nintendo. Tous les tableaux de statistiques et les données de correspondances de types de ce site sont des faits compilés de manière indépendante.",
+    detailPokedexEntry: "Description Pokédex",
+    detailBaseStats: "Statistiques de base",
+    detailProfile: "Profil",
+    detailTypeEffectiveness: "Efficacité des types",
+    detailDamageTaken: "Dégâts subis",
+    detailDamageDealt: "Dégâts infligés",
+    detailEvolution: "Évolution",
+    detailHeight: "Taille",
+    detailWeight: "Poids",
+    detailCategory: "Catégorie",
+    detailAbilities: "Talents",
+    detailPrev: "< Préc.",
+    detailNext: "Suiv. >",
+    detailLevelPrefix: "Niv.",
   },
 };
