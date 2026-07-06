@@ -6,10 +6,16 @@
 // FR fetch path, consistent with fetchFrData.ts.
 import { formatToBasicPokemon, formatEvolvesFrom } from "../../utils/pokemonFormatter/pokemonFormatter";
 import { extractPokemonName } from "../../utils/pokemonFormatter/extractors";
-import { extractPokemonNameFr, type SpecieFr } from "../../utils/pokemonFormatter/extractorsFr";
+import {
+  extractPokemonNameFr,
+  extractPokemonCategoryFr,
+  extractPokemonDescriptionFr,
+  type SpecieFr,
+} from "../../utils/pokemonFormatter/extractorsFr";
 import { resolveFrField, type FrOverrides } from "../../utils/fr/resolveFrField";
 import { buildSlugIdMap } from "../../utils/slugify";
-import { Specie, IPokemonResponseType } from "../../utils/pokemonFormatter/types";
+import { Specie, IPokemonResponseType, Ability } from "../../utils/pokemonFormatter/types";
+import { fetchPokemonDetailsByNameOrId } from "./fetchPokemons";
 import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL } from "../../constants/FetchPokemons";
 import frOverridesJson from "../../locales/fr-overrides.json";
 
@@ -34,6 +40,61 @@ export const augmentBasicWithFr = (
   });
 
   return { ...basic, frName, slug };
+};
+
+// PURE, testable core for the detail page. Returns the English full pokemon with
+// its resolved French name/category/description attached, the caller-resolved
+// `frAbilities` (already one-per-visible-ability, in `enFull.abilities` order), and
+// an evolution chain whose every stage gains its French name and slug from `maps`.
+// resolveFrField throws (FrCoverageError) if any required French field is missing
+// from both PokéAPI and the overrides, so English can never leak into the FR dataset.
+export const augmentFullWithFr = (
+  enFull: IFullPokemon,
+  species: SpecieFr,
+  abilityFrNames: string[],
+  maps: { idToFrName: Record<number, string>; idToSlug: Record<number, string> },
+  overridesArg: FrOverrides
+): IFullPokemon => {
+  const id = String(enFull.id);
+
+  const frName = resolveFrField({
+    entityType: "names",
+    id,
+    field: "name",
+    apiValue: extractPokemonNameFr(species),
+    overrides: overridesArg,
+  });
+
+  const frCategory = resolveFrField({
+    entityType: "category",
+    id,
+    field: "text",
+    apiValue: extractPokemonCategoryFr(species),
+    overrides: overridesArg,
+  });
+
+  const frDescription = resolveFrField({
+    entityType: "flavorText",
+    id,
+    field: "text",
+    apiValue: extractPokemonDescriptionFr(species),
+    overrides: overridesArg,
+  });
+
+  const evolutionChain = enFull.evolutionChain.map((stage) => ({
+    ...stage,
+    frName: maps.idToFrName[stage.id],
+    slug: maps.idToSlug[stage.id],
+  }));
+
+  return {
+    ...enFull,
+    frName,
+    frCategory,
+    frDescription,
+    frAbilities: abilityFrNames,
+    evolutionChain,
+  };
 };
 
 const REQUEST_RETRIES = 3;
@@ -129,4 +190,55 @@ export const buildFrSlugMaps = async (): Promise<{
   const { slugToId, idToSlug } = buildSlugIdMap(entries);
   cache = { slugToId, idToSlug, idToFrName };
   return cache;
+};
+
+const isAbilityVisible = (ability: Ability) => !ability.is_hidden;
+
+// Resolve one visible ability's French name: /ability/{slug} → the fr `names[]`
+// entry → resolveFrField (throws if neither API nor overrides carry it).
+const fetchAbilityFrName = async (abilitySlug: string): Promise<string> => {
+  const abilityData = await request(`${POKE_API_URL}ability/${abilitySlug}`);
+  const apiValue =
+    (abilityData.names as Array<{ language: { name: string }; name: string }>).find(
+      (entry) => entry.language.name === "fr"
+    )?.name ?? null;
+
+  return resolveFrField({
+    entityType: "abilities",
+    id: abilitySlug,
+    field: "name",
+    apiValue,
+    overrides,
+  });
+};
+
+// Build-time only. Resolves the FR detail dataset for a French slug: looks up the
+// id via the memoized slug maps, reuses the English full-detail fetch, then layers
+// on the French species fields and the visible abilities' French names (in the same
+// order as `enFull.abilities`, matching extractAbilitiesFromPokemon's !is_hidden
+// filter) via the pure augmentFullWithFr. prev/next slugs come from adjacent ids.
+export const fetchPokemonDetailFrBySlug = async (
+  slug: string
+): Promise<{ pokemon: IFullPokemon; prevSlug: string | null; nextSlug: string | null }> => {
+  const maps = await buildFrSlugMaps();
+  const id = maps.slugToId[slug];
+
+  const enFull = await fetchPokemonDetailsByNameOrId(String(id));
+  const species = (await request(`${POKE_API_URL}pokemon-species/${id}`)) as unknown as SpecieFr;
+
+  // Re-fetch pokemon/{id} for the ability slugs; filter/order exactly like the EN
+  // extractAbilitiesFromPokemon so frAbilities[i] lines up with enFull.abilities[i].
+  const pokemonData = await fetchPokemonByNameOrId(String(id));
+  const visibleAbilitySlugs = (pokemonData.abilities as Ability[])
+    .filter(isAbilityVisible)
+    .map((ability) => ability.ability.name);
+  const abilityFrNames = await Promise.all(visibleAbilitySlugs.map(fetchAbilityFrName));
+
+  const pokemon = augmentFullWithFr(enFull, species, abilityFrNames, maps, overrides);
+
+  return {
+    pokemon,
+    prevSlug: maps.idToSlug[id - 1] ?? null,
+    nextSlug: maps.idToSlug[id + 1] ?? null,
+  };
 };
