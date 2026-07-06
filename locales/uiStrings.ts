@@ -3,6 +3,7 @@ import { Locale } from "../constants/Locale";
 export type UiStrings = {
   navPokedex: string;
   navTypeChart: string;
+  typeChartLandingTitle: string;
   navFilterAria: string;
   navOptionsAria: string;
   searchPlaceholder: string;
@@ -43,6 +44,7 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
   en: {
     navPokedex: "Pokédex",
     navTypeChart: "Type Chart",
+    typeChartLandingTitle: "Pokémon Type Interactions",
     navFilterAria: "Filter by type",
     navOptionsAria: "Options",
     searchPlaceholder: "Search a Pokemon by name or id",
@@ -83,6 +85,7 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
   fr: {
     navPokedex: "Pokédex",
     navTypeChart: "Table des types",
+    typeChartLandingTitle: "Interactions de types Pokémon",
     navFilterAria: "Filtrer par type",
     navOptionsAria: "Options",
     searchPlaceholder: "Rechercher un Pokémon par nom ou numéro",
