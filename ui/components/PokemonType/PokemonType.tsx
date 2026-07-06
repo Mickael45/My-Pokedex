@@ -4,6 +4,8 @@ import styles from "./PokemonType.module.css";
 import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { useRouter } from "next/router";
 import { HOME } from "../../../constants/Routes";
+import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
+import { useLocale } from "../../../hooks/useLocale";
 import TypeIcon from "./typeIcons";
 
 interface IProps {
@@ -18,6 +20,7 @@ interface IProps {
 
 const PokemonType = ({ type, children = "", handleTypeClick, variant, selected = false }: IProps) => {
   const router = useRouter();
+  const locale = useLocale();
 
   const handleClick = () =>
     handleTypeClick
@@ -38,7 +41,9 @@ const PokemonType = ({ type, children = "", handleTypeClick, variant, selected =
         onClick={handleClick}
       >
         <TypeIcon type={type} className={styles.filterIcon} />
-        <span className={styles.filterLabel}>{capitalizeFirstLetter(type)}</span>
+        <span className={styles.filterLabel}>
+          {locale === "fr" ? (FR_TYPE_LABELS[type] ?? capitalizeFirstLetter(type)) : capitalizeFirstLetter(type)}
+        </span>
       </span>
     );
   }
