@@ -102,6 +102,7 @@ declare global {
     id: number;
     name: string;
     frName?: string;
+    slug?: string;
     types: string;
     pixelImageUrl: string;
     hdImageUrl: string;
