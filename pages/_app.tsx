@@ -29,7 +29,8 @@ const App = ({ Component, pageProps }: AppProps) => {
   const { consent, setConsent, hydrated } = useConsent();
   // Detail pages render their own footer inside the type-coloured content area,
   // so the standalone global footer is suppressed there to avoid two footers.
-  const isDetailPage = useRouter().pathname === "/details/[id]";
+  const isDetailPage =
+    useRouter().pathname === "/details/[id]" || useRouter().pathname === "/fr/pokemon/[slug]";
 
   // Register the PWA service worker (production only — the dev server emits a
   // fresh, uncacheable bundle every reload, and a SW there mostly gets in the
