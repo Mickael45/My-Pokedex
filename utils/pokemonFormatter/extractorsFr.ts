@@ -11,9 +11,9 @@ export type FlavorTextEntryFr = {
   flavor_text: string;
 };
 export type SpecieFr = {
-  names: NameEntryFr[];
-  genera: GeneraEntryFr[];
-  flavor_text_entries: FlavorTextEntryFr[];
+  names: readonly NameEntryFr[];
+  genera: readonly GeneraEntryFr[];
+  flavor_text_entries: readonly FlavorTextEntryFr[];
 };
 
 const isFr = (entry: { language: { name: string } }) => entry.language.name === "fr";
