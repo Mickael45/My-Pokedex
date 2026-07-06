@@ -1,6 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Footer from "./Footer";
+
+// Footer now reads the locale layer (useStrings → useRouter); on an English
+// route it renders the English dictionary, which these assertions target.
+vi.mock("next/router", () => ({ useRouter: () => ({ pathname: "/" }) }));
 
 describe("Footer", () => {
   it("links to all four legal pages", () => {

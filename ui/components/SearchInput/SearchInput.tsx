@@ -4,7 +4,8 @@ import { getElementById } from "../../../utils/domManipulation";
 import useFiltering from "../../../hooks/useFiltering";
 import { usePokemonIdFromQuery, usePokemonNameFromQuery } from "../../../hooks/useQueryParams";
 import styles from "./SearchInput.module.css";
-import { DETAILS, HOME } from "../../../constants/Routes";
+import { DETAILS, HOME, FR_HOME, FR_POKEMON } from "../../../constants/Routes";
+import { useLocale, useStrings } from "../../../hooks/useLocale";
 
 const NAME_INPUT_ID = "nameInputId";
 
@@ -13,8 +14,14 @@ const SearchInput = () => {
   const name = usePokemonNameFromQuery();
   const filteredPokemons = useFiltering();
   const router = useRouter();
+  const locale = useLocale();
+  const strings = useStrings();
 
-  const isOnDetailsPage = router.pathname.startsWith(DETAILS);
+  // The FR detail route (/fr/pokemon/[slug]) is a details page too, so the
+  // input is cleared there just as on the English /details/ route.
+  const isOnDetailsPage =
+    router.pathname.startsWith(DETAILS) || router.pathname.startsWith(FR_POKEMON);
+  const homeHref = locale === "fr" ? FR_HOME : HOME;
 
   const handlePokemonsAndFilteringQueryChange = () => {
     const input = getElementById(NAME_INPUT_ID) as HTMLInputElement;
@@ -28,13 +35,13 @@ const SearchInput = () => {
     const { value = "" } = getElementById(NAME_INPUT_ID) as HTMLInputElement;
 
     if (value === "") {
-      router.push(HOME);
+      router.push(homeHref);
       return;
     }
     const search = !isNaN(+value) ? `id=${value.toLowerCase()}` : `name=${value.toLowerCase()}`;
 
     router.push({
-      pathname: HOME,
+      pathname: homeHref,
       search,
     });
   };
@@ -47,7 +54,7 @@ const SearchInput = () => {
   return (
     <form onSubmit={handleFormSubmit} className={styles.container}>
       <div>
-        <input autoComplete="off" placeholder="Search a Pokemon by name or id" id={NAME_INPUT_ID} />
+        <input autoComplete="off" placeholder={strings.searchPlaceholder} id={NAME_INPUT_ID} />
         <img
           src="/icons/search.svg"
           onClick={createQuery}
@@ -58,7 +65,7 @@ const SearchInput = () => {
             maxWidth: "100%",
             height: "auto"
           }} />
-        <button type="submit" hidden>Submit</button>
+        <button type="submit" hidden>{strings.searchSubmit}</button>
       </div>
     </form>
   );

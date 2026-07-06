@@ -7,6 +7,7 @@ import useCenterSpotlight from "../../../hooks/useCenterSpotlight";
 import { formatNumberToMatchLength } from "../../../utils/stringManipulation";
 import { FR_STAT_LABELS } from "../../../constants/FrStatLabels";
 import TypeIcon from "../PokemonType/typeIcons";
+import { FR_POKEMON } from "../../../constants/Routes";
 import styles from "../Pokemon/Pokemon.module.css";
 
 const MAX_STAT_VALUE = 255;
@@ -67,7 +68,7 @@ const PokemonFr = ({
   return (
     <Link
       ref={cardRef}
-      href={`/fr/pokemon/${slug}`}
+      href={`${FR_POKEMON}${slug}`}
       prefetch
       className={isFocused ? `${styles.card} ${styles.cardFocused}` : styles.card}
       style={{ "--type": cardColor } as CSSProperties}

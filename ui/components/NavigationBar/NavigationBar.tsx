@@ -13,9 +13,10 @@ import ListSortingDropdown from "../ListSortingDropdown/ListSortingDropdown";
 import styles from "./NavigationBar.module.css";
 import ResolutionToggleSwitch from "../ResolutionToggleSwitch/ResolutionToggleSwitch";
 import ThemeToggleSwitch from "../ThemeToggleSwitch/ThemeToggleSwitch";
-import { HOME, TYPE_INTERACTIONS } from "../../../constants/Routes";
+import { HOME, TYPE_INTERACTIONS, FR_HOME, FR_TYPE_INTERACTIONS } from "../../../constants/Routes";
 import ConsentContext from "../../../context/ConsentContext";
 import { UNSET } from "../../../constants/Consent";
+import { useLocale, useStrings } from "../../../hooks/useLocale";
 
 const DRAWER_ELEMENT_ID = "drawerElementId";
 const FILTER_ELEMENT_ID = "filterButtonId";
@@ -23,15 +24,25 @@ const SCROLL_HIDE_THRESHOLD = 120;
 
 const NavigationBar = () => {
   const router = useRouter();
+  const locale = useLocale();
+  const strings = useStrings();
   const { setConsent } = useContext(ConsentContext);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Locale-aware destinations: the FR chrome links into the /fr tree, the EN
+  // chrome keeps the root routes (unchanged output on English pages).
+  const homeHref = locale === "fr" ? FR_HOME : HOME;
+  const typeChartHref = locale === "fr" ? FR_TYPE_INTERACTIONS : TYPE_INTERACTIONS;
+
   // Also true on the per-combo pages (/type-interactions/[combo]) so the tab
-  // stays highlighted after picking a type.
+  // stays highlighted after picking a type — matched for both locales.
   const isTypeChart =
-    router.pathname === TYPE_INTERACTIONS || router.pathname.startsWith(`${TYPE_INTERACTIONS}/`);
-  const isHome = router.pathname === HOME;
+    router.pathname === TYPE_INTERACTIONS ||
+    router.pathname.startsWith(`${TYPE_INTERACTIONS}/`) ||
+    router.pathname === FR_TYPE_INTERACTIONS ||
+    router.pathname.startsWith(`${FR_TYPE_INTERACTIONS}/`);
+  const isHome = router.pathname === HOME || router.pathname === FR_HOME;
   const showTypeFilter = !isTypeChart;
 
   // Hide the bar when scrolling down (past its own height), reveal it the moment
@@ -61,7 +72,7 @@ const NavigationBar = () => {
   // Close the mobile options sheet whenever the route changes.
   useEffect(() => setMenuOpen(false), [router.pathname]);
 
-  const navigateHome = () => router.push(HOME);
+  const navigateHome = () => router.push(homeHref);
 
   const openDrawer = (drawer: HTMLElement, button: HTMLElement) => {
     addClassToElement(drawer, styles.open);
@@ -87,7 +98,7 @@ const NavigationBar = () => {
   const renderDrawer = () =>
     showTypeFilter ? (
       <div className={[styles.drawer, styles.close].join(" ")} id={DRAWER_ELEMENT_ID}>
-        <p>Filter Pokémon by type</p>
+        <p>{strings.filterByType}</p>
         <TypesSelector />
       </div>
     ) : null;
@@ -106,7 +117,7 @@ const NavigationBar = () => {
         className={styles.cookieBtn}
         onClick={() => setConsent(UNSET)}
       >
-        Cookie settings
+        {strings.cookieSettings}
       </button>
     </>
   );
@@ -126,11 +137,11 @@ const NavigationBar = () => {
 
           {/* Desktop-only segmented tabs (mobile uses the bottom tab bar). */}
           <div className={styles.tabs}>
-            <Link href={HOME} className={`${styles.tab} ${!isTypeChart ? styles.tabActive : ""}`}>
-              Pokédex
+            <Link href={homeHref} className={`${styles.tab} ${!isTypeChart ? styles.tabActive : ""}`}>
+              {strings.navPokedex}
             </Link>
-            <Link href={TYPE_INTERACTIONS} className={`${styles.tab} ${isTypeChart ? styles.tabActive : ""}`}>
-              Type Chart
+            <Link href={typeChartHref} className={`${styles.tab} ${isTypeChart ? styles.tabActive : ""}`}>
+              {strings.navTypeChart}
             </Link>
           </div>
 
@@ -145,7 +156,7 @@ const NavigationBar = () => {
               id={FILTER_ELEMENT_ID}
               className={styles.filterBtn}
               onClick={toggleDrawer}
-              aria-label="Filter by type"
+              aria-label={strings.navFilterAria}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
@@ -161,7 +172,7 @@ const NavigationBar = () => {
             type="button"
             className={`${styles.menuBtn} ${menuOpen ? styles.menuActive : ""}`}
             onClick={() => setMenuOpen((open) => !open)}
-            aria-label="Options"
+            aria-label={strings.navOptionsAria}
             aria-expanded={menuOpen}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -184,7 +195,7 @@ const NavigationBar = () => {
           <div className={styles.sheetControls}>{renderControls()}</div>
           {showTypeFilter && (
             <div className={styles.sheetFilter}>
-              <p>Filter Pokémon by type</p>
+              <p>{strings.filterByType}</p>
               <TypesSelector />
             </div>
           )}
@@ -193,18 +204,18 @@ const NavigationBar = () => {
 
       {/* Mobile-only bottom tab bar. */}
       <nav className={styles.bottomTabs}>
-        <Link href={HOME} className={`${styles.bottomTab} ${!isTypeChart ? styles.bottomTabActive : ""}`}>
+        <Link href={homeHref} className={`${styles.bottomTab} ${!isTypeChart ? styles.bottomTabActive : ""}`}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="4" width="18" height="16" rx="2" />
             <path d="M3 10h18" />
           </svg>
-          Pokédex
+          {strings.navPokedex}
         </Link>
-        <Link href={TYPE_INTERACTIONS} className={`${styles.bottomTab} ${isTypeChart ? styles.bottomTabActive : ""}`}>
+        <Link href={typeChartHref} className={`${styles.bottomTab} ${isTypeChart ? styles.bottomTabActive : ""}`}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 6h16M4 12h16M4 18h16" />
           </svg>
-          Type Chart
+          {strings.navTypeChart}
         </Link>
       </nav>
     </>
