@@ -101,6 +101,7 @@ declare global {
   export interface IBasicPokemon {
     id: number;
     name: string;
+    frName?: string;
     types: string;
     pixelImageUrl: string;
     hdImageUrl: string;

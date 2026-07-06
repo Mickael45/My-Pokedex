@@ -1,3 +1,5 @@
+import { normalizeSearch } from "../normalizeSearch";
+
 export const filterPokemonsByTypes = (pokemons: IBasicPokemon[], types: string) => {
   const doestTypesContainType = (pokemon: IBasicPokemon) =>
     pokemon.types.includes(types) || pokemon.types.split(",").reverse().join(",").includes(types);
@@ -8,9 +10,12 @@ export const filterPokemonsByTypes = (pokemons: IBasicPokemon[], types: string) 
 };
 
 export const filterPokemonsByName = (pokemons: IBasicPokemon[], value: string) => {
-  const doValueAndPokemonNameMatchPartially = (pokemon: IBasicPokemon) => pokemon.name.includes(value);
+  const q = normalizeSearch(value);
+  const matches = (pokemon: IBasicPokemon) =>
+    normalizeSearch(pokemon.name).includes(q) ||
+    (pokemon.frName ? normalizeSearch(pokemon.frName).includes(q) : false);
 
-  return pokemons.filter(doValueAndPokemonNameMatchPartially);
+  return pokemons.filter(matches);
 };
 
 export const filterPokemonsById = (pokemons: IBasicPokemon[], id: string) => {
