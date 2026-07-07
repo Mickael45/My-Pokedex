@@ -10,6 +10,7 @@
     "prebuild": "node scripts/downloadPokemonImages.mjs && tsx scripts/generateSitemap.mjs && npm run check-fr-coverage",
     "check-fr-coverage": "tsx scripts/checkFrCoverage.mjs",
     "translate-fr": "tsx scripts/translateFrStubs.mjs",
+    "fill-fr": "tsx scripts/fillFrFromPokepedia.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

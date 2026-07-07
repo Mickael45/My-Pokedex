@@ -1,6 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { mailConfigFromEnv, composeCoverageMail } from "./frCoverageMailer.mjs";
+import {
+  mailConfigFromEnv,
+  composeCoverageMail,
+  composePokepediaFillMail,
+} from "./frCoverageMailer.mjs";
 
 test("mailConfigFromEnv returns config when all three vars are present", () => {
   const env = {
@@ -75,4 +79,42 @@ test("composeCoverageMail groups gaps by entityType with EN references", () => {
   assert.match(mail.text, /899\.text {2}← EN: A wild entry\./);
   assert.match(mail.text, /mycelium-might\.name {2}← EN: Mycelium Might/);
   assert.match(mail.text, /locales\/fr-overrides\.json/);
+});
+
+test("composePokepediaFillMail: subject has count, body has EN/FR block and lists failures", () => {
+  const filled = [
+    {
+      id: "899",
+      frName: "Farfuret d'Hisui",
+      englishRef: "A wild entry appears.",
+      frText: "Une entrée sauvage apparaît.",
+    },
+  ];
+  const failed = [{ id: "900", frName: "Dartagnan", reason: "no French page" }];
+  const mail = composePokepediaFillMail(filled, failed, {
+    from: "sender@gmail.com",
+    to: "owner@example.com",
+  });
+  assert.equal(mail.from, "sender@gmail.com");
+  assert.equal(mail.to, "owner@example.com");
+  assert.match(mail.subject, /1/);
+  assert.match(mail.subject, /Pok[eé]p[eé]dia/);
+  assert.match(mail.text, /#899 Farfuret d'Hisui/);
+  assert.match(mail.text, /EN: A wild entry appears\./);
+  assert.match(mail.text, /FR: Une entrée sauvage apparaît\./);
+  assert.match(mail.text, /900/);
+  assert.match(mail.text, /Dartagnan/);
+  assert.match(mail.text, /no French page/);
+  assert.match(mail.text, /locales\/fr-overrides\.json/);
+});
+
+test("composePokepediaFillMail: omits the failures section when none failed", () => {
+  const filled = [
+    { id: "899", frName: "Farfuret", englishRef: "EN ref here.", frText: "FR ici." },
+  ];
+  const mail = composePokepediaFillMail(filled, [], {
+    from: "sender@gmail.com",
+    to: "owner@example.com",
+  });
+  assert.doesNotMatch(mail.text, /still need manual translation/i);
 });

@@ -42,6 +42,48 @@ export function composeCoverageMail(gaps, { from, to }) {
 }
 
 /**
+ * Build the plain-text "auto-filled from Poképédia" review email.
+ * PURE — no I/O.
+ * @param {{id: string, frName: string|null, englishRef: string, frText: string}[]} filled
+ * @param {{id: string, frName: string|null, reason: string}[]} failed
+ * @param {{from: string, to: string}} config
+ * @returns {{from: string, to: string, subject: string, text: string}}
+ */
+export function composePokepediaFillMail(filled, failed, { from, to }) {
+  const subject = `🇫🇷 ${filled.length} French descriptions auto-filled from Poképédia — review`;
+
+  const blocks = filled.map((f) => {
+    const name = f.frName ? ` ${f.frName}` : "";
+    return [`#${f.id}${name}`, `  EN: ${f.englishRef}`, `  FR: ${f.frText}`].join("\n");
+  });
+
+  const parts = [
+    `Auto-filled ${filled.length} French flavor description(s) from Poképédia. Please review each original → translation pair:`,
+    "",
+    blocks.join("\n\n"),
+  ];
+
+  if (failed.length > 0) {
+    const failLines = failed.map((f) => {
+      const name = f.frName ? ` ${f.frName}` : "";
+      return `  #${f.id}${name} — ${f.reason}`;
+    });
+    parts.push(
+      "",
+      `The following ${failed.length} entr${failed.length === 1 ? "y" : "ies"} still need manual translation:`,
+      failLines.join("\n"),
+    );
+  }
+
+  parts.push(
+    "",
+    "Review these in locales/fr-overrides.json (flavorText), then merge/deploy.",
+  );
+
+  return { from, to, subject, text: parts.join("\n") };
+}
+
+/**
  * Send the coverage email over Gmail SMTP.
  * Thin wrapper — not unit-tested (no real SMTP in tests).
  * @param {{from: string, to: string, subject: string, text: string}} message
