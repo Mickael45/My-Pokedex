@@ -1,0 +1,7 @@
+{
+  "name": "my-next-site",
+  "compatibility_date": "2026-06-01",
+  "assets": { "directory": "./out", "not_found_handling": "404-page" },
+  "workers_dev": false,
+  "preview_urls": true
+}
