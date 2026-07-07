@@ -26,6 +26,12 @@ describe("geoIntroFr", () => {
     expect(sentence).toContain("(anglais : Pidgey)");
   });
 
+  it("capitalizes a lowercase English name in the (anglais : …) clause", () => {
+    expect(
+      geoIntroFr({ frName: "Bulbizarre", enName: "bulbasaur", frTypes: ["Plante", "Poison"], gen: 1 }),
+    ).toBe("Bulbizarre (anglais : Bulbasaur) est un Pokémon de type Plante/Poison de la 1re génération.");
+  });
+
   it("uses the ordinal for later generations", () => {
     expect(
       geoIntroFr({ frName: "Toxizap", enName: "Toxel", frTypes: ["Électrik", "Poison"], gen: 8 }),

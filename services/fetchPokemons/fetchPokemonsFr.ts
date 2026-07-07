@@ -159,10 +159,9 @@ export const fetchAllPokemonsFr = async (): Promise<IBasicPokemon[]> => {
       ...formatToBasicPokemon(pokemon),
       evolvesFrom: formatEvolvesFrom(speciesData[index]),
     };
-    const card = augmentBasicWithFr(basic, speciesData[index] as unknown as SpecieFr, idToSlug[pokemon.id], overrides);
-    // Blank the English card name: PokemonFr renders `frName` (always resolved),
-    // so the EN name only bloated the home page's __NEXT_DATA__.
-    return { ...card, name: "" };
+    // Keep the English card `name`: filterPokemonsByName matches name OR frName,
+    // so retaining it preserves the English-name fallback search on the FR home.
+    return augmentBasicWithFr(basic, speciesData[index] as unknown as SpecieFr, idToSlug[pokemon.id], overrides);
   });
 };
 
