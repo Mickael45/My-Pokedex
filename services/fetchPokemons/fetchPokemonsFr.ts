@@ -16,7 +16,8 @@ import { resolveFrField, type FrOverrides } from "../../utils/fr/resolveFrField"
 import { buildSlugIdMap } from "../../utils/slugify";
 import { Specie, IPokemonResponseType, Ability } from "../../utils/pokemonFormatter/types";
 import { fetchPokemonDetailsByNameOrId } from "./fetchPokemons";
-import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL } from "../../constants/FetchPokemons";
+import { mapWithConcurrency } from "./mapWithConcurrency";
+import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
 import frOverridesJson from "../../locales/fr-overrides.json";
 
 const overrides = frOverridesJson as FrOverrides;
@@ -137,8 +138,8 @@ const fetchPokemonByNameOrId = async (name: string) => await request(`${POKE_API
 export const fetchAllPokemonsFr = async (): Promise<IBasicPokemon[]> => {
   const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${MAX_POKEMON_ID_ALLOWED}`);
   const pokemonsName = pokemonsData.results.map(extractPokemonName);
-  const pokemonData = await Promise.all<IPokemonResponseType>(pokemonsName.map(fetchPokemonByNameOrId));
-  const speciesData = await Promise.all<Specie>(pokemonData.map((pokemon) => request(pokemon.species.url)));
+  const pokemonData = await mapWithConcurrency<string, IPokemonResponseType>(pokemonsName, fetchPokemonByNameOrId, FETCH_CONCURRENCY);
+  const speciesData = await mapWithConcurrency<IPokemonResponseType, Specie>(pokemonData, (pokemon) => request(pokemon.species.url), FETCH_CONCURRENCY);
 
   // Resolve every French name first so the slug map (and its collision guard) sees
   // the complete set before any slug is assigned.
@@ -184,7 +185,7 @@ export const buildFrSlugMaps = async (): Promise<{
   }
 
   const ids = Array.from({ length: MAX_POKEMON_ID_ALLOWED }, (_, i) => i + 1);
-  const species = await Promise.all<Specie>(ids.map((id) => request(`${POKE_API_URL}pokemon-species/${id}`)));
+  const species = await mapWithConcurrency<number, Specie>(ids, (id) => request(`${POKE_API_URL}pokemon-species/${id}`), FETCH_CONCURRENCY);
 
   const idToFrName: Record<number, string> = {};
   const entries = species.map((specie, index) => {

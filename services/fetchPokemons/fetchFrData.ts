@@ -1,5 +1,6 @@
 // services/fetchPokemons/fetchFrData.ts
-import { POKE_API_URL, MAX_POKEMON_ID_ALLOWED } from "../../constants/FetchPokemons";
+import { POKE_API_URL, MAX_POKEMON_ID_ALLOWED, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
+import { mapWithConcurrency } from "./mapWithConcurrency";
 import { FR_STAT_LABELS } from "../../constants/FrStatLabels";
 import { collectFrGap, FrOverrides } from "../../utils/fr/resolveFrField";
 import {
@@ -73,20 +74,22 @@ const request = async (url: string, attempt = 1): Promise<any> => {
 // (non-hidden) ability referenced by those Pokémon (deduped).
 export const fetchFrRawDataset = async (): Promise<FrRawDataset> => {
   const ids = Array.from({ length: MAX_POKEMON_ID_ALLOWED }, (_, i) => i + 1);
-  const species: FrSpeciesRaw[] = await Promise.all(ids.map((id) => request(`${POKE_API_URL}pokemon-species/${id}`)));
+  const species: FrSpeciesRaw[] = await mapWithConcurrency(ids, (id) => request(`${POKE_API_URL}pokemon-species/${id}`), FETCH_CONCURRENCY);
 
   const typeList: { results: Array<{ name: string }> } = await request(`${POKE_API_URL}type`);
   const realTypes = typeList.results.filter((t) => !["unknown", "shadow", "stellar"].includes(t.name));
-  const types: FrTypeRaw[] = await Promise.all(realTypes.map((t) => request(`${POKE_API_URL}type/${t.name}`)));
+  const types: FrTypeRaw[] = await mapWithConcurrency(realTypes, (t) => request(`${POKE_API_URL}type/${t.name}`), FETCH_CONCURRENCY);
 
   // Collect visible ability slugs from each Pokémon (the /pokemon endpoint, not species).
-  const pokemon: Array<{ abilities: Array<{ ability: { name: string }; is_hidden: boolean }> }> = await Promise.all(
-    ids.map((id) => request(`${POKE_API_URL}pokemon/${id}`))
+  const pokemon: Array<{ abilities: Array<{ ability: { name: string }; is_hidden: boolean }> }> = await mapWithConcurrency(
+    ids,
+    (id) => request(`${POKE_API_URL}pokemon/${id}`),
+    FETCH_CONCURRENCY
   );
   const abilitySlugs = Array.from(
     new Set(pokemon.flatMap((p) => p.abilities.filter((a) => !a.is_hidden).map((a) => a.ability.name)))
   );
-  const abilities: FrAbilityRaw[] = await Promise.all(abilitySlugs.map((name) => request(`${POKE_API_URL}ability/${name}`)));
+  const abilities: FrAbilityRaw[] = await mapWithConcurrency(abilitySlugs, (name) => request(`${POKE_API_URL}ability/${name}`), FETCH_CONCURRENCY);
 
   return { species, types, abilities };
 };

@@ -9,7 +9,8 @@ import {
   extractPokemonData,
 } from "../../utils/pokemonFormatter/extractors";
 import { Specie, IPokemonResponseType } from "../../utils/pokemonFormatter/types";
-import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL } from "../../constants/FetchPokemons";
+import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
+import { mapWithConcurrency } from "./mapWithConcurrency";
 
 const REQUEST_RETRIES = 3;
 const REQUEST_RETRY_DELAY_MS = 400;
@@ -78,10 +79,10 @@ export const fetchAllPokemons = async (): Promise<IBasicPokemon[]> => {
   const pokemonsName = pokemonsData.results.map(extractPokemonName);
   // Two waves (pokemon, then species) instead of one big burst, so the
   // evolution data can be part of the SSG payload without doubling peak load.
-  const pokemonData = await Promise.all<IPokemonResponseType>(pokemonsName.map(fetchPokemonByNameOrId));
+  const pokemonData = await mapWithConcurrency<string, IPokemonResponseType>(pokemonsName, fetchPokemonByNameOrId, FETCH_CONCURRENCY);
   // Use each pokemon's own species reference (form names like "wormadam-plant"
   // don't exist on the species endpoint, so the name can't be reused directly).
-  const speciesData = await Promise.all<Specie>(pokemonData.map((pokemon) => request(pokemon.species.url)));
+  const speciesData = await mapWithConcurrency<IPokemonResponseType, Specie>(pokemonData, (pokemon) => request(pokemon.species.url), FETCH_CONCURRENCY);
 
   return pokemonData.map((pokemon, index) => ({
     ...formatToBasicPokemon(pokemon),
@@ -92,7 +93,7 @@ export const fetchAllPokemons = async (): Promise<IBasicPokemon[]> => {
 export const fetchPokemonsByType = async (type: string): Promise<IBasicPokemon[]> => {
   const pokemonsData = await request(`${POKE_API_URL}type/${type}`);
   const pokemonsName = pokemonsData.pokemon.map(extractPokemonData).map(extractPokemonName);
-  const pokemonData = await Promise.all<IPokemonResponseType>(pokemonsName.map(fetchPokemonByNameOrId));
+  const pokemonData = await mapWithConcurrency<string, IPokemonResponseType>(pokemonsName, fetchPokemonByNameOrId, FETCH_CONCURRENCY);
   const formattedPokemons = pokemonData.map(formatToBasicPokemon);
 
   return formattedPokemons;
