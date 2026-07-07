@@ -83,12 +83,22 @@ export const augmentFullWithFr = (
 
   const evolutionChain = enFull.evolutionChain.map((stage) => ({
     ...stage,
+    // Blank the English stage name: EvolutionStageFr renders `frName` (always
+    // resolved via maps), so the EN name only bloated __NEXT_DATA__.
+    name: "",
     frName: maps.idToFrName[stage.id],
     slug: maps.idToSlug[stage.id],
   }));
 
   return {
     ...enFull,
+    // Strip the English-only fields the FR detail page never reads — it renders
+    // frDescription/frCategory/frAbilities — so the English flavor text and
+    // ability names stop shipping in the page's hydration JSON. `name` is KEPT:
+    // the GEO opener surfaces it as the "(anglais : …)" cross-language anchor.
+    description: "",
+    category: "",
+    abilities: [],
     frName,
     frCategory,
     frDescription,
@@ -149,7 +159,10 @@ export const fetchAllPokemonsFr = async (): Promise<IBasicPokemon[]> => {
       ...formatToBasicPokemon(pokemon),
       evolvesFrom: formatEvolvesFrom(speciesData[index]),
     };
-    return augmentBasicWithFr(basic, speciesData[index] as unknown as SpecieFr, idToSlug[pokemon.id], overrides);
+    const card = augmentBasicWithFr(basic, speciesData[index] as unknown as SpecieFr, idToSlug[pokemon.id], overrides);
+    // Blank the English card name: PokemonFr renders `frName` (always resolved),
+    // so the EN name only bloated the home page's __NEXT_DATA__.
+    return { ...card, name: "" };
   });
 };
 
