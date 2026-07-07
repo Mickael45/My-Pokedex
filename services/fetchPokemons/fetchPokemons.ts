@@ -12,10 +12,17 @@ import { Specie, IPokemonResponseType } from "../../utils/pokemonFormatter/types
 import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
 import { mapWithConcurrency } from "./mapWithConcurrency";
 
-const REQUEST_RETRIES = 3;
-const REQUEST_RETRY_DELAY_MS = 400;
+const REQUEST_RETRIES = 5;
+const REQUEST_RETRY_BASE_MS = 500;
 
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Exponential backoff with jitter. Transient export-scale failures (ECONNREFUSED/
+// ETIMEDOUT under connection pressure) need room to recover; jitter desynchronizes
+// the retry stampede so all in-flight requests don't back off in lockstep.
+// attempt 1→~0.5s, 2→~1s, 3→~2s, 4→~4s (+ up to 250ms jitter).
+const backoffMs = (attempt: number) =>
+  REQUEST_RETRY_BASE_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 250);
 
 // fetchAllPokemons fans out ~1025 concurrent requests; a single reset connection
 // would otherwise reject the whole Promise.all and crash getStaticProps. Retry
@@ -34,7 +41,7 @@ const request = async (url: string, attempt = 1): Promise<any> => {
       throw error;
     }
 
-    await wait(REQUEST_RETRY_DELAY_MS * attempt);
+    await wait(backoffMs(attempt));
 
     return request(url, attempt + 1);
   }

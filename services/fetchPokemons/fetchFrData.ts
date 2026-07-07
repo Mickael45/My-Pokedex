@@ -54,9 +54,13 @@ export const computeFrGaps = (
   return gaps;
 };
 
-const REQUEST_RETRIES = 3;
-const REQUEST_RETRY_DELAY_MS = 400;
+const REQUEST_RETRIES = 5;
+const REQUEST_RETRY_BASE_MS = 500;
 const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+// Exponential backoff with jitter (mirrors fetchPokemons.ts): rides out transient
+// ECONNREFUSED/ETIMEDOUT. attempt 1→~0.5s, 2→~1s, 3→~2s, 4→~4s (+ up to 250ms jitter).
+const backoffMs = (attempt: number) =>
+  REQUEST_RETRY_BASE_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 250);
 
 const request = async (url: string, attempt = 1): Promise<any> => {
   try {
@@ -65,7 +69,7 @@ const request = async (url: string, attempt = 1): Promise<any> => {
     return await res.json();
   } catch (error) {
     if (attempt >= REQUEST_RETRIES) throw error;
-    await wait(REQUEST_RETRY_DELAY_MS * attempt);
+    await wait(backoffMs(attempt));
     return request(url, attempt + 1);
   }
 };
