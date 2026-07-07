@@ -20,7 +20,7 @@ const EvolutionStageFr = ({ stage }: IProps) => {
     <Link href={`${FR_POKEMON}${stage.slug}`} className={styles.mon} prefetch>
       <span className={styles.avatar}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={imageUrl} alt={`${stage.frName ?? stage.name}-pic`} loading="lazy" />
+        <img src={imageUrl} alt={`Sprite de ${stage.frName ?? stage.name}`} loading="lazy" />
       </span>
       {stage.frName ?? capitalizeFirstLetter(stage.name)}
     </Link>
