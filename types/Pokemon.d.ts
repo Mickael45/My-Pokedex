@@ -91,8 +91,9 @@ declare global {
   export type PokemonCardStats = [number, number, number, number];
   export interface IEvolvesFrom {
     name: string;
-    pixelImage: string;
-    hdImage: string;
+    // Image URLs are derived from `id` on the client (see cardImageUrls) rather
+    // than shipped, to keep the ~1025-card SSG list payload small.
+    id: number;
   }
   export interface ITypeEffectiveness {
     type: string;
@@ -104,8 +105,9 @@ declare global {
     frName?: string;
     slug?: string;
     types: string;
-    pixelImageUrl: string;
-    hdImageUrl: string;
+    // NOTE: the list-card sprite URLs (pixel + basic-HD) are NOT stored here.
+    // They are a pure function of `id` (see cardImageUrls) and are derived in the
+    // card components, so the SSG list payload for all ~1025 Pokemon stays small.
     stats: PokemonCardStats;
     evolvesFrom?: IEvolvesFrom | null;
   }
@@ -118,6 +120,11 @@ declare global {
   };
 
   export type IFullPokemon = Omit<IBasicPokemon, "stats"> & {
+    // The detail page ships a single Pokemon (not a 1025-item list), so it keeps
+    // its resolved sprite URLs — the hero uses FULL_PIC resolution and the OG tag
+    // reuses hdImageUrl. Set explicitly by formatToFullPokemon.
+    pixelImageUrl: string;
+    hdImageUrl: string;
     stats: IPokemonStat[];
     weaknesses: Weakness[] | [];
     defensiveEffectiveness: ITypeEffectiveness[];

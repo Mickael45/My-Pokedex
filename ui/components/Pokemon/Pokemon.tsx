@@ -1,6 +1,6 @@
 import { memo, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { getPokemonPrimaryTypeColor } from "../../../utils/pokemonFormatter/pokemonFormatter";
+import { getPokemonPrimaryTypeColor, cardImageUrls } from "../../../utils/pokemonFormatter/pokemonFormatter";
 import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
 import useCenterSpotlight from "../../../hooks/useCenterSpotlight";
@@ -14,17 +14,18 @@ const MAX_STAT_VALUE = 255;
 const Pokemon = ({
   name,
   id,
-  pixelImageUrl,
-  hdImageUrl,
   types,
   stats,
   evolvesFrom,
   priority = false,
 }: IBasicPokemon & { priority?: boolean }) => {
+  // Sprite URLs are derived from id (not shipped in the SSG list payload).
+  const { pixelImageUrl, hdImageUrl } = cardImageUrls(id);
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
   // Same resolution-aware swap for the pre-evolution badge (called
   // unconditionally to satisfy the rules of hooks; empty when there is none).
-  const evoImageUrl = usePokemonPic(evolvesFrom?.pixelImage ?? "", evolvesFrom?.hdImage ?? "");
+  const evo = evolvesFrom ? cardImageUrls(evolvesFrom.id) : null;
+  const evoImageUrl = usePokemonPic(evo?.pixelImageUrl ?? "", evo?.hdImageUrl ?? "");
   // Above-the-fold heroes start "loaded" so they paint as soon as their bytes
   // arrive — the opacity:0 → 1 fade is gated on React state, and waiting for
   // hydration to flip it pushes LCP out to several seconds on mobile.

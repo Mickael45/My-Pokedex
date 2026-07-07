@@ -7,6 +7,7 @@ import ResolutionContext from "../../context/ResolutionContext";
 import { LOW_RESOLUTION } from "../../constants/Resolution";
 import useFiltering from "../../hooks/useFiltering";
 import { fetchAllPokemonsFr } from "../../services/fetchPokemons/fetchPokemonsFr";
+import { cardImageUrls } from "../../utils/pokemonFormatter/pokemonFormatter";
 import { FR_TYPE_LABELS } from "../../constants/FrTypeLabels";
 import { useStrings } from "../../hooks/useLocale";
 import EmptyListPlaceholder from "../../ui/components/EmptyListPlaceholder/EmptyListPlaceholder";
@@ -65,7 +66,8 @@ const HomePageFr = ({ pokemons }: IProps) => {
 
   useEffect(() => {
     filteredPokemons.slice(0, POKEMON_STACK_SIZE).forEach((pokemon) => {
-      const url = resolution === LOW_RESOLUTION ? pokemon.pixelImageUrl : pokemon.hdImageUrl;
+      const { pixelImageUrl, hdImageUrl } = cardImageUrls(pokemon.id);
+      const url = resolution === LOW_RESOLUTION ? pixelImageUrl : hdImageUrl;
       ReactDOM.preload(url, { as: "image", fetchPriority: "high" });
     });
   }, [filteredPokemons, resolution]);

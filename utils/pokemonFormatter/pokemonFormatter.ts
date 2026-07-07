@@ -103,7 +103,7 @@ export const formatPokemonEvolutionChain = (
 // (run via the prebuild/predev hooks), so these resolve to same-origin static files
 // that ship with the SSG output instead of runtime CDN fetches. The folder layout
 // and padding here MUST match that download script.
-const createImageUrl = (id: number, imgType: PIC_TYPE = PIXELATED) => {
+export const createImageUrl = (id: number, imgType: PIC_TYPE = PIXELATED) => {
   if (imgType === PIXELATED) {
     return `/pokemon/pixel/${id}.webp`;
   }
@@ -111,10 +111,16 @@ const createImageUrl = (id: number, imgType: PIC_TYPE = PIXELATED) => {
   return `/pokemon/${folder}/${formatNumberToMatchLength(id)}.webp`;
 };
 
+// The two resolution variants a list card renders (pixel + basic-HD), derived
+// from `id`. Card components call this instead of reading stored URLs off the SSG
+// props, so the ~1025-card list payload doesn't ship ~180 chars of URLs per card.
+export const cardImageUrls = (id: number) => ({
+  pixelImageUrl: createImageUrl(id),
+  hdImageUrl: createImageUrl(id, BASIC_PIC),
+});
+
 export const formatToBasicPokemon = (pokemon: IPokemonResponseType): IBasicPokemon => {
   const { id, name, types } = pokemon;
-  const pixelImageUrl = createImageUrl(id);
-  const hdImageUrl = createImageUrl(id, BASIC_PIC);
   const typesName = types.map(extractTypeName).join(",");
   // Stats are already on the /pokemon response, so SSG can include them at no
   // extra fetch cost. Shipped as a compact [hp, attack, defense, speed] tuple so
@@ -129,7 +135,7 @@ export const formatToBasicPokemon = (pokemon: IPokemonResponseType): IBasicPokem
     statValue("speed"),
   ];
 
-  return { id, name, pixelImageUrl, hdImageUrl, types: typesName, stats };
+  return { id, name, types: typesName, stats };
 };
 
 const extractIdFromUrl = (url: string) => Number(url.split("/").filter(Boolean).pop());
@@ -145,7 +151,8 @@ export const formatEvolvesFrom = (species: Specie): IEvolvesFrom | null => {
 
   const id = extractIdFromUrl(evolvesFrom.url);
 
-  return { name: evolvesFrom.name, pixelImage: createImageUrl(id), hdImage: createImageUrl(id, BASIC_PIC) };
+  // Only name + id ship; the badge's sprite URLs are derived from id in the card.
+  return { name: evolvesFrom.name, id };
 };
 
 export const formatToFullPokemon = (
@@ -162,10 +169,14 @@ export const formatToFullPokemon = (
   const description = extractPokemonDescription(pokemonSpeciesData);
   const category = extractPokemonCategory(pokemonSpeciesData);
   const abilities = extractAbilitiesFromPokemon(pokemon.abilities);
+  // formatToBasicPokemon no longer emits URLs (list-payload diet), so the detail
+  // page sets both explicitly: pixel for the low-res toggle, FULL_PIC for the hero.
+  const pixelImageUrl = createImageUrl(id);
   const hdImageUrl = createImageUrl(id, FULL_PIC);
 
   return {
     ...pokemonBasicInfo,
+    pixelImageUrl,
     hdImageUrl,
     stats,
     weaknesses,

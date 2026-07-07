@@ -141,6 +141,7 @@ const fetchPokemonByNameOrId = async (name: string) => await request(`${POKE_API
 // then resolves each French name, builds the slug↔id map over ALL French names (which
 // runs buildSlugIdMap's collision guard), and attaches each pokemon's slug.
 export const fetchAllPokemonsFr = async (): Promise<IBasicPokemon[]> => {
+  console.log(`[build] Fetching French Pokédex list (${MAX_POKEMON_ID_ALLOWED} Pokémon + species)…`);
   const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${MAX_POKEMON_ID_ALLOWED}`);
   const pokemonsName = pokemonsData.results.map(extractPokemonName);
   const pokemonData = await mapWithConcurrency<string, IPokemonResponseType>(pokemonsName, fetchPokemonByNameOrId, FETCH_CONCURRENCY);
@@ -189,6 +190,10 @@ export const buildFrSlugMaps = async (): Promise<{
     return cache;
   }
 
+  // First call in each build worker pays a ~1025-species fetch (then memoized) —
+  // the main pause at the start of a worker's static-generation run. Log it so the
+  // build doesn't look hung while this runs.
+  console.log(`[build] Building FR name/slug map (${MAX_POKEMON_ID_ALLOWED} species, once per worker)…`);
   const ids = Array.from({ length: MAX_POKEMON_ID_ALLOWED }, (_, i) => i + 1);
   const species = await mapWithConcurrency<number, Specie>(ids, (id) => request(`${POKE_API_URL}pokemon-species/${id}`), FETCH_CONCURRENCY);
 
@@ -207,6 +212,7 @@ export const buildFrSlugMaps = async (): Promise<{
 
   const { slugToId, idToSlug } = buildSlugIdMap(entries);
   cache = { slugToId, idToSlug, idToFrName };
+  console.log(`[build] FR name/slug map ready (${Object.keys(idToSlug).length} entries).`);
   return cache;
 };
 

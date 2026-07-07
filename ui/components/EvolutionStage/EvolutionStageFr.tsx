@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
+import { cardImageUrls } from "../../../utils/pokemonFormatter/pokemonFormatter";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import { FR_POKEMON } from "../../../constants/Routes";
 import styles from "./EvolutionStage.module.css";
@@ -14,7 +15,8 @@ interface IProps {
 // prefetches the target's data + chunk, making the jump instant. Labels and
 // hrefs point at the French /fr/pokemon/ routes and localized names.
 const EvolutionStageFr = ({ stage }: IProps) => {
-  const imageUrl = usePokemonPic(stage.pixelImageUrl, stage.hdImageUrl);
+  const { pixelImageUrl, hdImageUrl } = cardImageUrls(stage.id);
+  const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
 
   return (
     <Link href={`${FR_POKEMON}${stage.slug}`} className={styles.mon} prefetch>

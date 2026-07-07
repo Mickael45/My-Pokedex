@@ -73,6 +73,9 @@ const fetchPokemonEvolutionChain = async (pokemonSpeciesData: Specie): Promise<I
 };
 
 export const fetchPokemonDetailsByNameOrId = async (id: string) => {
+  // Build-time progress: this runs once per detail page (~2,050 across EN+FR), so
+  // it streams a heartbeat through the otherwise-silent "Generating static pages".
+  console.log(`[build] Pokémon #${id}`);
   const pokemonData = await fetchPokemonByNameOrId(id);
   const pokemonSpeciesData = await request(`${POKE_API_URL}pokemon-species/${id}`);
   const evolutionChainPokemons = await fetchPokemonEvolutionChain(pokemonSpeciesData);
@@ -82,6 +85,7 @@ export const fetchPokemonDetailsByNameOrId = async (id: string) => {
 };
 
 export const fetchAllPokemons = async (): Promise<IBasicPokemon[]> => {
+  console.log(`[build] Fetching Pokédex list (${MAX_POKEMON_ID_ALLOWED} Pokémon + species)…`);
   const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${MAX_POKEMON_ID_ALLOWED}`);
   const pokemonsName = pokemonsData.results.map(extractPokemonName);
   // Two waves (pokemon, then species) instead of one big burst, so the
