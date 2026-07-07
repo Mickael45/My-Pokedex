@@ -13,6 +13,7 @@ import ListSortingDropdown from "../ListSortingDropdown/ListSortingDropdown";
 import styles from "./NavigationBar.module.css";
 import ResolutionToggleSwitch from "../ResolutionToggleSwitch/ResolutionToggleSwitch";
 import ThemeToggleSwitch from "../ThemeToggleSwitch/ThemeToggleSwitch";
+import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import { HOME, TYPE_INTERACTIONS, FR_HOME, FR_TYPE_INTERACTIONS } from "../../../constants/Routes";
 import ConsentContext from "../../../context/ConsentContext";
 import { UNSET } from "../../../constants/Consent";
@@ -112,6 +113,7 @@ const NavigationBar = () => {
         <ThemeToggleSwitch />
         <ResolutionToggleSwitch />
       </div>
+      <LanguageSwitcher />
       <button
         type="button"
         className={styles.cookieBtn}

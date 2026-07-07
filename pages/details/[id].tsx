@@ -23,13 +23,14 @@ import { capitalizeFirstLetter, formatNumberToMatchLength } from "../../utils/st
 import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsString } from "../../utils/unitConverter";
 import { breadcrumbJsonLd } from "../../utils/structuredData";
 import { hreflangAlternates } from "../../utils/hreflang";
+import type { SwitchTarget } from "../../context/SwitchTargetContext";
 
 const MAX_STAT_VALUE = 200;
 const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5", 1: "1", 2: "2", 4: "4" };
 
 // `frSlug` is the French detail slug for this id, resolved at build time solely to
 // emit the reciprocal `fr` hreflang alternate — it does not affect the visible page.
-type DetailsPageProps = IFullPokemon & { frSlug: string };
+type DetailsPageProps = IFullPokemon & { frSlug: string; switchTarget?: SwitchTarget };
 
 const DetailsPage = ({
   id,
@@ -252,5 +253,11 @@ export async function getStaticProps({ params }: { params: { id: string } }) {
   const { idToSlug } = await buildFrSlugMaps();
   const frSlug = idToSlug[Number(params.id)];
 
-  return { props: { ...pokemonData, frSlug } };
+  return {
+    props: {
+      ...pokemonData,
+      frSlug,
+      switchTarget: { en: `/details/${params.id}`, fr: `/fr/pokemon/${frSlug}` },
+    },
+  };
 }

@@ -14,6 +14,7 @@ import usePokemons from "../hooks/usePokemons";
 import NavigationBar from "../ui/components/NavigationBar/NavigationBar";
 import Footer from "../ui/components/Footer/Footer";
 import ConsentContext from "../context/ConsentContext";
+import SwitchTargetContext from "../context/SwitchTargetContext";
 import useConsent from "../hooks/useConsent";
 import ConsentScripts from "../ui/components/ConsentScripts/ConsentScripts";
 import CookieConsentBanner from "../ui/components/CookieConsentBanner/CookieConsentBanner";
@@ -70,14 +71,14 @@ const App = ({ Component, pageProps }: AppProps) => {
             <ErrorContext.Provider value={{ error, setError }}>
               <LoadingContext.Provider value={{ loading, setLoading }}>
                 <PokemonContext.Provider value={{ filteredPokemons, pokemons, setPokemons }}>
-                  <>
+                  <SwitchTargetContext.Provider value={pageProps.switchTarget ?? null}>
                     <NavigationBar />
                     <main>
                       <Component {...pageProps} />
                     </main>
                     {!isDetailPage && <Footer />}
                     <CookieConsentBanner />
-                  </>
+                  </SwitchTargetContext.Provider>
                 </PokemonContext.Provider>
               </LoadingContext.Provider>
             </ErrorContext.Provider>

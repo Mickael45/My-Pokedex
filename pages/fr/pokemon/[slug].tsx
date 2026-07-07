@@ -27,6 +27,7 @@ import { hreflangAlternates } from "../../../utils/hreflang";
 import { breadcrumbJsonLd } from "../../../utils/structuredData";
 import { generationFromId } from "../../../constants/Generations";
 import { geoIntroFr } from "../../../utils/fr/geoIntro";
+import type { SwitchTarget } from "../../../context/SwitchTargetContext";
 
 const MAX_STAT_VALUE = 200;
 const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5", 1: "1", 2: "2", 4: "4" };
@@ -35,6 +36,7 @@ type FrDetailsPageProps = IFullPokemon & {
   prevSlug: string | null;
   nextSlug: string | null;
   slug: string;
+  switchTarget?: SwitchTarget;
 };
 
 const FrDetailsPage = ({
@@ -275,5 +277,13 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }: { params: { slug: string } }) {
   const { pokemon, prevSlug, nextSlug } = await fetchPokemonDetailFrBySlug(params.slug);
 
-  return { props: { ...pokemon, prevSlug, nextSlug, slug: params.slug } };
+  return {
+    props: {
+      ...pokemon,
+      prevSlug,
+      nextSlug,
+      slug: params.slug,
+      switchTarget: { en: `/details/${pokemon.id}`, fr: `/fr/pokemon/${params.slug}` },
+    },
+  };
 }

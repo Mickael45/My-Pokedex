@@ -11,10 +11,12 @@ import { toTypeSlug } from "../../../utils/typeSlug";
 import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import { hreflangAlternates } from "../../../utils/hreflang";
+import type { SwitchTarget } from "../../../context/SwitchTargetContext";
 
 interface IProps {
   combo: string;
   types: string[];
+  switchTarget?: SwitchTarget;
 }
 
 const FrComboPage = ({ combo, types }: IProps) => {
@@ -53,5 +55,14 @@ export async function getStaticProps({ params }: { params: { combo: string } }) 
   if (!types.length) {
     return { notFound: true };
   }
-  return { props: { combo: params.combo, types } };
+  return {
+    props: {
+      combo: params.combo,
+      types,
+      switchTarget: {
+        en: `/type-interactions/${toTypeSlug(types)}`,
+        fr: `/fr/type-interactions/${params.combo}`,
+      },
+    },
+  };
 }
