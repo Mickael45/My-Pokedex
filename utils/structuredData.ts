@@ -25,9 +25,15 @@ export const organizationJsonLd = (): JsonLd => ({
   logo: absoluteUrl("/icons/icon-512.png"),
 });
 
-export const breadcrumbJsonLd = (items: Array<{ name: string; path: string }>): JsonLd => ({
+export const breadcrumbJsonLd = (
+  items: Array<{ name: string; path: string }>,
+  inLanguage?: string,
+): JsonLd => ({
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
+  // Only emit `inLanguage` when a caller passes it, so existing (EN) callers get
+  // a byte-identical object.
+  ...(inLanguage ? { inLanguage } : {}),
   itemListElement: items.map((item, index) => ({
     "@type": "ListItem",
     position: index + 1,

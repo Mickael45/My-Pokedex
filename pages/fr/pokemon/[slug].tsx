@@ -24,6 +24,9 @@ import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsSt
 import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
 import { FR_STAT_LABELS } from "../../../constants/FrStatLabels";
 import { hreflangAlternates } from "../../../utils/hreflang";
+import { breadcrumbJsonLd } from "../../../utils/structuredData";
+import { generationFromId } from "../../../constants/Generations";
+import { geoIntroFr } from "../../../utils/fr/geoIntro";
 
 const MAX_STAT_VALUE = 200;
 const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5", 1: "1", 2: "2", 4: "4" };
@@ -62,6 +65,14 @@ const FrDetailsPage = ({
   const typeList = types.split(",");
   const displayName = frName ?? name;
   const typeLabel = (type: string) => FR_TYPE_LABELS[type] ?? capitalizeFirstLetter(type);
+
+  // Server-rendered GEO opener: French entity + English name anchor + type + gen.
+  const geoIntro = geoIntroFr({
+    frName: displayName,
+    enName: name,
+    frTypes: typeList.map(typeLabel),
+    gen: generationFromId(id),
+  });
 
   const setLoadingToFalse = () => setLoading(false);
   useEffect(setLoadingToFalse, [id, setLoading]);
@@ -121,6 +132,13 @@ const FrDetailsPage = ({
         imageAlt={`${displayName} official artwork`}
         ogType="article"
         twitterCard="summary"
+        jsonLd={breadcrumbJsonLd(
+          [
+            { name: "Pokédex", path: "/fr" },
+            { name: displayName, path: `/fr/pokemon/${slug}` },
+          ],
+          "fr",
+        )}
       />
       {/* Plan 6: hreflang, og:locale fr_FR, self-canonical, BreadcrumbList JSON-LD, GEO opener, localized alt */}
       <ErrorScreenWrapper>
@@ -173,12 +191,13 @@ const FrDetailsPage = ({
                   </div>
                 </div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className={styles.heroImg} src={imageUrl} alt={`${displayName} official artwork`} />
+                <img className={styles.heroImg} src={imageUrl} alt={`Illustration de ${displayName}`} />
               </header>
 
               <div className={styles.panes}>
                 <section className={`${styles.glass} ${styles.entry}`}>
                   <div className={styles.paneTitle}>{strings.detailPokedexEntry}</div>
+                  <p>{geoIntro}</p>
                   <p>{frDescription}</p>
                 </section>
 
