@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "images": "node scripts/downloadPokemonImages.mjs",
-    "sitemap": "node scripts/generateSitemap.mjs",
-    "predev": "node scripts/downloadPokemonImages.mjs && node scripts/generateSitemap.mjs",
+    "sitemap": "tsx scripts/generateSitemap.mjs",
+    "predev": "node scripts/downloadPokemonImages.mjs && tsx scripts/generateSitemap.mjs",
     "dev": "next dev --turbopack",
-    "prebuild": "node scripts/downloadPokemonImages.mjs && node scripts/generateSitemap.mjs && npm run check-fr-coverage",
+    "prebuild": "node scripts/downloadPokemonImages.mjs && tsx scripts/generateSitemap.mjs && npm run check-fr-coverage",
     "check-fr-coverage": "tsx scripts/checkFrCoverage.mjs",
     "build": "next build",
     "start": "next start",
