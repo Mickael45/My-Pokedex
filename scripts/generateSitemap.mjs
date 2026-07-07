@@ -15,7 +15,7 @@ const TYPES = ["normal","fire","water","electric","grass","ice","fighting","pois
 // `new Date()` — so rebuilding/redeploying does not stamp today's date on every
 // unchanged URL, which Google's John Mueller calls out as a lazy signal that
 // erodes lastmod trust and wastes crawl budget.
-export const LASTMOD = "2026-06-18";
+export const LASTMOD = "2026-07-07";
 
 const toSlug = (types) => [...types].sort().join("-");
 

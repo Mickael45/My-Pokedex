@@ -69,6 +69,12 @@ const Header = ({
       <title>{title}</title>
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       <meta name="description" content={description} />
+      {/* Google Discover large-image cards + full image/snippet previews. Cheap,
+          site-wide, high value for an image-heavy Pokédex (MASTER_SEO_COOKBOOK §1). */}
+      <meta
+        name="robots"
+        content="max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+      />
       <link rel="canonical" href={canonical} />
       {alternateLinks.map((a) => (
         <link
