@@ -20,6 +20,34 @@ import sharp from "sharp";
 
 const MAX_POKEMON_ID_ALLOWED = 1025;
 const CONCURRENCY = 16;
+// Retry transient fetch failures (the pixel sprites come from GitHub raw, which
+// rate-limits under a 3075-file burst → intermittent "fetch failed"). Without
+// this, a single flaky download failed the whole CI build/deploy.
+const RETRIES = 5;
+const RETRY_BASE_MS = 500;
+// Isolated failures that survive all retries degrade gracefully (a broken sprite
+// for a rare form), so they don't block a deploy. A LARGE count means a systemic
+// problem (outage, DNS) worth failing over.
+const MAX_TOLERATED_FAILURES = 15;
+
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Fetch with exponential backoff + jitter. Returns the response (including non-ok,
+// which the caller treats as "missing"); throws only after RETRIES network errors.
+const fetchWithRetry = async (url) => {
+  let lastError;
+  for (let attempt = 1; attempt <= RETRIES; attempt++) {
+    try {
+      return await fetch(url);
+    } catch (error) {
+      lastError = error;
+      if (attempt < RETRIES) {
+        await wait(RETRY_BASE_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 250));
+      }
+    }
+  }
+  throw lastError;
+};
 
 const maxId = Number(process.argv[2]) || MAX_POKEMON_ID_ALLOWED;
 const OUT_DIR = join(process.cwd(), "public", "pokemon");
@@ -75,7 +103,7 @@ const downloadOne = async (task, stats) => {
   }
 
   try {
-    const response = await fetch(task.url);
+    const response = await fetchWithRetry(task.url);
     if (!response.ok) {
       stats.missing++;
       stats.missingLabels.push(task.label);
@@ -123,9 +151,14 @@ const main = async () => {
     console.warn(`Missing (HTTP not-ok, likely no art for that form): ${stats.missingLabels.slice(0, 20).join(", ")}${stats.missingLabels.length > 20 ? " ..." : ""}`);
   }
   if (stats.failed) {
-    // Network/IO errors are worth failing the build over, since they leave gaps.
-    console.error(`Failed downloads: ${stats.failedLabels.slice(0, 20).join(", ")}`);
-    process.exit(1);
+    console.error(`Failed downloads (after ${RETRIES} retries each): ${stats.failedLabels.slice(0, 20).join(", ")}${stats.failedLabels.length > 20 ? " ..." : ""}`);
+    // A handful of persistent failures leave isolated gaps the site tolerates; a
+    // large count signals a systemic problem (outage/DNS) worth failing over.
+    if (stats.failed > MAX_TOLERATED_FAILURES) {
+      console.error(`${stats.failed} failures exceed the tolerance of ${MAX_TOLERATED_FAILURES} — treating as a systemic failure and aborting the build.`);
+      process.exit(1);
+    }
+    console.warn(`Tolerating ${stats.failed} isolated failure(s) — the site degrades gracefully for those sprites.`);
   }
 };
 
