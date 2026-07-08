@@ -252,6 +252,18 @@
   justify-content: space-between;
   gap: 16px;
 }
+
+/* Mobile: the sheet is a narrow bottom card, and the control cluster (sort +
+   theme/resolution toggles + language switcher + cookie settings) is wider than a
+   phone once the localized labels are in — a single non-wrapping row overflowed
+   horizontally. Let it wrap onto centered rows so it always fits any width. */
+@media screen and (max-width: 900px) {
+  .sheetControls {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px 20px;
+  }
+}
 .sheetFilter {
   display: grid;
   justify-items: center;
