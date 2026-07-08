@@ -47,14 +47,18 @@ test("emits FR URLs: /fr, /fr/type-interactions, /fr/pokemon/{slug}, /fr/type-in
   [
     "<loc>https://www.my-pokedex.com/fr</loc>",
     "<loc>https://www.my-pokedex.com/fr/type-interactions</loc>",
+    "<loc>https://www.my-pokedex.com/fr/about</loc>",
+    "<loc>https://www.my-pokedex.com/fr/privacy</loc>",
+    "<loc>https://www.my-pokedex.com/fr/contact</loc>",
+    "<loc>https://www.my-pokedex.com/fr/terms</loc>",
     "<loc>https://www.my-pokedex.com/fr/pokemon/bulbizarre</loc>",
     "<loc>https://www.my-pokedex.com/fr/pokemon/pris-la-vermine</loc>",
     "<loc>https://www.my-pokedex.com/fr/type-interactions/fr-fire</loc>",
   ].forEach((frag) => assert.ok(xml.includes(frag), `missing ${frag}`));
 });
 
-test("FR URL count = 2 static + mapped ids + fr type slugs", () => {
-  assert.equal(countFrUrls(idToFrSlug, frTypeSlugs), 2 + 3 + 171);
+test("FR URL count = 6 static pairs + mapped ids + fr type slugs", () => {
+  assert.equal(countFrUrls(idToFrSlug, frTypeSlugs), 6 + 3 + 171);
 });
 
 test("reciprocal hreflang trio on both sides of a paired page", () => {
@@ -73,12 +77,20 @@ test("home <-> /fr are a reciprocal pair", () => {
   assert.ok(xml.includes('<xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/"/>'));
 });
 
-test("EN-only legal pages carry no alternates", () => {
+test("legal pages carry reciprocal hreflang (EN <-> FR)", () => {
   const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
-  // Grab the <url> block for /privacy and assert it has no xhtml:link child.
-  const block = xml.split("<url>").find((b) => b.includes("<loc>https://www.my-pokedex.com/privacy</loc>"));
-  assert.ok(block, "no /privacy url block");
-  assert.ok(!block.includes("xhtml:link"), "/privacy should have no hreflang alternates");
+  const enBlock = xml.split("<url>").find((b) => b.includes("<loc>https://www.my-pokedex.com/privacy</loc>"));
+  assert.ok(enBlock, "no /privacy url block");
+  assert.ok(
+    enBlock.includes('hreflang="fr" href="https://www.my-pokedex.com/fr/privacy"'),
+    "/privacy should link its FR alternate"
+  );
+  const frBlock = xml.split("<url>").find((b) => b.includes("<loc>https://www.my-pokedex.com/fr/privacy</loc>"));
+  assert.ok(frBlock, "no /fr/privacy url block");
+  assert.ok(
+    frBlock.includes('hreflang="en" href="https://www.my-pokedex.com/privacy"'),
+    "/fr/privacy should link its EN alternate"
+  );
 });
 
 test("mismatched FR/EN type-slug lengths throw (index alignment guard)", () => {

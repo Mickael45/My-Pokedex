@@ -2,6 +2,7 @@ import Header from "../ui/components/Header/Header";
 import Page from "../ui/templates/Page/Page";
 import LegalLayout from "../ui/components/LegalLayout/LegalLayout";
 import { SITE_NAME } from "../constants/Seo";
+import { hreflangAlternates } from "../utils/hreflang";
 
 const TermsPage = () => (
   <>
@@ -9,6 +10,7 @@ const TermsPage = () => (
       title={`Terms of Use | ${SITE_NAME}`}
       description={`The terms governing your use of ${SITE_NAME}.`}
       canonicalPath="/terms"
+      alternates={hreflangAlternates("/terms", "/fr/terms")}
     />
     <Page>
       <LegalLayout heading="Terms of Use" updated="June 19, 2026">

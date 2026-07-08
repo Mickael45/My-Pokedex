@@ -18,6 +18,14 @@ describe("switchHref", () => {
     expect(switchHref("fr", "/fr/type-interactions", null)).toBe("/type-interactions");
   });
 
+  it("maps the legal pages EN <-> FR", () => {
+    expect(switchHref("en", "/about", null)).toBe("/fr/about");
+    expect(switchHref("fr", "/fr/about", null)).toBe("/about");
+    expect(switchHref("en", "/privacy", null)).toBe("/fr/privacy");
+    expect(switchHref("fr", "/fr/contact", null)).toBe("/contact");
+    expect(switchHref("en", "/terms", null)).toBe("/fr/terms");
+  });
+
   it("falls back to the other locale home for unknown routes", () => {
     expect(switchHref("en", "/details/[id]", null)).toBe("/fr");
     expect(switchHref("fr", "/fr/pokemon/[slug]", null)).toBe("/");

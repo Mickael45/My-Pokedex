@@ -17,18 +17,30 @@
   <url>
     <loc>https://www.my-pokedex.com/about</loc>
     <lastmod>2026-07-07</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/about"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.my-pokedex.com/about"/>
   </url>
   <url>
     <loc>https://www.my-pokedex.com/privacy</loc>
     <lastmod>2026-07-07</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.my-pokedex.com/privacy"/>
   </url>
   <url>
     <loc>https://www.my-pokedex.com/contact</loc>
     <lastmod>2026-07-07</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/contact"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.my-pokedex.com/contact"/>
   </url>
   <url>
     <loc>https://www.my-pokedex.com/terms</loc>
     <lastmod>2026-07-07</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/terms"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr/terms"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.my-pokedex.com/terms"/>
   </url>
   <url>
     <loc>https://www.my-pokedex.com/details/1</loc>
@@ -8415,6 +8427,34 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/type-interactions"/>
     <xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr/type-interactions"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://www.my-pokedex.com/type-interactions"/>
+  </url>
+  <url>
+    <loc>https://www.my-pokedex.com/fr/about</loc>
+    <lastmod>2026-07-07</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/about"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.my-pokedex.com/about"/>
+  </url>
+  <url>
+    <loc>https://www.my-pokedex.com/fr/privacy</loc>
+    <lastmod>2026-07-07</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/privacy"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr/privacy"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.my-pokedex.com/privacy"/>
+  </url>
+  <url>
+    <loc>https://www.my-pokedex.com/fr/contact</loc>
+    <lastmod>2026-07-07</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/contact"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr/contact"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.my-pokedex.com/contact"/>
+  </url>
+  <url>
+    <loc>https://www.my-pokedex.com/fr/terms</loc>
+    <lastmod>2026-07-07</lastmod>
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/terms"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr/terms"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.my-pokedex.com/terms"/>
   </url>
   <url>
     <loc>https://www.my-pokedex.com/fr/pokemon/bulbizarre</loc>

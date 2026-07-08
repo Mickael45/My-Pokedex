@@ -2,6 +2,7 @@ import Header from "../ui/components/Header/Header";
 import Page from "../ui/templates/Page/Page";
 import LegalLayout from "../ui/components/LegalLayout/LegalLayout";
 import { SITE_NAME } from "../constants/Seo";
+import { hreflangAlternates } from "../utils/hreflang";
 
 const ContactPage = () => (
   <>
@@ -9,6 +10,7 @@ const ContactPage = () => (
       title={`Contact | ${SITE_NAME}`}
       description={`How to reach the ${SITE_NAME} team for questions, corrections, or feedback.`}
       canonicalPath="/contact"
+      alternates={hreflangAlternates("/contact", "/fr/contact")}
     />
     <Page>
       <LegalLayout heading="Contact" updated="June 19, 2026">

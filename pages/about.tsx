@@ -2,6 +2,7 @@ import Header from "../ui/components/Header/Header";
 import Page from "../ui/templates/Page/Page";
 import LegalLayout from "../ui/components/LegalLayout/LegalLayout";
 import { SITE_NAME } from "../constants/Seo";
+import { hreflangAlternates } from "../utils/hreflang";
 
 const AboutPage = () => (
   <>
@@ -9,6 +10,7 @@ const AboutPage = () => (
       title={`About | ${SITE_NAME}`}
       description={`What ${SITE_NAME} is, who makes it, and its relationship to the Pokémon franchise.`}
       canonicalPath="/about"
+      alternates={hreflangAlternates("/about", "/fr/about")}
     />
     <Page>
       <LegalLayout heading={`About ${SITE_NAME}`} updated="June 19, 2026">

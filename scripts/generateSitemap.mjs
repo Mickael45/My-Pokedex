@@ -29,17 +29,22 @@ export const typeSlugs = () => {
   return [...TYPES, ...pairs];
 };
 
-// English static routes: home, the type hub, and the legal/trust pages
-// (pages/{about,privacy,contact,terms}.tsx). Home + the type hub have FR
-// counterparts (/fr, /fr/type-interactions); the legal pages do not yet
-// (they arrive in a later plan), so they are emitted without alternates.
-const STATIC_PAGES = ["/", "/type-interactions", "/about", "/privacy", "/contact", "/terms"];
-const EN_ONLY_STATIC = new Set(["/about", "/privacy", "/contact", "/terms"]);
+// Static routes with a fixed EN↔FR counterpart: home, the type hub, and the four
+// legal/trust pages (pages/{about,privacy,contact,terms}.tsx + their /fr mirrors).
+// Every one is emitted on BOTH sides with reciprocal hreflang.
+const STATIC_PAIRS = [
+  { en: "/", fr: "/fr" },
+  { en: "/type-interactions", fr: "/fr/type-interactions" },
+  { en: "/about", fr: "/fr/about" },
+  { en: "/privacy", fr: "/fr/privacy" },
+  { en: "/contact", fr: "/fr/contact" },
+  { en: "/terms", fr: "/fr/terms" },
+];
 
 // The EN paths, kept for the URL-count test and any EN-only consumer. FR paths
 // are assembled from the fetched slug maps inside buildSitemap().
 export const buildUrls = () => {
-  const urls = [...STATIC_PAGES];
+  const urls = STATIC_PAIRS.map((pair) => pair.en);
   for (let id = 1; id <= MAX_POKEMON_ID; id++) urls.push(`/details/${id}`);
   typeSlugs().forEach((slug) => urls.push(`/type-interactions/${slug}`));
   return urls;
@@ -77,11 +82,9 @@ export const buildSitemap = ({ lastmod = LASTMOD, idToFrSlug = {}, frTypeSlugs =
 
   const blocks = [];
 
-  // --- English URLs ---
-  blocks.push(renderUrl("/", lastmod, { en: "/", fr: "/fr" }));
-  blocks.push(renderUrl("/type-interactions", lastmod, { en: "/type-interactions", fr: "/fr/type-interactions" }));
-  for (const p of STATIC_PAGES) {
-    if (EN_ONLY_STATIC.has(p)) blocks.push(renderUrl(p, lastmod, null));
+  // --- English URLs (each static page carries its reciprocal FR alternate) ---
+  for (const pair of STATIC_PAIRS) {
+    blocks.push(renderUrl(pair.en, lastmod, { en: pair.en, fr: pair.fr }));
   }
   for (let id = 1; id <= MAX_POKEMON_ID; id++) {
     const frSlug = idToFrSlug[id];
@@ -97,8 +100,9 @@ export const buildSitemap = ({ lastmod = LASTMOD, idToFrSlug = {}, frTypeSlugs =
   });
 
   // --- French URLs (each carries the reciprocal of its EN pair) ---
-  blocks.push(renderUrl("/fr", lastmod, { en: "/", fr: "/fr" }));
-  blocks.push(renderUrl("/fr/type-interactions", lastmod, { en: "/type-interactions", fr: "/fr/type-interactions" }));
+  for (const pair of STATIC_PAIRS) {
+    blocks.push(renderUrl(pair.fr, lastmod, { en: pair.en, fr: pair.fr }));
+  }
   for (let id = 1; id <= MAX_POKEMON_ID; id++) {
     const frSlug = idToFrSlug[id];
     if (!frSlug) continue;
@@ -123,9 +127,10 @@ export const buildSitemap = ({ lastmod = LASTMOD, idToFrSlug = {}, frTypeSlugs =
   );
 };
 
-// Count of FR URLs a given assembly emits — used for the run log.
+// Count of FR URLs a given assembly emits — used for the run log. The FR side now
+// mirrors all static pairs (home, type hub, 4 legal pages) plus per-entity pages.
 export const countFrUrls = (idToFrSlug, frTypeSlugs) =>
-  2 + Object.keys(idToFrSlug).length + frTypeSlugs.length;
+  STATIC_PAIRS.length + Object.keys(idToFrSlug).length + frTypeSlugs.length;
 
 // The generator's impure entry point: fetch the FR slug maps (a build-time
 // ~1025-species PokéAPI fetch), then write the assembled XML. TS helpers are

@@ -2,6 +2,7 @@ import Header from "../ui/components/Header/Header";
 import Page from "../ui/templates/Page/Page";
 import LegalLayout from "../ui/components/LegalLayout/LegalLayout";
 import { SITE_NAME } from "../constants/Seo";
+import { hreflangAlternates } from "../utils/hreflang";
 
 const PrivacyPage = () => (
   <>
@@ -9,6 +10,7 @@ const PrivacyPage = () => (
       title={`Privacy Policy | ${SITE_NAME}`}
       description={`How ${SITE_NAME} handles cookies, advertising, and analytics data.`}
       canonicalPath="/privacy"
+      alternates={hreflangAlternates("/privacy", "/fr/privacy")}
     />
     <Page>
       <LegalLayout heading="Privacy Policy" updated="June 19, 2026">
