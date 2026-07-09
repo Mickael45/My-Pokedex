@@ -13,7 +13,6 @@ import { fetchAllPokemons, fetchPokemonDetailsByNameOrId } from "../../services/
 import { buildFrSlugMaps } from "../../services/fetchPokemons/fetchPokemonsFr";
 import Header from "../../ui/components/Header/Header";
 import EvolutionStage from "../../ui/components/EvolutionStage/EvolutionStage";
-import AdSlot from "../../ui/components/AdSlot/AdSlot";
 import Footer from "../../ui/components/Footer/Footer";
 import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
 import { getPokemonPrimaryTypeColor } from "../../utils/pokemonFormatter/pokemonFormatter";
@@ -222,10 +221,6 @@ const DetailsPage = ({
                   </section>
                 )}
               </div>
-
-              {/* Full-width ad band below the panels — kept out of the 1fr 1fr
-                  grid so Stats|Profile stay side by side when ads are enabled. */}
-              <AdSlot name="detailBelowStats" />
             </div>
 
             {/* Footer lives inside the type-coloured area (the global one is
