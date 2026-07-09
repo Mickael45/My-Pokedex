@@ -13,7 +13,6 @@ import { useStrings } from "../../hooks/useLocale";
 import EmptyListPlaceholder from "../../ui/components/EmptyListPlaceholder/EmptyListPlaceholder";
 import Header from "../../ui/components/Header/Header";
 import PokemonFr from "../../ui/components/PokemonFr/PokemonFr";
-import AdSlot from "../../ui/components/AdSlot/AdSlot";
 import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
 import FlexboxList from "../../ui/templates/FlexboxList/FlexboxList";
 import Page from "../../ui/templates/Page/Page";
@@ -102,7 +101,6 @@ const HomePageFr = ({ pokemons }: IProps) => {
                 {renderPokemons()}
               </FlexboxList>
             </div>
-            <AdSlot name="homeInGrid" />
           </>
         </Page>
       </ErrorScreenWrapper>

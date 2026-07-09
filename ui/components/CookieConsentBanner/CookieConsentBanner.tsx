@@ -15,7 +15,7 @@ const CookieConsentBanner = () => {
   return (
     <div className={styles.banner} role="dialog" aria-label="Cookie consent">
       <p className={styles.text}>
-        We use cookies for ads and analytics. Accept to support the site, or reject to
+        We use cookies for analytics. Accept to help us improve the site, or reject to
         browse without them.
       </p>
       <div className={styles.actions}>

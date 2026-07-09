@@ -8,8 +8,8 @@
  *   - other same-origin (data JSON, fonts, css) -> stale-while-revalidate.
  *
  * Everything cross-origin is ignored entirely: the fetch handler returns early
- * for requests whose origin !== ours, so AdSense / GTM / GA are NEVER touched
- * by the SW and keep their normal network + online-detection behaviour.
+ * for requests whose origin !== ours, so GTM / GA are NEVER touched by the SW
+ * and keep their normal network + online-detection behaviour.
  *
  * Bump VERSION to invalidate every cache on the next activate.
  */

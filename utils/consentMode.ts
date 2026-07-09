@@ -17,9 +17,6 @@ export const updateConsent = (granted: boolean): void => {
   if (!gtag) return;
   const value: ConsentValue = granted ? "granted" : "denied";
   gtag("consent", "update", {
-    ad_storage: value,
-    ad_user_data: value,
-    ad_personalization: value,
     analytics_storage: value,
   });
 };
