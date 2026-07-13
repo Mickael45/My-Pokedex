@@ -45,15 +45,15 @@ test("urlset declares the sitemap + xhtml namespaces", () => {
 test("emits FR URLs: /fr, /fr/type-interactions, /fr/pokemon/{slug}, /fr/type-interactions/{frSlug}", () => {
   const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
   [
-    "<loc>https://www.my-pokedex.com/fr</loc>",
-    "<loc>https://www.my-pokedex.com/fr/type-interactions</loc>",
-    "<loc>https://www.my-pokedex.com/fr/about</loc>",
-    "<loc>https://www.my-pokedex.com/fr/privacy</loc>",
-    "<loc>https://www.my-pokedex.com/fr/contact</loc>",
-    "<loc>https://www.my-pokedex.com/fr/terms</loc>",
-    "<loc>https://www.my-pokedex.com/fr/pokemon/bulbizarre</loc>",
-    "<loc>https://www.my-pokedex.com/fr/pokemon/pris-la-vermine</loc>",
-    "<loc>https://www.my-pokedex.com/fr/type-interactions/fr-fire</loc>",
+    "<loc>https://my-pokedex.com/fr</loc>",
+    "<loc>https://my-pokedex.com/fr/type-interactions</loc>",
+    "<loc>https://my-pokedex.com/fr/about</loc>",
+    "<loc>https://my-pokedex.com/fr/privacy</loc>",
+    "<loc>https://my-pokedex.com/fr/contact</loc>",
+    "<loc>https://my-pokedex.com/fr/terms</loc>",
+    "<loc>https://my-pokedex.com/fr/pokemon/bulbizarre</loc>",
+    "<loc>https://my-pokedex.com/fr/pokemon/pris-la-vermine</loc>",
+    "<loc>https://my-pokedex.com/fr/type-interactions/fr-fire</loc>",
   ].forEach((frag) => assert.ok(xml.includes(frag), `missing ${frag}`));
 });
 
@@ -63,8 +63,8 @@ test("FR URL count = 6 static pairs + mapped ids + fr type slugs", () => {
 
 test("reciprocal hreflang trio on both sides of a paired page", () => {
   const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
-  const en = 'href="https://www.my-pokedex.com/details/1"';
-  const fr = 'href="https://www.my-pokedex.com/fr/pokemon/bulbizarre"';
+  const en = 'href="https://my-pokedex.com/details/1"';
+  const fr = 'href="https://my-pokedex.com/fr/pokemon/bulbizarre"';
   // en + x-default → EN, fr → FR (each appears on BOTH the EN and FR <url>).
   assert.equal((xml.match(new RegExp(`hreflang="en" ${en.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}`, "g")) || []).length, 2);
   assert.equal((xml.match(new RegExp(`hreflang="x-default" ${en.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}`, "g")) || []).length, 2);
@@ -73,22 +73,22 @@ test("reciprocal hreflang trio on both sides of a paired page", () => {
 
 test("home <-> /fr are a reciprocal pair", () => {
   const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
-  assert.ok(xml.includes('<xhtml:link rel="alternate" hreflang="fr" href="https://www.my-pokedex.com/fr"/>'));
-  assert.ok(xml.includes('<xhtml:link rel="alternate" hreflang="en" href="https://www.my-pokedex.com/"/>'));
+  assert.ok(xml.includes('<xhtml:link rel="alternate" hreflang="fr" href="https://my-pokedex.com/fr"/>'));
+  assert.ok(xml.includes('<xhtml:link rel="alternate" hreflang="en" href="https://my-pokedex.com/"/>'));
 });
 
 test("legal pages carry reciprocal hreflang (EN <-> FR)", () => {
   const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
-  const enBlock = xml.split("<url>").find((b) => b.includes("<loc>https://www.my-pokedex.com/privacy</loc>"));
+  const enBlock = xml.split("<url>").find((b) => b.includes("<loc>https://my-pokedex.com/privacy</loc>"));
   assert.ok(enBlock, "no /privacy url block");
   assert.ok(
-    enBlock.includes('hreflang="fr" href="https://www.my-pokedex.com/fr/privacy"'),
+    enBlock.includes('hreflang="fr" href="https://my-pokedex.com/fr/privacy"'),
     "/privacy should link its FR alternate"
   );
-  const frBlock = xml.split("<url>").find((b) => b.includes("<loc>https://www.my-pokedex.com/fr/privacy</loc>"));
+  const frBlock = xml.split("<url>").find((b) => b.includes("<loc>https://my-pokedex.com/fr/privacy</loc>"));
   assert.ok(frBlock, "no /fr/privacy url block");
   assert.ok(
-    frBlock.includes('hreflang="en" href="https://www.my-pokedex.com/privacy"'),
+    frBlock.includes('hreflang="en" href="https://my-pokedex.com/privacy"'),
     "/fr/privacy should link its EN alternate"
   );
 });

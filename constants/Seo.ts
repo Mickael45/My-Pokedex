@@ -1,4 +1,4 @@
-export const SITE_ORIGIN = "https://www.my-pokedex.com";
+export const SITE_ORIGIN = "https://my-pokedex.com";
 export const SITE_NAME = "My Pokédex";
 export const SITE_LOCALE = "en_US";
 

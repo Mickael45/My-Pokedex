@@ -2,7 +2,7 @@ import { writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
-const ORIGIN = "https://www.my-pokedex.com";
+const ORIGIN = "https://my-pokedex.com";
 const MAX_POKEMON_ID = 1025;
 // Mirror of constants/Types.ts — Pokémon's 18 types are fixed. Order MUST match
 // Object.values(constants/Types.ts), because typeSlugs() (EN) and allFrTypeSlugs()

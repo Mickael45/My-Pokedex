@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.my-pokedex.com/sitemap.xml
+Sitemap: https://my-pokedex.com/sitemap.xml
