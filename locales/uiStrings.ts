@@ -9,7 +9,6 @@ export type UiStrings = {
   searchPlaceholder: string;
   searchSubmit: string;
   filterByType: string;
-  cookieSettings: string;
   emptyList: string;
   homeTitleH1: string;
   homeIntro: string;
@@ -58,7 +57,6 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     searchPlaceholder: "Search a Pokemon by name or id",
     searchSubmit: "Submit",
     filterByType: "Filter Pokémon by type",
-    cookieSettings: "Cookie settings",
     emptyList: "No Pokemon Found...",
     homeTitleH1: "Pokédex",
     homeIntro:
@@ -107,7 +105,6 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     searchPlaceholder: "Rechercher un Pokémon par nom ou numéro",
     searchSubmit: "Envoyer",
     filterByType: "Filtrer les Pokémon par type",
-    cookieSettings: "Paramètres des cookies",
     emptyList: "Aucun Pokémon trouvé...",
     homeTitleH1: "Pokédex",
     homeIntro:

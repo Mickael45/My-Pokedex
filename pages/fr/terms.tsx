@@ -14,7 +14,7 @@ const TermsPageFr = () => (
       ogLocale="fr_FR"
     />
     <Page>
-      <LegalLayout heading="Conditions d'utilisation" updated="19 juin 2026" updatedLabel="Dernière mise à jour">
+      <LegalLayout heading="Conditions d'utilisation" updated="13 juillet 2026" updatedLabel="Dernière mise à jour">
         <p>
           En utilisant {SITE_NAME}, vous acceptez ces conditions. Le site est fourni
           «&nbsp;tel quel&nbsp;», à des fins de référence personnelle et non
@@ -29,13 +29,6 @@ const TermsPageFr = () => (
           affilié (voir notre <a href="/fr/about">page À propos</a>). Les données
           compilées de manière indépendante sur ce site peuvent être citées avec
           attribution.
-        </p>
-
-        <h2>Publicité</h2>
-        <p>
-          Ce site peut afficher des publicités de tiers. Consultez notre{" "}
-          <a href="/fr/privacy">politique de confidentialité</a> pour savoir comment
-          les cookies publicitaires sont gérés.
         </p>
 
         <h2>Responsabilité</h2>

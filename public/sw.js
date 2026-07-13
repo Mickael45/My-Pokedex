@@ -79,8 +79,8 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
 
-  // Same-origin only. Cross-origin (ads, analytics, fonts CDN, etc.) falls
-  // through to the browser's default handling untouched.
+  // Same-origin only. Cross-origin requests (fonts CDN, etc.) fall through to
+  // the browser's default handling untouched.
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === "navigate") {

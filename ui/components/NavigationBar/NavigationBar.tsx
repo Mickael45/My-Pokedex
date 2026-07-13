@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import {
@@ -15,8 +15,6 @@ import ResolutionToggleSwitch from "../ResolutionToggleSwitch/ResolutionToggleSw
 import ThemeToggleSwitch from "../ThemeToggleSwitch/ThemeToggleSwitch";
 import LanguageSwitcher from "../LanguageSwitcher/LanguageSwitcher";
 import { HOME, TYPE_INTERACTIONS, FR_HOME, FR_TYPE_INTERACTIONS } from "../../../constants/Routes";
-import ConsentContext from "../../../context/ConsentContext";
-import { UNSET } from "../../../constants/Consent";
 import { useLocale, useStrings } from "../../../hooks/useLocale";
 
 const DRAWER_ELEMENT_ID = "drawerElementId";
@@ -27,7 +25,6 @@ const NavigationBar = () => {
   const router = useRouter();
   const locale = useLocale();
   const strings = useStrings();
-  const { setConsent } = useContext(ConsentContext);
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -114,13 +111,6 @@ const NavigationBar = () => {
         <ResolutionToggleSwitch />
       </div>
       <LanguageSwitcher />
-      <button
-        type="button"
-        className={styles.cookieBtn}
-        onClick={() => setConsent(UNSET)}
-      >
-        {strings.cookieSettings}
-      </button>
     </>
   );
 

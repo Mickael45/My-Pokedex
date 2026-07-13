@@ -254,9 +254,9 @@
 }
 
 /* Mobile: the sheet is a narrow bottom card, and the control cluster (sort +
-   theme/resolution toggles + language switcher + cookie settings) is wider than a
-   phone once the localized labels are in — a single non-wrapping row overflowed
-   horizontally. Let it wrap onto centered rows so it always fits any width. */
+   theme/resolution toggles + language switcher) is wider than a phone once the
+   localized labels are in — a single non-wrapping row overflowed horizontally.
+   Let it wrap onto centered rows so it always fits any width. */
 @media screen and (max-width: 900px) {
   .sheetControls {
     flex-wrap: wrap;
@@ -339,17 +339,6 @@
   height: 3px;
   border-radius: 999px;
   background: currentColor;
-}
-
-.cookieBtn {
-  border: 0;
-  background: transparent;
-  color: inherit;
-  font-size: 12px;
-  text-decoration: underline;
-  cursor: pointer;
-  padding: 4px 6px;
-  white-space: nowrap;
 }
 
 /* Pin the navigation chrome to one fixed font in BOTH resolution modes. The

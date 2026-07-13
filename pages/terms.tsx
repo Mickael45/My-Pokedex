@@ -13,7 +13,7 @@ const TermsPage = () => (
       alternates={hreflangAlternates("/terms", "/fr/terms")}
     />
     <Page>
-      <LegalLayout heading="Terms of Use" updated="June 19, 2026">
+      <LegalLayout heading="Terms of Use" updated="July 13, 2026">
         <p>
           By using {SITE_NAME} you agree to these terms. The site is provided
           &quot;as is&quot;, for personal, non-commercial reference, with no warranty
@@ -26,13 +26,6 @@ const TermsPage = () => (
           Pokémon Company; {SITE_NAME} is unaffiliated (see our{" "}
           <a href="/about">About page</a>). Independently compiled data on this site
           may be referenced with attribution.
-        </p>
-
-        <h2>Advertising</h2>
-        <p>
-          This site may display third-party advertising. See our{" "}
-          <a href="/privacy">Privacy Policy</a> for how advertising cookies are
-          handled.
         </p>
 
         <h2>Liability</h2>
