@@ -165,7 +165,7 @@ const DetailsPage = ({
                   </div>
                 </div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className={styles.heroImg} src={imageUrl} alt={`${capitalizeFirstLetter(name)} official artwork`} />
+                <img className={styles.heroImg} src={imageUrl} alt={`${capitalizeFirstLetter(name)} official artwork`} data-sprite="" />
               </header>
 
               <div className={styles.panes}>

@@ -50,10 +50,10 @@
   font-size: 11px;
 }
 
-/* Keep pixel sprites crisp when scaled. Match both alt suffixes the app uses
-   for Pokémon art: details/evolution use "…-pic", list cards use "… artwork". */
-.container[data-resolution="low res."] [alt$="pic"],
-.container[data-resolution="low res."] [alt$="artwork"] {
+/* Keep pixel sprites crisp when scaled. Tagged with data-sprite so the rule is
+   independent of the (localized) alt text — matching alt suffixes silently
+   dropped the effect on the French routes. */
+.container[data-resolution="low res."] [data-sprite] {
   image-rendering: pixelated;
 }
 
@@ -94,8 +94,7 @@
   font-size: 17px;
 }
 
-.container[data-resolution="high res."] [alt$="pic"],
-.container[data-resolution="high res."] [alt$="artwork"] {
+.container[data-resolution="high res."] [data-sprite] {
   image-rendering: crisp-edges;
 }
 

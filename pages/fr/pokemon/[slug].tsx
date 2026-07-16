@@ -192,7 +192,7 @@ const FrDetailsPage = ({
                   </div>
                 </div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img className={styles.heroImg} src={imageUrl} alt={`Illustration de ${displayName}`} />
+                <img className={styles.heroImg} src={imageUrl} alt={`Illustration de ${displayName}`} data-sprite="" />
               </header>
 
               <div className={styles.panes}>

@@ -24,6 +24,7 @@ const EvolutionChainPokemon = ({ name, id, types }: IBasicPokemon) => {
       <img
         src={imageUrl}
         alt={`${name}-pic`}
+        data-sprite=""
         onClick={handleTagClick}
         height={200}
         width={200}
