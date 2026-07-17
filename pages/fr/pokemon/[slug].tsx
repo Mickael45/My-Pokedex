@@ -11,6 +11,7 @@ import ResolutionContext from "../../../context/ResolutionContext";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
 import { useStrings } from "../../../hooks/useLocale";
 import { buildFrSlugMaps, fetchPokemonDetailFrBySlug } from "../../../services/fetchPokemons/fetchPokemonsFr";
+import { slugify } from "../../../utils/slugify";
 import Header from "../../../ui/components/Header/Header";
 import EvolutionStageFr from "../../../ui/components/EvolutionStage/EvolutionStageFr";
 import Footer from "../../../ui/components/Footer/Footer";
@@ -25,6 +26,7 @@ import { FR_STAT_LABELS } from "../../../constants/FrStatLabels";
 import { hreflangAlternates } from "../../../utils/hreflang";
 import { breadcrumbJsonLd } from "../../../utils/structuredData";
 import { generationFromId } from "../../../constants/Generations";
+import { baseStatTotal, frDetailDescription } from "../../../utils/pokemonMeta";
 import { geoIntroFr } from "../../../utils/fr/geoIntro";
 import type { SwitchTarget } from "../../../context/SwitchTargetContext";
 
@@ -66,6 +68,9 @@ const FrDetailsPage = ({
   const typeList = types.split(",");
   const displayName = frName ?? name;
   const typeLabel = (type: string) => FR_TYPE_LABELS[type] ?? capitalizeFirstLetter(type);
+  // English detail slug for the reciprocal `en` hreflang alternate. `name` is the
+  // (kept) English resource name, whose slug equals the /pokemon/[slug] route slug.
+  const enSlug = slugify(name);
 
   // Server-rendered GEO opener: French entity + English name anchor + type + gen.
   const geoIntro = geoIntroFr({
@@ -122,12 +127,16 @@ const FrDetailsPage = ({
     <>
       <Header
         title={`${displayName} (#${formatNumberToMatchLength(id)}) — Stats, Types, Faiblesses & Évolution | Pokédex`}
-        description={`${displayName} est un Pokémon de type ${types
-          .split(",")
-          .map(typeLabel)
-          .join("/")} (#${formatNumberToMatchLength(id)}). Découvrez ses statistiques de base, ses faiblesses et résistances de type, ses talents et sa chaîne d'évolution complète.`}
+        description={frDetailDescription({
+          displayName,
+          category: frCategory ?? "",
+          typesLabel: typeList.map(typeLabel).join("/"),
+          id,
+          gen: generationFromId(id),
+          bst: baseStatTotal(stats),
+        })}
         canonicalPath={`/fr/pokemon/${slug}`}
-        alternates={hreflangAlternates(`/details/${id}`, `/fr/pokemon/${slug}`)}
+        alternates={hreflangAlternates(`/pokemon/${enSlug}`, `/fr/pokemon/${slug}`)}
         ogLocale="fr_FR"
         image={hdImageUrl}
         imageAlt={`Illustration de ${displayName}`}
@@ -278,7 +287,7 @@ export async function getStaticProps({ params }: { params: { slug: string } }) {
       prevSlug,
       nextSlug,
       slug: params.slug,
-      switchTarget: { en: `/details/${pokemon.id}`, fr: `/fr/pokemon/${params.slug}` },
+      switchTarget: { en: `/pokemon/${slugify(pokemon.name)}`, fr: `/fr/pokemon/${params.slug}` },
     },
   };
 }

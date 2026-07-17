@@ -9,7 +9,7 @@ describe("localeFromPathname", () => {
   });
   it("returns en for root and English routes", () => {
     expect(localeFromPathname("/")).toBe("en");
-    expect(localeFromPathname("/details/[id]")).toBe("en");
+    expect(localeFromPathname("/pokemon/[slug]")).toBe("en");
     expect(localeFromPathname("/frobnicate")).toBe("en"); // /fr not followed by / or end
   });
 });

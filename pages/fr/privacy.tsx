@@ -7,8 +7,8 @@ import { hreflangAlternates } from "../../utils/hreflang";
 const PrivacyPageFr = () => (
   <>
     <Header
-      title={`Politique de confidentialité | ${SITE_NAME}`}
-      description={`Comment ${SITE_NAME} traite vos données. Aucun cookie, aucune publicité, aucune analyse d'audience.`}
+      title={`Politique de confidentialité — aucun cookie ni suivi | ${SITE_NAME}`}
+      description={`Comment ${SITE_NAME} traite vos données : aucun cookie, aucune publicité, aucune analyse d’audience ni suivi tiers. Ce que le site conserve et ne collecte jamais.`}
       canonicalPath="/fr/privacy"
       alternates={hreflangAlternates("/privacy", "/fr/privacy")}
       ogLocale="fr_FR"

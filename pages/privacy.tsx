@@ -7,8 +7,8 @@ import { hreflangAlternates } from "../utils/hreflang";
 const PrivacyPage = () => (
   <>
     <Header
-      title={`Privacy Policy | ${SITE_NAME}`}
-      description={`How ${SITE_NAME} handles your data. No cookies, no advertising, no analytics.`}
+      title={`Privacy Policy — No Cookies, No Ads, No Tracking | ${SITE_NAME}`}
+      description={`How ${SITE_NAME} handles your data: no cookies, no advertising, no analytics and no third-party tracking. What the site stores locally and what it never collects.`}
       canonicalPath="/privacy"
       alternates={hreflangAlternates("/privacy", "/fr/privacy")}
     />

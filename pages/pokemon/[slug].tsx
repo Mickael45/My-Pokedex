@@ -2,14 +2,14 @@ import { Fragment, useContext, useEffect, type CSSProperties } from "react";
 import ReactDOM from "react-dom";
 import Link from "next/link";
 
-import styles from "./Details.module.css";
-import { DETAILS } from "../../constants/Routes";
+import styles from "../details/Details.module.css";
+import { POKEMON } from "../../constants/Routes";
 import { MAX_POKEMON_ID_ALLOWED } from "../../constants/FetchPokemons";
 import { LOW_RESOLUTION } from "../../constants/Resolution";
 import LoadingContext from "../../context/LoadingContext";
 import ResolutionContext from "../../context/ResolutionContext";
 import { usePokemonPic } from "../../hooks/usePokemonPic";
-import { fetchAllPokemons, fetchPokemonDetailsByNameOrId } from "../../services/fetchPokemons/fetchPokemons";
+import { buildEnSlugMaps, fetchPokemonDetailEnBySlug } from "../../services/fetchPokemons/fetchPokemons";
 import { buildFrSlugMaps } from "../../services/fetchPokemons/fetchPokemonsFr";
 import Header from "../../ui/components/Header/Header";
 import EvolutionStage from "../../ui/components/EvolutionStage/EvolutionStage";
@@ -22,6 +22,8 @@ import { capitalizeFirstLetter, formatNumberToMatchLength } from "../../utils/st
 import { convertCmtoMeterString, cmToFeetString, joinValueWithUnit, kgToPoundsString } from "../../utils/unitConverter";
 import { breadcrumbJsonLd } from "../../utils/structuredData";
 import { hreflangAlternates } from "../../utils/hreflang";
+import { generationFromId } from "../../constants/Generations";
+import { baseStatTotal, enDetailDescription } from "../../utils/pokemonMeta";
 import type { SwitchTarget } from "../../context/SwitchTargetContext";
 
 const MAX_STAT_VALUE = 200;
@@ -29,7 +31,15 @@ const FACTOR_LABEL: Record<number, string> = { 0: "0", 0.25: "0.25", 0.5: "0.5",
 
 // `frSlug` is the French detail slug for this id, resolved at build time solely to
 // emit the reciprocal `fr` hreflang alternate — it does not affect the visible page.
-type DetailsPageProps = IFullPokemon & { frSlug: string; switchTarget?: SwitchTarget };
+// `slug` is this page's own English slug; `prevSlug`/`nextSlug` are the adjacent
+// ids' slugs for the Prev/Next nav (null at the Pokédex boundaries).
+type DetailsPageProps = IFullPokemon & {
+  slug: string;
+  prevSlug: string | null;
+  nextSlug: string | null;
+  frSlug: string;
+  switchTarget?: SwitchTarget;
+};
 
 const DetailsPage = ({
   id,
@@ -46,6 +56,9 @@ const DetailsPage = ({
   abilities,
   description,
   category,
+  slug,
+  prevSlug,
+  nextSlug,
   frSlug,
 }: DetailsPageProps) => {
   const { setLoading } = useContext(LoadingContext);
@@ -100,19 +113,23 @@ const DetailsPage = ({
     <>
       <Header
         title={`${capitalizeFirstLetter(name)} (#${formatNumberToMatchLength(id)}) — Stats, Types, Weaknesses & Evolution | Pokédex`}
-        description={`${capitalizeFirstLetter(name)} is a ${types
-          .split(",")
-          .map(capitalizeFirstLetter)
-          .join("/")}-type Pokémon (#${formatNumberToMatchLength(id)}). See base stats, type weaknesses and resistances, abilities, and its full evolution line.`}
-        canonicalPath={`/details/${id}`}
-        alternates={hreflangAlternates(`/details/${id}`, `/fr/pokemon/${frSlug}`)}
+        description={enDetailDescription({
+          name,
+          category,
+          types,
+          id,
+          gen: generationFromId(id),
+          bst: baseStatTotal(stats),
+        })}
+        canonicalPath={`/pokemon/${slug}`}
+        alternates={hreflangAlternates(`/pokemon/${slug}`, `/fr/pokemon/${frSlug}`)}
         image={hdImageUrl}
         imageAlt={`${capitalizeFirstLetter(name)} official artwork`}
         ogType="article"
         twitterCard="summary"
         jsonLd={breadcrumbJsonLd([
           { name: "Pokédex", path: "/" },
-          { name: capitalizeFirstLetter(name), path: `/details/${id}` },
+          { name: capitalizeFirstLetter(name), path: `/pokemon/${slug}` },
         ])}
       />
       <ErrorScreenWrapper>
@@ -127,8 +144,8 @@ const DetailsPage = ({
                     while you're on the page — the first Prev/Next click is then instant
                     instead of waiting on a fetch. Boundaries stay disabled buttons since
                     an anchor can't be :disabled. */}
-                {id > 1 ? (
-                  <Link href={`${DETAILS}${id - 1}`} className={styles.navBtn} prefetch>
+                {prevSlug ? (
+                  <Link href={`${POKEMON}${prevSlug}`} className={styles.navBtn} prefetch>
                     &lt; Prev
                   </Link>
                 ) : (
@@ -136,8 +153,8 @@ const DetailsPage = ({
                     &lt; Prev
                   </button>
                 )}
-                {id < MAX_POKEMON_ID_ALLOWED ? (
-                  <Link href={`${DETAILS}${id + 1}`} className={styles.navBtn} prefetch>
+                {nextSlug ? (
+                  <Link href={`${POKEMON}${nextSlug}`} className={styles.navBtn} prefetch>
                     Next &gt;
                   </Link>
                 ) : (
@@ -235,24 +252,27 @@ const DetailsPage = ({
 export default DetailsPage;
 
 export async function getStaticPaths() {
-  const pokemonsData = await fetchAllPokemons();
-  const paths = pokemonsData.map((pokemon: IBasicPokemon) => ({ params: { id: pokemon.id.toString() } }));
+  const { slugToId } = await buildEnSlugMaps();
+  const paths = Object.keys(slugToId).map((slug) => ({ params: { slug } }));
 
   return { paths, fallback: false };
 }
 
-export async function getStaticProps({ params }: { params: { id: string } }) {
-  const pokemonData = await fetchPokemonDetailsByNameOrId(params.id);
+export async function getStaticProps({ params }: { params: { slug: string } }) {
+  const { pokemon, prevSlug, nextSlug } = await fetchPokemonDetailEnBySlug(params.slug);
   // Resolve the French slug for this id so the head can emit the reciprocal `fr`
   // hreflang alternate. Build-time only; the visible EN page is unaffected.
   const { idToSlug } = await buildFrSlugMaps();
-  const frSlug = idToSlug[Number(params.id)];
+  const frSlug = idToSlug[pokemon.id];
 
   return {
     props: {
-      ...pokemonData,
+      ...pokemon,
+      slug: params.slug,
+      prevSlug,
+      nextSlug,
       frSlug,
-      switchTarget: { en: `/details/${params.id}`, fr: `/fr/pokemon/${frSlug}` },
+      switchTarget: { en: `/pokemon/${params.slug}`, fr: `/fr/pokemon/${frSlug}` },
     },
   };
 }

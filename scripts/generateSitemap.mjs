@@ -41,13 +41,29 @@ const STATIC_PAIRS = [
   { en: "/terms", fr: "/fr/terms" },
 ];
 
-// The EN paths, kept for the URL-count test and any EN-only consumer. FR paths
-// are assembled from the fetched slug maps inside buildSitemap().
-export const buildUrls = () => {
+// The EN paths, kept for the URL-count test and any EN-only consumer. Detail
+// pages are name-slugged (/pokemon/{slug}); the id→enSlug map comes from
+// buildEnSlugMaps().idToSlug. FR paths are assembled inside buildSitemap().
+export const buildUrls = (idToEnSlug = {}) => {
   const urls = STATIC_PAIRS.map((pair) => pair.en);
-  for (let id = 1; id <= MAX_POKEMON_ID; id++) urls.push(`/details/${id}`);
+  for (let id = 1; id <= MAX_POKEMON_ID; id++) {
+    const slug = idToEnSlug[id];
+    if (slug) urls.push(`/pokemon/${slug}`);
+  }
   typeSlugs().forEach((slug) => urls.push(`/type-interactions/${slug}`));
   return urls;
+};
+
+// Cloudflare Pages `_redirects`: one 301 per legacy numeric detail URL → its new
+// name-slugged URL. Copied verbatim from public/ into the static-export output,
+// where Cloudflare serves it. 1025 lines is well within the 2,000 static-rule cap.
+export const buildRedirects = (idToEnSlug = {}) => {
+  const lines = [];
+  for (let id = 1; id <= MAX_POKEMON_ID; id++) {
+    const slug = idToEnSlug[id];
+    if (slug) lines.push(`/details/${id} /pokemon/${slug} 301`);
+  }
+  return `${lines.join("\n")}\n`;
 };
 
 const abs = (path) => `${ORIGIN}${path}`;
@@ -72,7 +88,7 @@ const renderUrl = (path, lastmod, alt) => {
 // (from buildFrSlugMaps().idToSlug) and the FR type slugs (from allFrTypeSlugs(),
 // index-aligned with typeSlugs()), it emits every EN and FR <url> with reciprocal
 // hreflang alternates. No network here — main() does the fetching.
-export const buildSitemap = ({ lastmod = LASTMOD, idToFrSlug = {}, frTypeSlugs = [] } = {}) => {
+export const buildSitemap = ({ lastmod = LASTMOD, idToEnSlug = {}, idToFrSlug = {}, frTypeSlugs = [] } = {}) => {
   const enTypeSlugs = typeSlugs();
   if (frTypeSlugs.length && frTypeSlugs.length !== enTypeSlugs.length) {
     throw new Error(
@@ -87,9 +103,11 @@ export const buildSitemap = ({ lastmod = LASTMOD, idToFrSlug = {}, frTypeSlugs =
     blocks.push(renderUrl(pair.en, lastmod, { en: pair.en, fr: pair.fr }));
   }
   for (let id = 1; id <= MAX_POKEMON_ID; id++) {
+    const enSlug = idToEnSlug[id];
+    if (!enSlug) continue;
     const frSlug = idToFrSlug[id];
-    const alt = frSlug ? { en: `/details/${id}`, fr: `/fr/pokemon/${frSlug}` } : null;
-    blocks.push(renderUrl(`/details/${id}`, lastmod, alt));
+    const alt = frSlug ? { en: `/pokemon/${enSlug}`, fr: `/fr/pokemon/${frSlug}` } : null;
+    blocks.push(renderUrl(`/pokemon/${enSlug}`, lastmod, alt));
   }
   enTypeSlugs.forEach((enSlug, i) => {
     const frSlug = frTypeSlugs[i];
@@ -106,7 +124,9 @@ export const buildSitemap = ({ lastmod = LASTMOD, idToFrSlug = {}, frTypeSlugs =
   for (let id = 1; id <= MAX_POKEMON_ID; id++) {
     const frSlug = idToFrSlug[id];
     if (!frSlug) continue;
-    blocks.push(renderUrl(`/fr/pokemon/${frSlug}`, lastmod, { en: `/details/${id}`, fr: `/fr/pokemon/${frSlug}` }));
+    const enSlug = idToEnSlug[id];
+    const alt = enSlug ? { en: `/pokemon/${enSlug}`, fr: `/fr/pokemon/${frSlug}` } : null;
+    blocks.push(renderUrl(`/fr/pokemon/${frSlug}`, lastmod, alt));
   }
   enTypeSlugs.forEach((enSlug, i) => {
     const frSlug = frTypeSlugs[i];
@@ -138,19 +158,27 @@ export const countFrUrls = (idToFrSlug, frTypeSlugs) =>
 // node:test file) without a TS loader — only tsx-run main() resolves them.
 const main = async () => {
   const { buildFrSlugMaps } = await import("../services/fetchPokemons/fetchPokemonsFr.ts");
+  const { buildEnSlugMaps } = await import("../services/fetchPokemons/fetchPokemons.ts");
   const { allFrTypeSlugs } = await import("../utils/frTypeSlug.ts");
 
   const { idToSlug } = await buildFrSlugMaps();
+  const { idToSlug: idToEnSlug } = await buildEnSlugMaps();
   const frTypeSlugs = allFrTypeSlugs();
 
-  const out = join(dirname(fileURLToPath(import.meta.url)), "..", "public", "sitemap.xml");
-  writeFileSync(out, buildSitemap({ idToFrSlug: idToSlug, frTypeSlugs }));
+  const publicDir = join(dirname(fileURLToPath(import.meta.url)), "..", "public");
+  writeFileSync(join(publicDir, "sitemap.xml"), buildSitemap({ idToEnSlug, idToFrSlug: idToSlug, frTypeSlugs }));
 
-  const enCount = buildUrls().length;
+  // 301 map for the legacy /details/{id} → /pokemon/{slug} migration.
+  const redirects = buildRedirects(idToEnSlug);
+  writeFileSync(join(publicDir, "_redirects"), redirects);
+
+  const enCount = buildUrls(idToEnSlug).length;
   const frCount = countFrUrls(idToSlug, frTypeSlugs);
+  const redirectCount = redirects.trim() ? redirects.trim().split("\n").length : 0;
   console.log(
     `Wrote ${enCount + frCount} URLs to public/sitemap.xml (${enCount} EN + ${frCount} FR, hreflang-annotated).`
   );
+  console.log(`Wrote ${redirectCount} legacy 301 redirects to public/_redirects.`);
 };
 
 // Run only when executed directly, so the test can import the helpers safely.

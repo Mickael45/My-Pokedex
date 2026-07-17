@@ -27,13 +27,13 @@ describe("switchHref", () => {
   });
 
   it("falls back to the other locale home for unknown routes", () => {
-    expect(switchHref("en", "/details/[id]", null)).toBe("/fr");
+    expect(switchHref("en", "/pokemon/[slug]", null)).toBe("/fr");
     expect(switchHref("fr", "/fr/pokemon/[slug]", null)).toBe("/");
   });
 
   it("prefers the page-provided counterpart when present", () => {
-    const target = { en: "/details/25", fr: "/fr/pokemon/pikachu" };
-    expect(switchHref("en", "/details/[id]", target)).toBe("/fr/pokemon/pikachu");
-    expect(switchHref("fr", "/fr/pokemon/[slug]", target)).toBe("/details/25");
+    const target = { en: "/pokemon/pikachu", fr: "/fr/pokemon/pikachu" };
+    expect(switchHref("en", "/pokemon/[slug]", target)).toBe("/fr/pokemon/pikachu");
+    expect(switchHref("fr", "/fr/pokemon/[slug]", target)).toBe("/pokemon/pikachu");
   });
 });

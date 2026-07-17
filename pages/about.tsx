@@ -7,8 +7,8 @@ import { hreflangAlternates } from "../utils/hreflang";
 const AboutPage = () => (
   <>
     <Header
-      title={`About | ${SITE_NAME}`}
-      description={`What ${SITE_NAME} is, who makes it, and its relationship to the Pokémon franchise.`}
+      title={`About ${SITE_NAME} — Independent, Fan-Made Pokémon Reference`}
+      description={`What ${SITE_NAME} is, who builds it, how its base stats and type charts are compiled, and its nominative, unaffiliated relationship to the Pokémon franchise.`}
       canonicalPath="/about"
       alternates={hreflangAlternates("/about", "/fr/about")}
     />

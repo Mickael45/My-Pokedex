@@ -2,7 +2,7 @@ import Link from "next/link";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
 import { cardImageUrls } from "../../../utils/pokemonFormatter/pokemonFormatter";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
-import { DETAILS } from "../../../constants/Routes";
+import { POKEMON } from "../../../constants/Routes";
 import styles from "./EvolutionStage.module.css";
 
 interface IProps {
@@ -18,7 +18,7 @@ const EvolutionStage = ({ stage }: IProps) => {
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
 
   return (
-    <Link href={`${DETAILS}${stage.id}`} className={styles.mon} prefetch>
+    <Link href={`${POKEMON}${stage.slug}`} className={styles.mon} prefetch>
       <span className={styles.avatar}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={imageUrl} alt={`${stage.name}-pic`} data-sprite="" loading="lazy" />

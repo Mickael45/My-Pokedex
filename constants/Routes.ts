@@ -1,5 +1,8 @@
 export const HOME = "/";
-export const DETAILS = "/details/";
+// English detail route. Name-based (e.g. /pokemon/bulbasaur) to mirror the French
+// /fr/pokemon/[slug] structure and carry a keyword in the URL. The legacy numeric
+// /details/{id} route is 301-redirected here via public/_redirects.
+export const POKEMON = "/pokemon/";
 export const TYPE_INTERACTIONS = "/type-interactions";
 export const ABOUT = "/about";
 export const PRIVACY = "/privacy";

@@ -3,10 +3,10 @@ import { hreflangAlternates } from "./hreflang";
 
 describe("hreflangAlternates", () => {
   it("builds the en / fr / x-default triple in order", () => {
-    expect(hreflangAlternates("/details/25", "/fr/pokemon/pikachu")).toEqual([
-      { hrefLang: "en", href: "/details/25" },
+    expect(hreflangAlternates("/pokemon/pikachu", "/fr/pokemon/pikachu")).toEqual([
+      { hrefLang: "en", href: "/pokemon/pikachu" },
       { hrefLang: "fr", href: "/fr/pokemon/pikachu" },
-      { hrefLang: "x-default", href: "/details/25" },
+      { hrefLang: "x-default", href: "/pokemon/pikachu" },
     ]);
   });
 

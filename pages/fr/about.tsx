@@ -7,8 +7,8 @@ import { hreflangAlternates } from "../../utils/hreflang";
 const AboutPageFr = () => (
   <>
     <Header
-      title={`À propos | ${SITE_NAME}`}
-      description={`Ce qu'est ${SITE_NAME}, qui le réalise, et sa relation avec la licence Pokémon.`}
+      title={`À propos de ${SITE_NAME} — un Pokédex indépendant et non officiel`}
+      description={`Ce qu’est ${SITE_NAME}, qui le réalise, comment ses statistiques et tableaux de types sont compilés, et sa relation nominative et non affiliée avec la licence Pokémon.`}
       canonicalPath="/fr/about"
       alternates={hreflangAlternates("/about", "/fr/about")}
       ogLocale="fr_FR"

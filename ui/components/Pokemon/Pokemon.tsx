@@ -5,7 +5,7 @@ import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
 import useCenterSpotlight from "../../../hooks/useCenterSpotlight";
 import { formatNumberToMatchLength } from "../../../utils/stringManipulation";
-import { DETAILS } from "../../../constants/Routes";
+import { POKEMON } from "../../../constants/Routes";
 import TypeIcon from "../PokemonType/typeIcons";
 import styles from "./Pokemon.module.css";
 
@@ -14,6 +14,7 @@ const MAX_STAT_VALUE = 255;
 const Pokemon = ({
   name,
   id,
+  slug,
   types,
   stats,
   evolvesFrom,
@@ -63,7 +64,7 @@ const Pokemon = ({
   return (
     <Link
       ref={cardRef}
-      href={`${DETAILS}${id}`}
+      href={`${POKEMON}${slug}`}
       prefetch
       className={isFocused ? `${styles.card} ${styles.cardFocused}` : styles.card}
       style={{ "--type": cardColor } as CSSProperties}

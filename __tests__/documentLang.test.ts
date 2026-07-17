@@ -12,7 +12,7 @@ describe("langForPathname", () => {
   });
   it("returns en for root and English route patterns", () => {
     expect(langForPathname("/")).toBe("en");
-    expect(langForPathname("/details/[id]")).toBe("en");
+    expect(langForPathname("/pokemon/[slug]")).toBe("en");
     expect(langForPathname("/frobnicate")).toBe("en"); // /fr not followed by / or end
   });
 });

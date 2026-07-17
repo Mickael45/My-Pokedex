@@ -4,7 +4,7 @@ import { getElementById } from "../../../utils/domManipulation";
 import useFiltering from "../../../hooks/useFiltering";
 import { usePokemonIdFromQuery, usePokemonNameFromQuery } from "../../../hooks/useQueryParams";
 import styles from "./SearchInput.module.css";
-import { DETAILS, HOME, FR_HOME, FR_POKEMON } from "../../../constants/Routes";
+import { POKEMON, HOME, FR_HOME, FR_POKEMON } from "../../../constants/Routes";
 import { useLocale, useStrings } from "../../../hooks/useLocale";
 
 const NAME_INPUT_ID = "nameInputId";
@@ -18,9 +18,9 @@ const SearchInput = () => {
   const strings = useStrings();
 
   // The FR detail route (/fr/pokemon/[slug]) is a details page too, so the
-  // input is cleared there just as on the English /details/ route.
+  // input is cleared there just as on the English /pokemon/ route.
   const isOnDetailsPage =
-    router.pathname.startsWith(DETAILS) || router.pathname.startsWith(FR_POKEMON);
+    router.pathname.startsWith(POKEMON) || router.pathname.startsWith(FR_POKEMON);
   const homeHref = locale === "fr" ? FR_HOME : HOME;
 
   const handlePokemonsAndFilteringQueryChange = () => {

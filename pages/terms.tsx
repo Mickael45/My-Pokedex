@@ -7,8 +7,8 @@ import { hreflangAlternates } from "../utils/hreflang";
 const TermsPage = () => (
   <>
     <Header
-      title={`Terms of Use | ${SITE_NAME}`}
-      description={`The terms governing your use of ${SITE_NAME}.`}
+      title={`Terms of Use for ${SITE_NAME} — Your Rights & Responsibilities`}
+      description={`The terms governing your use of ${SITE_NAME}: acceptable use of the site, its independently compiled Pokémon data, intellectual-property notices and disclaimers.`}
       canonicalPath="/terms"
       alternates={hreflangAlternates("/terms", "/fr/terms")}
     />

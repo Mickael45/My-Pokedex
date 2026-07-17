@@ -7,8 +7,8 @@ import { hreflangAlternates } from "../utils/hreflang";
 const ContactPage = () => (
   <>
     <Header
-      title={`Contact | ${SITE_NAME}`}
-      description={`How to reach the ${SITE_NAME} team for questions, corrections, or feedback.`}
+      title={`Contact ${SITE_NAME} — Questions, Corrections & Feedback`}
+      description={`How to reach the ${SITE_NAME} team about data corrections, bug reports, questions or feedback on the Pokédex, its base stats, type charts and evolution data.`}
       canonicalPath="/contact"
       alternates={hreflangAlternates("/contact", "/fr/contact")}
     />

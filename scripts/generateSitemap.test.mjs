@@ -1,12 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { typeSlugs, buildUrls, buildSitemap, countFrUrls, LASTMOD } from "./generateSitemap.mjs";
+import { typeSlugs, buildUrls, buildSitemap, buildRedirects, countFrUrls, LASTMOD } from "./generateSitemap.mjs";
 
-// A tiny, deterministic FR fixture — the pure assembly takes the slug data as
+// Tiny, deterministic fixtures — the pure assembly takes the slug data as
 // arguments, so it is unit-testable WITHOUT the build-time PokéAPI fetch (that
-// lives in the generator's main()).
+// lives in the generator's main()). EN detail URLs are now name-slugged.
 const idToFrSlug = { 1: "bulbizarre", 4: "salameche", 1025: "pris-la-vermine" };
+const idToEnSlug = { 1: "bulbasaur", 4: "charmander", 1025: "pecharunt" };
 const frTypeSlugs = typeSlugs().map((s) => `fr-${s}`); // index-aligned stand-ins
+const sitemap = () => buildSitemap({ idToEnSlug, idToFrSlug, frTypeSlugs });
 
 test("171 type slugs", () => assert.equal(typeSlugs().length, 171));
 test("pairs alphabetical + unique", () => {
@@ -15,12 +17,17 @@ test("pairs alphabetical + unique", () => {
   assert.ok(!s.includes("water-fire"));
   assert.equal(new Set(s).size, s.length);
 });
-test("total EN urls = 6 static + 1025 + 171", () => assert.equal(buildUrls().length, 1202));
+test("total EN urls = 6 static + 1025 + 171", () => {
+  // A full id→slug map so every detail page is counted (the real build passes
+  // buildEnSlugMaps().idToSlug, which covers all 1025 ids).
+  const fullEn = Object.fromEntries(Array.from({ length: 1025 }, (_, i) => [i + 1, `p${i + 1}`]));
+  assert.equal(buildUrls(fullEn).length, 1202);
+});
 test("includes home, type hub, legal pages, a detail page, a type page", () => {
-  const urls = buildUrls();
+  const urls = buildUrls(idToEnSlug);
   [
     "/", "/type-interactions", "/about", "/privacy", "/contact", "/terms",
-    "/details/1", "/details/1025", "/type-interactions/fire",
+    "/pokemon/bulbasaur", "/pokemon/pecharunt", "/type-interactions/fire",
   ].forEach((u) => assert.ok(urls.includes(u), `missing ${u}`));
 });
 
@@ -29,21 +36,25 @@ test("lastmod is a stable fixed date, not today-on-every-build", () => {
   // lastmod and erode crawler trust (Google treats today-on-every-build as noise).
   assert.match(LASTMOD, /^\d{4}-\d{2}-\d{2}$/);
   // The generated XML must be byte-identical across calls (no `new Date()` inside).
-  assert.equal(
-    buildSitemap({ idToFrSlug, frTypeSlugs }),
-    buildSitemap({ idToFrSlug, frTypeSlugs })
-  );
-  assert.ok(buildSitemap({ idToFrSlug, frTypeSlugs }).includes(`<lastmod>${LASTMOD}</lastmod>`));
+  assert.equal(sitemap(), sitemap());
+  assert.ok(sitemap().includes(`<lastmod>${LASTMOD}</lastmod>`));
 });
 
 test("urlset declares the sitemap + xhtml namespaces", () => {
-  const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
+  const xml = sitemap();
   assert.ok(xml.includes('xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"'));
   assert.ok(xml.includes('xmlns:xhtml="http://www.w3.org/1999/xhtml"'));
 });
 
+test("emits EN detail URLs as /pokemon/{slug}, not legacy /details/{id}", () => {
+  const xml = sitemap();
+  assert.ok(xml.includes("<loc>https://my-pokedex.com/pokemon/bulbasaur</loc>"));
+  assert.ok(xml.includes("<loc>https://my-pokedex.com/pokemon/pecharunt</loc>"));
+  assert.ok(!xml.includes("/details/"), "sitemap must not reference the legacy /details/ route");
+});
+
 test("emits FR URLs: /fr, /fr/type-interactions, /fr/pokemon/{slug}, /fr/type-interactions/{frSlug}", () => {
-  const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
+  const xml = sitemap();
   [
     "<loc>https://my-pokedex.com/fr</loc>",
     "<loc>https://my-pokedex.com/fr/type-interactions</loc>",
@@ -62,8 +73,8 @@ test("FR URL count = 6 static pairs + mapped ids + fr type slugs", () => {
 });
 
 test("reciprocal hreflang trio on both sides of a paired page", () => {
-  const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
-  const en = 'href="https://my-pokedex.com/details/1"';
+  const xml = sitemap();
+  const en = 'href="https://my-pokedex.com/pokemon/bulbasaur"';
   const fr = 'href="https://my-pokedex.com/fr/pokemon/bulbizarre"';
   // en + x-default → EN, fr → FR (each appears on BOTH the EN and FR <url>).
   assert.equal((xml.match(new RegExp(`hreflang="en" ${en.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}`, "g")) || []).length, 2);
@@ -72,13 +83,13 @@ test("reciprocal hreflang trio on both sides of a paired page", () => {
 });
 
 test("home <-> /fr are a reciprocal pair", () => {
-  const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
+  const xml = sitemap();
   assert.ok(xml.includes('<xhtml:link rel="alternate" hreflang="fr" href="https://my-pokedex.com/fr"/>'));
   assert.ok(xml.includes('<xhtml:link rel="alternate" hreflang="en" href="https://my-pokedex.com/"/>'));
 });
 
 test("legal pages carry reciprocal hreflang (EN <-> FR)", () => {
-  const xml = buildSitemap({ idToFrSlug, frTypeSlugs });
+  const xml = sitemap();
   const enBlock = xml.split("<url>").find((b) => b.includes("<loc>https://my-pokedex.com/privacy</loc>"));
   assert.ok(enBlock, "no /privacy url block");
   assert.ok(
@@ -94,5 +105,14 @@ test("legal pages carry reciprocal hreflang (EN <-> FR)", () => {
 });
 
 test("mismatched FR/EN type-slug lengths throw (index alignment guard)", () => {
-  assert.throws(() => buildSitemap({ idToFrSlug, frTypeSlugs: ["only-one"] }), /align by index/);
+  assert.throws(() => buildSitemap({ idToEnSlug, idToFrSlug, frTypeSlugs: ["only-one"] }), /align by index/);
+});
+
+test("buildRedirects maps each legacy /details/{id} to /pokemon/{slug} with a 301", () => {
+  const redirects = buildRedirects(idToEnSlug);
+  assert.ok(redirects.includes("/details/1 /pokemon/bulbasaur 301"));
+  assert.ok(redirects.includes("/details/4 /pokemon/charmander 301"));
+  assert.ok(redirects.includes("/details/1025 /pokemon/pecharunt 301"));
+  // One line per mapped id, nothing more.
+  assert.equal(redirects.trim().split("\n").length, 3);
 });

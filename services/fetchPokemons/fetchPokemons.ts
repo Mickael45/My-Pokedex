@@ -11,6 +11,7 @@ import {
 import { Specie, IPokemonResponseType } from "../../utils/pokemonFormatter/types";
 import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
 import { mapWithConcurrency } from "./mapWithConcurrency";
+import { slugify } from "../../utils/slugify";
 
 const REQUEST_RETRIES = 5;
 const REQUEST_RETRY_BASE_MS = 500;
@@ -98,7 +99,73 @@ export const fetchAllPokemons = async (): Promise<IBasicPokemon[]> => {
   return pokemonData.map((pokemon, index) => ({
     ...formatToBasicPokemon(pokemon),
     evolvesFrom: formatEvolvesFrom(speciesData[index]),
+    // English slug for the /pokemon/[slug] card link. The API resource name is
+    // already a unique, URL-safe slug, so slugify() (idempotent here) suffices —
+    // no override/collision handling needed, unlike the French names.
+    slug: slugify(pokemon.name),
   }));
+};
+
+// Build-time slug↔id maps for the English detail route (/pokemon/[slug]).
+// PokéAPI's `pokemon` resource name is already a unique, URL-safe identifier
+// (e.g. "bulbasaur", "nidoran-f", "mr-mime", "ho-oh"), so — unlike the French
+// side, where both Nidoran forms collide on "Nidoran" — no override table or
+// collision guard is needed: the API guarantees one name per id. slugify() is
+// applied defensively (idempotent on names that are already lowercase-hyphen).
+// MODULE-MEMOIZED so getStaticPaths, each page's getStaticProps and the sitemap
+// script share a single list fetch per worker.
+let enSlugCache: { slugToId: Record<string, number>; idToSlug: Record<number, string> } | null = null;
+
+export const buildEnSlugMaps = async (): Promise<{
+  slugToId: Record<string, number>;
+  idToSlug: Record<number, string>;
+}> => {
+  if (enSlugCache) {
+    return enSlugCache;
+  }
+
+  const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${MAX_POKEMON_ID_ALLOWED}`);
+  const slugToId: Record<string, number> = {};
+  const idToSlug: Record<number, string> = {};
+
+  for (const { name, url } of pokemonsData.results as Array<{ name: string; url: string }>) {
+    const id = Number(url.split("/").filter(Boolean).pop());
+    const slug = slugify(name);
+    // Defensive: the API guarantees unique names today, but fail loudly if a
+    // future id range ever produces two names that slugify to the same string,
+    // rather than silently overwriting one detail URL.
+    if (slug in slugToId && slugToId[slug] !== id) {
+      throw new Error(`English slug collision: "${slug}" ← id ${slugToId[slug]} and id ${id} ("${name}")`);
+    }
+    slugToId[slug] = id;
+    idToSlug[id] = slug;
+  }
+
+  enSlugCache = { slugToId, idToSlug };
+  return enSlugCache;
+};
+
+// Build-time only. Resolves the English detail dataset for a slug: looks up the id
+// via the memoized slug maps, reuses the full-detail fetch, attaches each evolution
+// stage's slug (so the chain links to /pokemon/{slug}), and returns the adjacent
+// prev/next slugs for the Prev/Next nav — mirroring fetchPokemonDetailFrBySlug.
+export const fetchPokemonDetailEnBySlug = async (
+  slug: string
+): Promise<{ pokemon: IFullPokemon; prevSlug: string | null; nextSlug: string | null }> => {
+  const { slugToId, idToSlug } = await buildEnSlugMaps();
+  const id = slugToId[slug];
+
+  const enFull = await fetchPokemonDetailsByNameOrId(String(id));
+  const evolutionChain = enFull.evolutionChain.map((stage) => ({
+    ...stage,
+    slug: idToSlug[stage.id],
+  }));
+
+  return {
+    pokemon: { ...enFull, evolutionChain },
+    prevSlug: idToSlug[id - 1] ?? null,
+    nextSlug: idToSlug[id + 1] ?? null,
+  };
 };
 
 export const fetchPokemonsByType = async (type: string): Promise<IBasicPokemon[]> => {
