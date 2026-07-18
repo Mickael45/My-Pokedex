@@ -17,6 +17,8 @@ import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/
 import FlexboxList from "../../ui/templates/FlexboxList/FlexboxList";
 import Page from "../../ui/templates/Page/Page";
 import { hreflangAlternates } from "../../utils/hreflang";
+import BrowseIndex from "../../ui/components/BrowseIndex/BrowseIndex";
+import { pokemonBrowseItems } from "../../utils/browseIndex";
 
 interface IProps {
   pokemons: IBasicPokemon[];
@@ -101,6 +103,13 @@ const HomePageFr = ({ pokemons }: IProps) => {
                 {renderPokemons()}
               </FlexboxList>
             </div>
+            {/* Server-rendered crawlable index of every Pokémon (French names +
+                /fr/pokemon/ slugs): every detail page one click from /fr. */}
+            <BrowseIndex
+              heading={strings.browsePokemonHeading}
+              ariaLabel={strings.browsePokemonAria}
+              items={pokemonBrowseItems(pokemons, "/fr/pokemon/", true)}
+            />
           </>
         </Page>
       </ErrorScreenWrapper>

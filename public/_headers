@@ -1,0 +1,10 @@
+# Cloudflare static-asset response headers (copied verbatim into ./out and served
+# by the Worker). Applied to every route. HSTS is already set at the edge; these
+# add the defense-in-depth headers a static content site should carry. No CSP:
+# Next ships inline hydration + JSON-LD scripts, so a strict policy would need
+# 'unsafe-inline' and buy little — clickjacking is covered by X-Frame-Options.
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), browsing-topics=()

@@ -17,6 +17,9 @@ import Page from "../ui/templates/Page/Page";
 import { DEFAULT_TITLE, DEFAULT_DESCRIPTION } from "../constants/Seo";
 import { websiteJsonLd, organizationJsonLd } from "../utils/structuredData";
 import { hreflangAlternates } from "../utils/hreflang";
+import { useStrings } from "../hooks/useLocale";
+import BrowseIndex from "../ui/components/BrowseIndex/BrowseIndex";
+import { pokemonBrowseItems } from "../utils/browseIndex";
 
 interface IProps {
   pokemons: IBasicPokemon[];
@@ -29,6 +32,7 @@ const POKEMON_STACK_SIZE = 16;
 const ABOVE_THE_FOLD = 6;
 
 const HomePage = ({ pokemons }: IProps) => {
+  const strings = useStrings();
   const filteredPokemons = useFiltering();
   const { resolution } = useContext(ResolutionContext);
   const { setPokemons, pokemons: ctxPokemons } = useContext(PokemonContext);
@@ -103,6 +107,14 @@ const HomePage = ({ pokemons }: IProps) => {
                 {renderPokemons()}
               </FlexboxList>
             </div>
+            {/* Server-rendered crawlable index of every Pokémon: brings all ~1025
+                detail pages to one click from the homepage (the interactive grid
+                above only ships 16 links in the static HTML). */}
+            <BrowseIndex
+              heading={strings.browsePokemonHeading}
+              ariaLabel={strings.browsePokemonAria}
+              items={pokemonBrowseItems(pokemons, "/pokemon/")}
+            />
           </>
         </Page>
       </ErrorScreenWrapper>

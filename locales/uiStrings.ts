@@ -45,6 +45,10 @@ export type UiStrings = {
   typeChartPrompt: string;
   typePickerLabel: string;
   typePickerHint: string;
+  browsePokemonHeading: string;
+  browsePokemonAria: string;
+  browseTypesHeading: string;
+  browseTypesAria: string;
 };
 
 export const UI_STRINGS: Record<Locale, UiStrings> = {
@@ -95,6 +99,10 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     typeChartPrompt: "Select a type (or two) above to see its matchups.",
     typePickerLabel: "Type(s)",
     typePickerHint: "select up to 2",
+    browsePokemonHeading: "Browse all Pokémon (A–Z)",
+    browsePokemonAria: "All Pokémon",
+    browseTypesHeading: "Browse every type matchup",
+    browseTypesAria: "All type matchups",
   },
   fr: {
     navPokedex: "Pokédex",
@@ -143,5 +151,9 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     typeChartPrompt: "Sélectionnez un ou deux types ci-dessus pour voir ses matchups.",
     typePickerLabel: "Type(s)",
     typePickerHint: "2 max",
+    browsePokemonHeading: "Parcourir tous les Pokémon (A–Z)",
+    browsePokemonAria: "Tous les Pokémon",
+    browseTypesHeading: "Parcourir toutes les correspondances de types",
+    browseTypesAria: "Toutes les correspondances de types",
   },
 };

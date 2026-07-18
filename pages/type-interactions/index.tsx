@@ -11,8 +11,12 @@ import { toTypeSlug } from "../../utils/typeSlug";
 import { toFrTypeSlug } from "../../utils/frTypeSlug";
 import { breadcrumbJsonLd } from "../../utils/structuredData";
 import { hreflangAlternates } from "../../utils/hreflang";
+import { useStrings } from "../../hooks/useLocale";
+import BrowseIndex from "../../ui/components/BrowseIndex/BrowseIndex";
+import { enTypeComboItems } from "../../utils/browseIndex";
 
 const TypeInteractionsPage = () => {
+  const strings = useStrings();
   // Sort so a legacy ?types=water,fire URL renders the same label/order as the
   // canonical /type-interactions/fire-water page it points at.
   const selected = usePokemonTypesFromQuery().split(",").filter(Boolean).sort();
@@ -35,11 +39,21 @@ const TypeInteractionsPage = () => {
         ])}
       />
       <Page>
-        <div className={styles.container}>
-          <TypeIntro selected={selected} />
-          <TypePicker selected={selected} />
-          <TypeMatchups selected={selected} />
-        </div>
+        <>
+          <div className={styles.container}>
+            <TypeIntro selected={selected} />
+            <TypePicker selected={selected} />
+            <TypeMatchups selected={selected} />
+          </div>
+          {/* Crawlable index of every single/dual-type matchup page. The picker
+              above is a client-side filter, so without this the 171 combo pages
+              have no internal links and are orphaned. */}
+          <BrowseIndex
+            heading={strings.browseTypesHeading}
+            ariaLabel={strings.browseTypesAria}
+            items={enTypeComboItems()}
+          />
+        </>
       </Page>
     </>
   );

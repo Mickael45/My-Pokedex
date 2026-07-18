@@ -10,8 +10,12 @@ import { usePokemonTypesFromQuery } from "../../../hooks/useQueryParams";
 import { toFrTypeSlug } from "../../../utils/frTypeSlug";
 import { toTypeSlug } from "../../../utils/typeSlug";
 import { hreflangAlternates } from "../../../utils/hreflang";
+import { useStrings } from "../../../hooks/useLocale";
+import BrowseIndex from "../../../ui/components/BrowseIndex/BrowseIndex";
+import { frTypeComboItems } from "../../../utils/browseIndex";
 
 const FrTypeInteractionsPage = () => {
+  const strings = useStrings();
   // Sort so a legacy ?types=water,fire URL renders the same label/order as the
   // canonical /fr/type-interactions/eau-feu page it points at. The query stays
   // English — the picker navigates to the FR combo pages.
@@ -35,11 +39,21 @@ const FrTypeInteractionsPage = () => {
       />
       {/* Plan 6: hreflang/og:locale/breadcrumb */}
       <Page>
-        <div className={styles.container}>
-          <TypeIntro selected={selected} />
-          <TypePicker selected={selected} />
-          <TypeMatchups selected={selected} />
-        </div>
+        <>
+          <div className={styles.container}>
+            <TypeIntro selected={selected} />
+            <TypePicker selected={selected} />
+            <TypeMatchups selected={selected} />
+          </div>
+          {/* Index explorable de chaque page de correspondance de types (le sélecteur
+              ci-dessus est un filtre côté client) : sans lui les 171 pages de combos
+              n'ont aucun lien interne et sont orphelines. */}
+          <BrowseIndex
+            heading={strings.browseTypesHeading}
+            ariaLabel={strings.browseTypesAria}
+            items={frTypeComboItems()}
+          />
+        </>
       </Page>
     </>
   );
