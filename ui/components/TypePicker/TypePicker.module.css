@@ -19,7 +19,9 @@
   font-size: 12px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-faint);
+  /* Was --ink-faint (#8a93a8 → 3.08:1); use --ink so the "Type(s)" label clears
+     WCAG AA. The secondary .hint keeps the dimmer --ink-dim for hierarchy. */
+  color: var(--ink);
 }
 .hint {
   color: var(--ink-dim);

@@ -18,6 +18,16 @@
   background-position: right 13px center;
 }
 
+/* Restore a visible keyboard focus indicator (the reset above sets
+   outline:none, which would leave keyboard users with no focus cue). */
+.select:focus-visible {
+  outline: 2px solid #2f6fed;
+  outline-offset: 2px;
+}
+:global([data-theme="dark"]) .select:focus-visible {
+  outline-color: #6ea8ff;
+}
+
 /* Carbon (dark) variant. !important is needed to beat the global
    `[data-theme="dark"] select { background: ... }` shorthand in App.module.css,
    which would otherwise reset both the colour and the chevron image. */

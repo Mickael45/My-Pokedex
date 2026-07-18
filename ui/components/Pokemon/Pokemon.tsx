@@ -1,6 +1,6 @@
 import { memo, useRef, useState, type CSSProperties } from "react";
 import Link from "next/link";
-import { getPokemonPrimaryTypeColor, cardImageUrls } from "../../../utils/pokemonFormatter/pokemonFormatter";
+import { cardImageUrls } from "../../../utils/pokemonFormatter/pokemonFormatter";
 import { getTypeColor, getTypeChipColor } from "../../../utils/typeColors";
 import { usePokemonPic } from "../../../hooks/usePokemonPic";
 import useCenterSpotlight from "../../../hooks/useCenterSpotlight";
@@ -41,7 +41,11 @@ const Pokemon = ({
   };
 
   const typeList = types.split(",");
-  const cardColor = getPokemonPrimaryTypeColor(types);
+  // The card fills with a gradient from this colour to near-black and carries
+  // white name/HP text. Use the AA-safe deepened type colour (same treatment as
+  // the type chips) so white text clears WCAG AA even on light types (electric,
+  // ice); the raw type colour left the name at ~3:1. See getTypeChipColor.
+  const cardColor = getTypeChipColor(typeList[0]);
 
   // Stats and the pre-evolution ship with the SSG props, so everything renders
   // instantly. stats is the compact [hp, attack, defense, speed] tuple.

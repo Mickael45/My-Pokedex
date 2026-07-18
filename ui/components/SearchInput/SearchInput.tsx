@@ -54,18 +54,23 @@ const SearchInput = () => {
   return (
     <form onSubmit={handleFormSubmit} className={styles.container}>
       <div>
+        <label htmlFor={NAME_INPUT_ID} className="srOnly">
+          {strings.searchPlaceholder}
+        </label>
         <input autoComplete="off" placeholder={strings.searchPlaceholder} id={NAME_INPUT_ID} />
-        <img
-          src="/icons/search.svg"
-          onClick={createQuery}
-          alt="searchIcon"
-          height={25}
-          width={25}
-          style={{
-            maxWidth: "100%",
-            height: "auto"
-          }} />
-        <button type="submit" hidden>{strings.searchSubmit}</button>
+        {/* The visible search glyph IS the submit control — a real <button> so it
+            is keyboard-operable (the old clickable <img> was mouse-only). The
+            icon is decorative; the button carries the accessible name. */}
+        <button type="submit" className={styles.searchBtn} aria-label={strings.searchSubmit}>
+          <img
+            src="/icons/search.svg"
+            alt=""
+            aria-hidden="true"
+            height={25}
+            width={25}
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
+        </button>
       </div>
     </form>
   );

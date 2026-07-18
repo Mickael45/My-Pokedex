@@ -102,6 +102,13 @@ const HomePage = ({ pokemons }: IProps) => {
                 abilities and full evolution line.
               </p>
             </header>
+            {/* Announce the matching count to screen readers when the search or
+                type filter changes the list. Gated on the seeded context so the
+                server/first-client render is empty (no hydration mismatch) and it
+                doesn't announce on initial page load. */}
+            <div role="status" aria-live="polite" className="srOnly">
+              {ctxPokemons.length ? `${listSource.length} Pokémon` : null}
+            </div>
             <div className={styles.container}>
               <FlexboxList hasReachedEnd={areThereMorePokemonsToShow()} showMore={incrementNumberOfPokemonShown}>
                 {renderPokemons()}

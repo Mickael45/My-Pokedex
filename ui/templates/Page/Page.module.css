@@ -10,7 +10,10 @@
 .container > :only-child {
   max-width: 1000px;
   width: 90%;
-  min-width: 340px;
+  /* min-width: 0 (was 340px): a 340px floor forced horizontal scroll on every
+     Page-wrapped route below a ~378px viewport, failing WCAG 1.4.10 Reflow at
+     320px. `width: 90%` already keeps the column comfortable at normal widths. */
+  min-width: 0;
   margin: 0 auto;
   padding-top: 20px;
 }

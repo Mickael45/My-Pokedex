@@ -28,9 +28,40 @@
   opacity: 0.55;
 }
 
+/* The submit control wrapping the search glyph. Strip native button chrome so
+   only the icon shows, matching the previous clickable-image appearance. */
+.searchBtn {
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  color: inherit;
+}
+
 .container img {
   height: 17px;
   cursor: pointer;
+}
+
+/* Visible keyboard focus for the field (the input itself sets outline:none, so
+   surface it on the whole pill via :focus-within) and for the submit button. */
+.container > :only-child:focus-within {
+  outline: 2px solid #2f6fed;
+  outline-offset: 2px;
+}
+.searchBtn:focus-visible {
+  outline: 2px solid #2f6fed;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+:global([data-theme="dark"]) .container > :only-child:focus-within,
+:global([data-theme="dark"]) .searchBtn:focus-visible {
+  outline-color: #6ea8ff;
 }
 
 /* Carbon (dark) variant — the high specificity beats the global

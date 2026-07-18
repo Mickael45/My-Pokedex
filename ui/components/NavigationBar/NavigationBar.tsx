@@ -27,6 +27,7 @@ const NavigationBar = () => {
   const strings = useStrings();
   const [hidden, setHidden] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
 
   // Locale-aware destinations: the FR chrome links into the /fr tree, the EN
   // chrome keeps the root routes (unchanged output on English pages).
@@ -70,16 +71,16 @@ const NavigationBar = () => {
   // Close the mobile options sheet whenever the route changes.
   useEffect(() => setMenuOpen(false), [router.pathname]);
 
-  const navigateHome = () => router.push(homeHref);
-
   const openDrawer = (drawer: HTMLElement, button: HTMLElement) => {
     addClassToElement(drawer, styles.open);
     addClassToElement(button, styles.filterActive);
+    setFilterOpen(true);
   };
 
   const closeDrawer = (drawer: HTMLElement, button: HTMLElement) => {
     removeClassFromElement(drawer, styles.open);
     removeClassFromElement(button, styles.filterActive);
+    setFilterOpen(false);
   };
 
   const toggleDrawer = () => {
@@ -116,23 +117,32 @@ const NavigationBar = () => {
 
   return (
     <>
-      <nav className={`${styles.container} ${hidden ? styles.hidden : ""}`}>
+      <nav className={`${styles.container} ${hidden ? styles.hidden : ""}`} aria-label={strings.navPrimaryLabel}>
         <div className={styles.bar}>
-          <img
-            className={styles.logo}
-            src="/icons/logo.svg"
-            alt="logo"
-            width={400}
-            height={143}
-            onClick={navigateHome}
-          />
+          <Link href={homeHref} className={styles.logoLink} aria-label={strings.navHomeAria}>
+            <img
+              className={styles.logo}
+              src="/icons/logo.svg"
+              alt=""
+              width={400}
+              height={143}
+            />
+          </Link>
 
           {/* Desktop-only segmented tabs (mobile uses the bottom tab bar). */}
           <div className={styles.tabs}>
-            <Link href={homeHref} className={`${styles.tab} ${!isTypeChart ? styles.tabActive : ""}`}>
+            <Link
+              href={homeHref}
+              className={`${styles.tab} ${!isTypeChart ? styles.tabActive : ""}`}
+              aria-current={!isTypeChart ? "page" : undefined}
+            >
               {strings.navPokedex}
             </Link>
-            <Link href={typeChartHref} className={`${styles.tab} ${isTypeChart ? styles.tabActive : ""}`}>
+            <Link
+              href={typeChartHref}
+              className={`${styles.tab} ${isTypeChart ? styles.tabActive : ""}`}
+              aria-current={isTypeChart ? "page" : undefined}
+            >
               {strings.navTypeChart}
             </Link>
           </div>
@@ -149,6 +159,8 @@ const NavigationBar = () => {
               className={styles.filterBtn}
               onClick={toggleDrawer}
               aria-label={strings.navFilterAria}
+              aria-expanded={filterOpen}
+              aria-controls={DRAWER_ELEMENT_ID}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
@@ -182,7 +194,11 @@ const NavigationBar = () => {
         className={`${styles.sheetOverlay} ${menuOpen ? styles.sheetOpen : ""}`}
         onClick={() => setMenuOpen(false)}
       >
-        <div className={styles.sheet} onClick={(e) => e.stopPropagation()}>
+        {/* `inert` when closed: the sheet stays display:block (only opacity/
+            transform hide it on mobile), so without this its controls remain
+            keyboard-focusable and announced to screen readers as ghost tab stops. */}
+        <div className={styles.sheet} onClick={(e) => e.stopPropagation()} inert={!menuOpen}>
+
           <div className={styles.sheetHandle} />
           <div className={styles.sheetControls}>{renderControls()}</div>
           {showTypeFilter && (
@@ -195,15 +211,23 @@ const NavigationBar = () => {
       </div>
 
       {/* Mobile-only bottom tab bar. */}
-      <nav className={styles.bottomTabs}>
-        <Link href={homeHref} className={`${styles.bottomTab} ${!isTypeChart ? styles.bottomTabActive : ""}`}>
+      <nav className={styles.bottomTabs} aria-label={strings.navPrimaryLabel}>
+        <Link
+          href={homeHref}
+          className={`${styles.bottomTab} ${!isTypeChart ? styles.bottomTabActive : ""}`}
+          aria-current={!isTypeChart ? "page" : undefined}
+        >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="4" width="18" height="16" rx="2" />
             <path d="M3 10h18" />
           </svg>
           {strings.navPokedex}
         </Link>
-        <Link href={typeChartHref} className={`${styles.bottomTab} ${isTypeChart ? styles.bottomTabActive : ""}`}>
+        <Link
+          href={typeChartHref}
+          className={`${styles.bottomTab} ${isTypeChart ? styles.bottomTabActive : ""}`}
+          aria-current={isTypeChart ? "page" : undefined}
+        >
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M4 6h16M4 12h16M4 18h16" />
           </svg>

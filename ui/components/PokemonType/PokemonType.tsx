@@ -30,10 +30,17 @@ const PokemonType = ({ type, children = "", handleTypeClick, variant, selected =
           search: `types=${type}`,
         });
 
+  // Localized visible/accessible label. Also used as the button's aria-label so
+  // the control keeps an accessible name below the mobile breakpoint, where the
+  // visible text label is `display: none` and only the icon remains.
+  const label = locale === "fr" ? (FR_TYPE_LABELS[type] ?? capitalizeFirstLetter(type)) : capitalizeFirstLetter(type);
+
   if (variant === "filter") {
     return (
-      <span
-        id="type"
+      <button
+        type="button"
+        aria-pressed={selected}
+        aria-label={label}
         style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
         className={`${styles.filterChip} ${selected ? styles.selected : ""}`}
         data-type={type}
@@ -41,25 +48,23 @@ const PokemonType = ({ type, children = "", handleTypeClick, variant, selected =
         onClick={handleClick}
       >
         <TypeIcon type={type} className={styles.filterIcon} />
-        <span className={styles.filterLabel}>
-          {locale === "fr" ? (FR_TYPE_LABELS[type] ?? capitalizeFirstLetter(type)) : capitalizeFirstLetter(type)}
-        </span>
-      </span>
+        <span className={styles.filterLabel}>{label}</span>
+      </button>
     );
   }
 
   return (
-    <span
-      id="type"
+    <button
+      type="button"
       style={{ "--c": getTypeColor(type), "--chip": getTypeChipColor(type) } as CSSProperties}
       className={styles.typeContainer}
       data-type={type}
       onClick={handleClick}
     >
       <TypeIcon type={type} className={styles.typeIcon} />
-      {locale === "fr" ? (FR_TYPE_LABELS[type] ?? capitalizeFirstLetter(type)) : capitalizeFirstLetter(type)}
+      {label}
       {children}
-    </span>
+    </button>
   );
 };
 

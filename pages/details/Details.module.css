@@ -82,14 +82,16 @@
   font-size: calc(14px * var(--font-scale));
   padding: 9px 18px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.16);
+  /* Dark frost (was rgba(255,255,255,0.16)): the light fill left the white
+     "< Prev" / "Next >" label at ~3.4:1 on the lightest part of the gradient. */
+  background: rgba(0, 0, 0, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.35);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   transition: background 0.2s ease, transform 0.2s ease;
 }
 .navBtn:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.32);
   transform: translateY(-1px);
 }
 .navBtn:disabled {
@@ -191,7 +193,10 @@
   margin-top: 8px;
 }
 .glass {
-  background: rgba(255, 255, 255, 0.14);
+  /* Was rgba(255,255,255,0.14): the white fill lightened the panel and dropped
+     the white body text to ~4.0:1. A slight dark tint (over the deepened type
+     gradient) instead keeps the frosted look while clearing WCAG AA 4.5:1. */
+  background: rgba(0, 0, 0, 0.14);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.28);
@@ -204,7 +209,8 @@
   font-weight: bold;
   text-transform: uppercase;
   letter-spacing: 1.4px;
-  opacity: 0.9;
+  /* opacity:1 (was 0.9): the dimming pulled the small uppercase title below AA. */
+  opacity: 1;
 }
 .paneTitle small {
   font-size: calc(10px * var(--font-scale));

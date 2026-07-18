@@ -98,6 +98,11 @@ const HomePageFr = ({ pokemons }: IProps) => {
               <h1 className={styles.pageTitle}>{strings.homeTitleH1}</h1>
               <p className={styles.intro}>{strings.homeIntro}</p>
             </header>
+            {/* Annonce le nombre de résultats aux lecteurs d'écran quand la
+                recherche ou le filtre par type change la liste (voir pages/index). */}
+            <div role="status" aria-live="polite" className="srOnly">
+              {ctxPokemons.length ? `${listSource.length} Pokémon` : null}
+            </div>
             <div className={styles.container}>
               <FlexboxList hasReachedEnd={areThereMorePokemonsToShow()} showMore={incrementNumberOfPokemonShown}>
                 {renderPokemons()}

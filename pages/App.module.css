@@ -34,7 +34,7 @@
   font-size: 13px;
 }
 
-.container[data-resolution="low res."] [id="type"] {
+.container[data-resolution="low res."] [data-type] {
   font-size: 10px;
 }
 
@@ -78,7 +78,7 @@
   font-weight: bolder;
 }
 
-.container[data-resolution="high res."] [id="type"] {
+.container[data-resolution="high res."] [data-type] {
   font-size: 15px;
 }
 
@@ -134,7 +134,7 @@
 }
 
 .container[data-theme="dark"] [id="types-interaction-details"],
-.container[data-theme="dark"] [id="type"] {
+.container[data-theme="dark"] [data-type] {
   color: white;
 }
 

@@ -1,4 +1,11 @@
 .typeContainer {
+  /* Rendered as a <button>: strip the native control chrome so the pill styling
+     below (gradient fill, ring) shows and the font matches surrounding text. */
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  font: inherit;
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -34,6 +41,10 @@
    icon + label on desktop, icon-only below the mobile breakpoint.
    --------------------------------------------------------------------------- */
 .filterChip {
+  /* Rendered as a <button>: strip native control chrome (see .typeContainer). */
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
   display: inline-flex;
   align-items: center;
   gap: 8px;

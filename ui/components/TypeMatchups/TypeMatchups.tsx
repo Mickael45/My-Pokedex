@@ -1,11 +1,14 @@
 import styles from "../../../pages/type-interactions/TypeInteractions.module.css";
-import pokemonTypesColor from "../../../constants/TypesColor.json";
 import { capitalizeFirstLetter } from "../../../utils/stringManipulation";
 import { defendingRows, attackingRows, MatchupRow } from "../../../utils/pokemonTypes/matchups";
 import { FR_TYPE_LABELS } from "../../../constants/FrTypeLabels";
 import { useLocale, useStrings } from "../../../hooks/useLocale";
+import { getTypeChipColor } from "../../../utils/typeColors";
 
-const typeColor = (type: string) => (pokemonTypesColor as HashMap)[type] ?? "#888";
+// The chip carries white text, so fill it with the AA-safe deep type colour
+// (getTypeChipColor) rather than the raw vivid colour — light types like fairy
+// (#e9e) failed 4.5:1 with white text otherwise.
+const typeColor = (type: string) => getTypeChipColor(type);
 
 const MAX_FACTOR = 4;
 const TIER_CLASS: Record<number, string> = { 4: "t4", 2: "t2", 0.5: "th", 0.25: "tq", 0: "t0" };

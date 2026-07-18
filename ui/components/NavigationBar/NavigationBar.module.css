@@ -33,6 +33,11 @@
   padding: 14px 20px;
 }
 
+.logoLink {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
 .logo {
   flex-shrink: 0;
   height: 40px;
@@ -326,7 +331,8 @@
    touch deeper). Scoped through .bottomTabs so they out-specify the global
    `[data-theme="light"] a` link colour that would otherwise paint them red. */
 :global([data-theme="light"]) .bottomTabs .bottomTab {
-  color: #6f8cc9;
+  /* Darkened from #6f8cc9 (3.35:1) to clear WCAG AA 4.5:1 on the white bar. */
+  color: #4f6bb0;
 }
 :global([data-theme="light"]) .bottomTabs .bottomTabActive {
   color: #376db9;

@@ -15,7 +15,6 @@ import Header from "../../ui/components/Header/Header";
 import EvolutionStage from "../../ui/components/EvolutionStage/EvolutionStage";
 import Footer from "../../ui/components/Footer/Footer";
 import ErrorScreenWrapper from "../../ui/components/Wrappers/ErrorScreenWrapper/ErrorScreenWrapper";
-import { getPokemonPrimaryTypeColor } from "../../utils/pokemonFormatter/pokemonFormatter";
 import { getTypeColor, getTypeChipColor } from "../../utils/typeColors";
 import TypeIcon from "../../ui/components/PokemonType/typeIcons";
 import { capitalizeFirstLetter, formatNumberToMatchLength } from "../../utils/stringManipulation";
@@ -64,7 +63,10 @@ const DetailsPage = ({
   const { setLoading } = useContext(LoadingContext);
   const { resolution } = useContext(ResolutionContext);
   const imageUrl = usePokemonPic(pixelImageUrl, hdImageUrl);
-  const color = getPokemonPrimaryTypeColor(types);
+  // AA-safe deepened type colour for the full-bleed gradient: the page carries
+  // white text (h1, body, stat labels) over it, and the raw type colour left
+  // light types (electric, ice) below WCAG contrast. Matches the card + chips.
+  const color = getTypeChipColor(types.split(",")[0]);
   const typeList = types.split(",");
 
   const setLoadingToFalse = () => setLoading(false);

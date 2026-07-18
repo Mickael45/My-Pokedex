@@ -23,8 +23,10 @@ const App = ({ Component, pageProps }: AppProps) => {
   const [error, setError] = useState<ErrorType | null>(null);
   // Detail pages render their own footer inside the type-coloured content area,
   // so the standalone global footer is suppressed there to avoid two footers.
-  const isDetailPage =
-    useRouter().pathname === "/pokemon/[slug]" || useRouter().pathname === "/fr/pokemon/[slug]";
+  const pathname = useRouter().pathname;
+  const isDetailPage = pathname === "/pokemon/[slug]" || pathname === "/fr/pokemon/[slug]";
+  const isFr = pathname === "/fr" || pathname.startsWith("/fr/");
+  const skipLabel = isFr ? "Aller au contenu principal" : "Skip to main content";
 
   // Register the PWA service worker (production only — the dev server emits a
   // fresh, uncacheable bundle every reload, and a SW there mostly gets in the
@@ -56,8 +58,11 @@ const App = ({ Component, pageProps }: AppProps) => {
             <LoadingContext.Provider value={{ loading, setLoading }}>
               <PokemonContext.Provider value={{ filteredPokemons, pokemons, setPokemons }}>
                 <SwitchTargetContext.Provider value={pageProps.switchTarget ?? null}>
+                  <a href="#main" className="skipLink">
+                    {skipLabel}
+                  </a>
                   <NavigationBar />
-                  <main>
+                  <main id="main" tabIndex={-1}>
                     <Component {...pageProps} />
                   </main>
                   {!isDetailPage && <Footer />}

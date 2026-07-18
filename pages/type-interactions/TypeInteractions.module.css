@@ -9,8 +9,11 @@
   --ink-faint: #8a93a8;
   --track-bg: rgba(20, 30, 60, 0.1);
   --t4: #e11d48;
-  --t2: #ea6a17;
-  --th: #1f9d57;
+  /* --t2 / --th darkened (from #ea6a17 3.20:1 and #1f9d57 3.49:1) so the
+     multiplier text (.mult uses these via --cc) clears WCAG AA 4.5:1 on the
+     white panel. Still used as the bar --fill, which stays comfortably visible. */
+  --t2: #c25510;
+  --th: #167c43;
   --tq: #0f7a42;
   --t0: #6b7280;
 

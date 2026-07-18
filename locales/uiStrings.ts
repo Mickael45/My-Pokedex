@@ -6,6 +6,8 @@ export type UiStrings = {
   typeChartLandingTitle: string;
   navFilterAria: string;
   navOptionsAria: string;
+  navHomeAria: string;
+  navPrimaryLabel: string;
   searchPlaceholder: string;
   searchSubmit: string;
   filterByType: string;
@@ -58,6 +60,8 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     typeChartLandingTitle: "Pokémon Type Interactions",
     navFilterAria: "Filter by type",
     navOptionsAria: "Options",
+    navHomeAria: "My Pokédex — home",
+    navPrimaryLabel: "Primary",
     searchPlaceholder: "Search a Pokemon by name or id",
     searchSubmit: "Submit",
     filterByType: "Filter Pokémon by type",
@@ -110,6 +114,8 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     typeChartLandingTitle: "Interactions de types Pokémon",
     navFilterAria: "Filtrer par type",
     navOptionsAria: "Options",
+    navHomeAria: "My Pokédex — accueil",
+    navPrimaryLabel: "Principale",
     searchPlaceholder: "Rechercher un Pokémon par nom ou numéro",
     searchSubmit: "Envoyer",
     filterByType: "Filtrer les Pokémon par type",
