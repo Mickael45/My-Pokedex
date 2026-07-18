@@ -9,44 +9,14 @@ import {
   extractPokemonData,
 } from "../../utils/pokemonFormatter/extractors";
 import { Specie, IPokemonResponseType } from "../../utils/pokemonFormatter/types";
-import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
+import { POKE_API_URL, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
 import { mapWithConcurrency } from "./mapWithConcurrency";
+import { getRequest, getPokemonCount } from "./request";
 import { slugify } from "../../utils/slugify";
 
-const REQUEST_RETRIES = 5;
-const REQUEST_RETRY_BASE_MS = 500;
-
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// Exponential backoff with jitter. Transient export-scale failures (ECONNREFUSED/
-// ETIMEDOUT under connection pressure) need room to recover; jitter desynchronizes
-// the retry stampede so all in-flight requests don't back off in lockstep.
-// attempt 1→~0.5s, 2→~1s, 3→~2s, 4→~4s (+ up to 250ms jitter).
-const backoffMs = (attempt: number) =>
-  REQUEST_RETRY_BASE_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 250);
-
-// fetchAllPokemons fans out ~1025 concurrent requests; a single reset connection
-// would otherwise reject the whole Promise.all and crash getStaticProps. Retry
-// transient failures (network errors and non-2xx responses) with a small backoff.
-const request = async (url: string, attempt = 1): Promise<any> => {
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`Request to ${url} failed with status ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    if (attempt >= REQUEST_RETRIES) {
-      throw error;
-    }
-
-    await wait(backoffMs(attempt));
-
-    return request(url, attempt + 1);
-  }
-};
+// All PokéAPI access funnels through the shared runtime request (record/replay +
+// retry) so the build reads the promoted snapshot instead of hitting the network.
+const request = async (url: string): Promise<any> => (await getRequest())(url);
 
 const fetchPokemonByNameOrId = async (name: string) => await request(`${POKE_API_URL}pokemon/${name}`)
 
@@ -86,8 +56,9 @@ export const fetchPokemonDetailsByNameOrId = async (id: string) => {
 };
 
 export const fetchAllPokemons = async (): Promise<IBasicPokemon[]> => {
-  console.log(`[build] Fetching Pokédex list (${MAX_POKEMON_ID_ALLOWED} Pokémon + species)…`);
-  const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${MAX_POKEMON_ID_ALLOWED}`);
+  const count = await getPokemonCount();
+  console.log(`[build] Fetching Pokédex list (${count} Pokémon + species)…`);
+  const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${count}`);
   const pokemonsName = pokemonsData.results.map(extractPokemonName);
   // Two waves (pokemon, then species) instead of one big burst, so the
   // evolution data can be part of the SSG payload without doubling peak load.
@@ -124,7 +95,7 @@ export const buildEnSlugMaps = async (): Promise<{
     return enSlugCache;
   }
 
-  const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${MAX_POKEMON_ID_ALLOWED}`);
+  const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${await getPokemonCount()}`);
   const slugToId: Record<string, number> = {};
   const idToSlug: Record<number, string> = {};
 

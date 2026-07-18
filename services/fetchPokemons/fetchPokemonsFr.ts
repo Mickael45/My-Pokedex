@@ -2,8 +2,6 @@
 // every basic card additionally carries a resolved `frName` (never English — throws
 // via resolveFrField otherwise) and a URL `slug` derived from the French name.
 //
-// A local `request` retry helper is kept here (rather than imported) to isolate the
-// FR fetch path, consistent with fetchFrData.ts.
 import { formatToBasicPokemon, formatEvolvesFrom } from "../../utils/pokemonFormatter/pokemonFormatter";
 import { extractPokemonName } from "../../utils/pokemonFormatter/extractors";
 import {
@@ -17,7 +15,8 @@ import { buildSlugIdMap } from "../../utils/slugify";
 import { Specie, IPokemonResponseType, Ability } from "../../utils/pokemonFormatter/types";
 import { fetchPokemonDetailsByNameOrId } from "./fetchPokemons";
 import { mapWithConcurrency } from "./mapWithConcurrency";
-import { MAX_POKEMON_ID_ALLOWED, POKE_API_URL, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
+import { getRequest, getPokemonCount } from "./request";
+import { POKE_API_URL, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
 import frOverridesJson from "../../locales/fr-overrides.json";
 
 const overrides = frOverridesJson as FrOverrides;
@@ -108,32 +107,8 @@ export const augmentFullWithFr = (
   };
 };
 
-const REQUEST_RETRIES = 5;
-const REQUEST_RETRY_BASE_MS = 500;
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-// Exponential backoff with jitter (mirrors fetchPokemons.ts): gives transient
-// export-scale ECONNREFUSED/ETIMEDOUT room to recover, desynchronized across
-// in-flight requests. attempt 1→~0.5s, 2→~1s, 3→~2s, 4→~4s (+ up to 250ms jitter).
-const backoffMs = (attempt: number) =>
-  REQUEST_RETRY_BASE_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 250);
-
-// Retry transient failures (network errors and non-2xx) with a small backoff so a
-// single reset connection doesn't reject the whole Promise.all and crash the build.
-const request = async (url: string, attempt = 1): Promise<any> => {
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Request to ${url} failed with status ${response.status}`);
-    }
-    return await response.json();
-  } catch (error) {
-    if (attempt >= REQUEST_RETRIES) {
-      throw error;
-    }
-    await wait(backoffMs(attempt));
-    return request(url, attempt + 1);
-  }
-};
+// Shared runtime request (record/replay + retry) — see services/fetchPokemons/request.ts.
+const request = async (url: string): Promise<any> => (await getRequest())(url);
 
 const fetchPokemonByNameOrId = async (name: string) => await request(`${POKE_API_URL}pokemon/${name}`);
 
@@ -141,8 +116,9 @@ const fetchPokemonByNameOrId = async (name: string) => await request(`${POKE_API
 // then resolves each French name, builds the slug↔id map over ALL French names (which
 // runs buildSlugIdMap's collision guard), and attaches each pokemon's slug.
 export const fetchAllPokemonsFr = async (): Promise<IBasicPokemon[]> => {
-  console.log(`[build] Fetching French Pokédex list (${MAX_POKEMON_ID_ALLOWED} Pokémon + species)…`);
-  const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${MAX_POKEMON_ID_ALLOWED}`);
+  const count = await getPokemonCount();
+  console.log(`[build] Fetching French Pokédex list (${count} Pokémon + species)…`);
+  const pokemonsData = await request(`${POKE_API_URL}pokemon?limit=${count}`);
   const pokemonsName = pokemonsData.results.map(extractPokemonName);
   const pokemonData = await mapWithConcurrency<string, IPokemonResponseType>(pokemonsName, fetchPokemonByNameOrId, FETCH_CONCURRENCY);
   const speciesData = await mapWithConcurrency<IPokemonResponseType, Specie>(pokemonData, (pokemon) => request(pokemon.species.url), FETCH_CONCURRENCY);
@@ -193,8 +169,9 @@ export const buildFrSlugMaps = async (): Promise<{
   // First call in each build worker pays a ~1025-species fetch (then memoized) —
   // the main pause at the start of a worker's static-generation run. Log it so the
   // build doesn't look hung while this runs.
-  console.log(`[build] Building FR name/slug map (${MAX_POKEMON_ID_ALLOWED} species, once per worker)…`);
-  const ids = Array.from({ length: MAX_POKEMON_ID_ALLOWED }, (_, i) => i + 1);
+  const count = await getPokemonCount();
+  console.log(`[build] Building FR name/slug map (${count} species, once per worker)…`);
+  const ids = Array.from({ length: count }, (_, i) => i + 1);
   const species = await mapWithConcurrency<number, Specie>(ids, (id) => request(`${POKE_API_URL}pokemon-species/${id}`), FETCH_CONCURRENCY);
 
   const idToFrName: Record<number, string> = {};

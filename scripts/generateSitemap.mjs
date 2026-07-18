@@ -3,7 +3,6 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const ORIGIN = "https://my-pokedex.com";
-const MAX_POKEMON_ID = 1025;
 // Mirror of constants/Types.ts — Pokémon's 18 types are fixed. Order MUST match
 // Object.values(constants/Types.ts), because typeSlugs() (EN) and allFrTypeSlugs()
 // (FR) both iterate the types in that order, so the two lists align by index and
@@ -46,7 +45,8 @@ const STATIC_PAIRS = [
 // buildEnSlugMaps().idToSlug. FR paths are assembled inside buildSitemap().
 export const buildUrls = (idToEnSlug = {}) => {
   const urls = STATIC_PAIRS.map((pair) => pair.en);
-  for (let id = 1; id <= MAX_POKEMON_ID; id++) {
+  const maxId = Math.max(0, ...Object.keys(idToEnSlug).map(Number));
+  for (let id = 1; id <= maxId; id++) {
     const slug = idToEnSlug[id];
     if (slug) urls.push(`/pokemon/${slug}`);
   }
@@ -59,7 +59,8 @@ export const buildUrls = (idToEnSlug = {}) => {
 // where Cloudflare serves it. 1025 lines is well within the 2,000 static-rule cap.
 export const buildRedirects = (idToEnSlug = {}) => {
   const lines = [];
-  for (let id = 1; id <= MAX_POKEMON_ID; id++) {
+  const maxId = Math.max(0, ...Object.keys(idToEnSlug).map(Number));
+  for (let id = 1; id <= maxId; id++) {
     const slug = idToEnSlug[id];
     if (slug) lines.push(`/details/${id} /pokemon/${slug} 301`);
   }
@@ -98,11 +99,15 @@ export const buildSitemap = ({ lastmod = LASTMOD, idToEnSlug = {}, idToFrSlug = 
 
   const blocks = [];
 
+  // Upper id bound derived from the slug maps (not a hardcoded constant), so a new
+  // Pokémon appears in the sitemap the moment the fetch layer surfaces it.
+  const maxId = Math.max(0, ...Object.keys({ ...idToEnSlug, ...idToFrSlug }).map(Number));
+
   // --- English URLs (each static page carries its reciprocal FR alternate) ---
   for (const pair of STATIC_PAIRS) {
     blocks.push(renderUrl(pair.en, lastmod, { en: pair.en, fr: pair.fr }));
   }
-  for (let id = 1; id <= MAX_POKEMON_ID; id++) {
+  for (let id = 1; id <= maxId; id++) {
     const enSlug = idToEnSlug[id];
     if (!enSlug) continue;
     const frSlug = idToFrSlug[id];
@@ -121,7 +126,7 @@ export const buildSitemap = ({ lastmod = LASTMOD, idToEnSlug = {}, idToFrSlug = 
   for (const pair of STATIC_PAIRS) {
     blocks.push(renderUrl(pair.fr, lastmod, { en: pair.en, fr: pair.fr }));
   }
-  for (let id = 1; id <= MAX_POKEMON_ID; id++) {
+  for (let id = 1; id <= maxId; id++) {
     const frSlug = idToFrSlug[id];
     if (!frSlug) continue;
     const enSlug = idToEnSlug[id];

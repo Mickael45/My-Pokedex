@@ -1,6 +1,7 @@
 // services/fetchPokemons/fetchFrData.ts
-import { POKE_API_URL, MAX_POKEMON_ID_ALLOWED, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
+import { POKE_API_URL, FETCH_CONCURRENCY } from "../../constants/FetchPokemons";
 import { mapWithConcurrency } from "./mapWithConcurrency";
+import { getRequest, getPokemonCount } from "./request";
 import { FR_STAT_LABELS } from "../../constants/FrStatLabels";
 import { collectFrGap, FrOverrides } from "../../utils/fr/resolveFrField";
 import {
@@ -54,30 +55,13 @@ export const computeFrGaps = (
   return gaps;
 };
 
-const REQUEST_RETRIES = 5;
-const REQUEST_RETRY_BASE_MS = 500;
-const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
-// Exponential backoff with jitter (mirrors fetchPokemons.ts): rides out transient
-// ECONNREFUSED/ETIMEDOUT. attempt 1→~0.5s, 2→~1s, 3→~2s, 4→~4s (+ up to 250ms jitter).
-const backoffMs = (attempt: number) =>
-  REQUEST_RETRY_BASE_MS * 2 ** (attempt - 1) + Math.floor(Math.random() * 250);
-
-const request = async (url: string, attempt = 1): Promise<any> => {
-  try {
-    const res = await fetch(url);
-    if (!res.ok) throw new Error(`Request to ${url} failed with status ${res.status}`);
-    return await res.json();
-  } catch (error) {
-    if (attempt >= REQUEST_RETRIES) throw error;
-    await wait(backoffMs(attempt));
-    return request(url, attempt + 1);
-  }
-};
+// Shared runtime request (record/replay + retry) — see services/fetchPokemons/request.ts.
+const request = async (url: string): Promise<any> => (await getRequest())(url);
 
 // Build-time only. Fetches: every species 1..MAX, the 18 types, and every visible
 // (non-hidden) ability referenced by those Pokémon (deduped).
 export const fetchFrRawDataset = async (): Promise<FrRawDataset> => {
-  const ids = Array.from({ length: MAX_POKEMON_ID_ALLOWED }, (_, i) => i + 1);
+  const ids = Array.from({ length: await getPokemonCount() }, (_, i) => i + 1);
   const species: FrSpeciesRaw[] = await mapWithConcurrency(ids, (id) => request(`${POKE_API_URL}pokemon-species/${id}`), FETCH_CONCURRENCY);
 
   const typeList: { results: Array<{ name: string }> } = await request(`${POKE_API_URL}type`);
