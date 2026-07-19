@@ -35,7 +35,7 @@ const HomePage = ({ pokemons }: IProps) => {
   const strings = useStrings();
   const filteredPokemons = useFiltering();
   const { resolution } = useContext(ResolutionContext);
-  const { setPokemons, pokemons: ctxPokemons } = useContext(PokemonContext);
+  const { setPokemons, setFilteredPokemons, pokemons: ctxPokemons } = useContext(PokemonContext);
   const { setLoading, loading } = useContext(LoadingContext);
   const [numberOfPokemonShown, setNumberOfPokemonShown] = useState(POKEMON_STACK_SIZE);
 
@@ -59,12 +59,17 @@ const HomePage = ({ pokemons }: IProps) => {
 
   const updatePokemons = () => {
     if (pokemons) {
+      // Seed BOTH lists from this locale's SSG list: the source (so search/sort
+      // filter against the right locale) and the display (so the grid never
+      // blanks in the render between the two being set). useFiltering then owns
+      // the display and re-applies any active query once the source is in.
       setPokemons(pokemons);
+      setFilteredPokemons(pokemons);
       setLoading(false);
     }
   };
 
-  useEffect(updatePokemons, [pokemons, setLoading, setPokemons]);
+  useEffect(updatePokemons, [pokemons, setLoading, setPokemons, setFilteredPokemons]);
 
   useEffect(() => {
     filteredPokemons.slice(0, POKEMON_STACK_SIZE).forEach((pokemon) => {

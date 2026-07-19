@@ -51,6 +51,9 @@ export type UiStrings = {
   browsePokemonAria: string;
   browseTypesHeading: string;
   browseTypesAria: string;
+  errorNotFound: string;
+  errorSomethingWrong: string;
+  errorImageAlt: string;
 };
 
 export const UI_STRINGS: Record<Locale, UiStrings> = {
@@ -107,6 +110,9 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     browsePokemonAria: "All Pokémon",
     browseTypesHeading: "Browse every type matchup",
     browseTypesAria: "All type matchups",
+    errorNotFound: "Looks like the page you're trying to access doesn't exist !",
+    errorSomethingWrong: "Bzzzzz ! Something wrong happened !",
+    errorImageAlt: "surprised pikachu",
   },
   fr: {
     navPokedex: "Pokédex",
@@ -161,5 +167,8 @@ export const UI_STRINGS: Record<Locale, UiStrings> = {
     browsePokemonAria: "Tous les Pokémon",
     browseTypesHeading: "Parcourir toutes les correspondances de types",
     browseTypesAria: "Toutes les correspondances de types",
+    errorNotFound: "On dirait que la page que vous cherchez n'existe pas !",
+    errorSomethingWrong: "Bzzzzz ! Une erreur est survenue !",
+    errorImageAlt: "Pikachu surpris",
   },
 };

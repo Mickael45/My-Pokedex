@@ -1,10 +1,21 @@
+/* Reserve real vertical space and centre within it, so the global <Footer> that
+   follows in the page flow sits BELOW the message instead of collapsing up over
+   it. The old `top: 40vh; translateY(-50%)` only shifted the content visually —
+   the container kept its small natural height, so the footer overlapped it.
+   `align-content: center` centres vertically while the child keeps the default
+   `justify-items: stretch`, so it stays full-width and the message wraps inside
+   the viewport (no horizontal overflow at narrow widths). */
+.container {
+  display: grid;
+  align-content: center;
+  min-height: 70vh;
+  padding: 40px 16px;
+  box-sizing: border-box;
+}
+
 .container > :only-child {
-  position: relative;
   text-align: center;
   display: grid;
   justify-items: center;
-  top: 40vh;
-  transform: translateY(-50%);
-  display: grid;
   row-gap: 30px;
 }

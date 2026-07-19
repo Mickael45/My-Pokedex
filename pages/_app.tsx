@@ -16,7 +16,7 @@ import Footer from "../ui/components/Footer/Footer";
 import SwitchTargetContext from "../context/SwitchTargetContext";
 
 const App = ({ Component, pageProps }: AppProps) => {
-  const [filteredPokemons, pokemons, setPokemons] = usePokemons();
+  const { pokemons, filteredPokemons, setPokemons, setFilteredPokemons } = usePokemons();
   const [loading, setLoading] = useState(true);
   const [resolution, setResolution] = useState<RESOLUTION>(LOW_RESOLUTION);
   const [theme, setTheme] = useState<THEME>(LIGHT);
@@ -56,7 +56,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         <ThemeContext.Provider value={{ theme, setTheme }}>
           <ErrorContext.Provider value={{ error, setError }}>
             <LoadingContext.Provider value={{ loading, setLoading }}>
-              <PokemonContext.Provider value={{ filteredPokemons, pokemons, setPokemons }}>
+              <PokemonContext.Provider value={{ filteredPokemons, pokemons, setPokemons, setFilteredPokemons }}>
                 <SwitchTargetContext.Provider value={pageProps.switchTarget ?? null}>
                   <a href="#main" className="skipLink">
                     {skipLabel}

@@ -23,7 +23,7 @@ const sortingMap: { [key: string]: FormattingFunction } = {
 
 const ListSortingDropdown = () => {
   const [sortingType, setSortingType] = useState<SortingType>(ASCENDING_ID);
-  const { pokemons, setPokemons } = useContext(PokemonContext);
+  const { pokemons, setFilteredPokemons } = useContext(PokemonContext);
   const strings = useStrings();
 
   // Display labels keyed by the sort constant. The <option> value stays the
@@ -36,7 +36,7 @@ const ListSortingDropdown = () => {
   };
 
   const handleOptionSelectionChange = (option: SortingType) => {
-    setPokemons(sortingMap[option](pokemons));
+    setFilteredPokemons(sortingMap[option](pokemons));
     setSortingType(option);
   };
 

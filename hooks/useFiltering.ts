@@ -12,7 +12,7 @@ const filterHashMap: { [key: string]: (pokemons: IBasicPokemon[], value: string)
 
 const useFiltering = () => {
   const filters = useQueryParams();
-  const { filteredPokemons, pokemons, setPokemons } = useContext(PokemonContext);
+  const { filteredPokemons, pokemons, setFilteredPokemons } = useContext(PokemonContext);
 
   const areThereAnyPokemons = () => pokemons.length > 0;
 
@@ -26,11 +26,11 @@ const useFiltering = () => {
     }
 
     if (!areThereAnyFilters()) {
-      setPokemons(pokemons);
+      setFilteredPokemons(pokemons);
       return;
     }
 
-    setPokemons(filters.flatMap(filterPokemonsByFilterType));
+    setFilteredPokemons(filters.flatMap(filterPokemonsByFilterType));
   };
 
   useEffect(filterPokemons, [filters, pokemons]);
