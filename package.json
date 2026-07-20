@@ -1,15 +1,27 @@
 {
-  "name": "quantum-password-checker",
+  "name": "my-pokedex",
   "version": "0.1.0",
+  "packageManager": "yarn@1.22.22",
   "private": true,
   "scripts": {
+    "images": "node scripts/downloadPokemonImages.mjs",
+    "sitemap": "tsx scripts/generateSitemap.mjs",
+    "build-candidate": "POKEDEX_SNAPSHOT=record tsx scripts/buildCandidate.mjs",
+    "fetch:candidate": "npm run build-candidate && node scripts/downloadPokemonImages.mjs \"$(jq -r .recordCount data/candidate/manifest.json)\"",
+    "validate": "POKEDEX_SNAPSHOT=replay POKEDEX_SNAPSHOT_FILE=data/candidate/latest.json tsx scripts/validateCandidate.mjs",
+    "build:snapshot": "POKEDEX_SNAPSHOT=replay tsx scripts/generateSitemap.mjs && POKEDEX_SNAPSHOT=replay next build",
+    "predev": "node scripts/downloadPokemonImages.mjs && tsx scripts/generateSitemap.mjs",
     "dev": "next dev --turbopack",
+    "prebuild": "node scripts/downloadPokemonImages.mjs && tsx scripts/generateSitemap.mjs && npm run check-fr-coverage",
+    "check-fr-coverage": "tsx scripts/checkFrCoverage.mjs",
+    "translate-fr": "tsx scripts/translateFrStubs.mjs",
+    "fill-fr": "tsx scripts/fillFrFromPokepedia.mjs",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "vitest run"
   },
   "dependencies": {
-    "@next/third-parties": "^15.2.0",
     "d3": "^7.1.1",
     "next": "16.2.6",
     "react": "^19.0.0",
@@ -17,19 +29,37 @@
     "sharp": "^0.32.6"
   },
   "devDependencies": {
-    "@types/d3": "^7.1.0",
     "@eslint/eslintrc": "^3",
+    "@testing-library/dom": "^10.0.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/d3": "^7.1.0",
     "@types/lodash": "^4.17.15",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^9",
     "eslint-config-next": "15.1.7",
-    "postcss": "^8",
+    "jsdom": "^29.1.1",
+    "nodemailer": "^9.0.3",
+    "postcss": "^8.5.10",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "tsx": "^4.23.0",
+    "typescript": "^5",
+    "vitest": "^4.1.9"
   },
   "resolutions": {
-    "@types/react": "19.0.10"
-  }
+    "@types/react": "19.0.10",
+    "postcss": "^8.5.10"
+  },
+  "browserslist": [
+    "last 2 Chrome versions",
+    "last 2 Firefox versions",
+    "last 2 Safari versions",
+    "last 2 Edge versions",
+    "last 2 iOS versions",
+    "not dead"
+  ]
 }

@@ -8,6 +8,7 @@ import {
   sortByStringFieldAsc,
   sortByStringFieldDesc,
 } from "../../../utils/arraySorting";
+import { useStrings } from "../../../hooks/useLocale";
 
 const sortingOptions = [ASCENDING_ID, DESCENDING_ID, ASCENDING_NAME, DESCENDING_NAME];
 
@@ -22,10 +23,20 @@ const sortingMap: { [key: string]: FormattingFunction } = {
 
 const ListSortingDropdown = () => {
   const [sortingType, setSortingType] = useState<SortingType>(ASCENDING_ID);
-  const { pokemons, setPokemons } = useContext(PokemonContext);
+  const { pokemons, setFilteredPokemons } = useContext(PokemonContext);
+  const strings = useStrings();
+
+  // Display labels keyed by the sort constant. The <option> value stays the
+  // constant (so the sort logic is unchanged); only the visible text localizes.
+  const sortLabels: { [key: string]: string } = {
+    [ASCENDING_ID]: strings.sortAscNumber,
+    [DESCENDING_ID]: strings.sortDescNumber,
+    [ASCENDING_NAME]: strings.sortAscName,
+    [DESCENDING_NAME]: strings.sortDescName,
+  };
 
   const handleOptionSelectionChange = (option: SortingType) => {
-    setPokemons(sortingMap[option](pokemons));
+    setFilteredPokemons(sortingMap[option](pokemons));
     setSortingType(option);
   };
 
@@ -33,6 +44,8 @@ const ListSortingDropdown = () => {
     <Dropdown<SortingType>
       selectedOption={sortingType}
       options={sortingOptions}
+      label={strings.sortLabel}
+      renderLabel={(option) => sortLabels[option] ?? option}
       handleOptionSelectionChange={handleOptionSelectionChange}
     />
   );

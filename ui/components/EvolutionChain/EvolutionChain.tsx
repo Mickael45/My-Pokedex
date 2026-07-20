@@ -1,4 +1,4 @@
-import Pokemon from "../Pokemon/Pokemon";
+import EvolutionChainPokemon from "../Pokemon/EvolutionChainPokemon";
 import styles from "./EvolutionChain.module.css";
 
 interface IProps {
@@ -6,7 +6,7 @@ interface IProps {
 }
 
 const EvolutionChain = ({ chain }: IProps) => {
-  const renderPokemon = (pokemon: IBasicPokemon) => <Pokemon key={pokemon.id} {...pokemon} />;
+  const renderPokemon = (pokemon: IBasicPokemon) => <EvolutionChainPokemon key={pokemon.id} {...pokemon} />;
   const renderPokemons = () => chain.map(renderPokemon);
 
   const renderEvolutionChain = () => (

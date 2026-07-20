@@ -1,56 +1,59 @@
-import React, { memo } from "react";
+import { memo } from "react";
 
-import typeInteractionsData from "../../constants/TypeInteractions.json";
 import styles from "./TypeInteractions.module.css";
-import { TYPE_INTERACTIONS } from "../../constants/Routes";
-import useQueryParams from "../../hooks/useQueryParams";
-import EmptyListPlaceholder from "../../ui/components/EmptyListPlaceholder/EmptyListPlaceholder";
 import Header from "../../ui/components/Header/Header";
-import TypeInteractionTile from "../../ui/components/TypeInteractionTile/TypeInteractionTile";
-import TypesSelector from "../../ui/components/TypesSelector/TypesSelector";
+import TypePicker from "../../ui/components/TypePicker/TypePicker";
+import TypeMatchups from "../../ui/components/TypeMatchups/TypeMatchups";
+import TypeIntro from "../../ui/components/TypeMatchups/TypeIntro";
 import Page from "../../ui/templates/Page/Page";
-import { convertTypeInteractionArrayToObj } from "../../utils/pokemonTypes/convertors";
-import { filterByMonoType, filterByMultiType } from "../../utils/pokemonTypes/filtering";
-
+import { usePokemonTypesFromQuery } from "../../hooks/useQueryParams";
+import { toTypeSlug } from "../../utils/typeSlug";
+import { toFrTypeSlug } from "../../utils/frTypeSlug";
+import { breadcrumbJsonLd } from "../../utils/structuredData";
+import { hreflangAlternates } from "../../utils/hreflang";
+import { useStrings } from "../../hooks/useLocale";
+import BrowseIndex from "../../ui/components/BrowseIndex/BrowseIndex";
+import { enTypeComboItems } from "../../utils/browseIndex";
 
 const TypeInteractionsPage = () => {
-  const filters = useQueryParams().map(({ value }) => value);
-
-  const pokemonInteractionTypes = typeInteractionsData.flat().map(Object.values).map(convertTypeInteractionArrayToObj);
-
-  const renderTypeInteractionTable = (interactionType: InteractionType) => {
-    const { type, typeInteractions } = interactionType;
-
-    return <TypeInteractionTile key={type} type={type} typeInteractions={typeInteractions} />;
-  };
-
-  const isFilterIncludedInType = ({ type }: { type: PokemonType }) =>
-    filters.length === 1 ? filterByMonoType(filters, type) : filterByMultiType(filters, type);
-
-  const renderTypeInteractionTables = () => {
-    if (filters.length === 0) {
-      return <div className={styles.typeInteractions}>Select the type(s) you want to see weaknesses for.</div>;
-    }
-    const typeInteractions = pokemonInteractionTypes.filter(isFilterIncludedInType).map(renderTypeInteractionTable);
-
-    return typeInteractions.length === 0 ? (
-      <EmptyListPlaceholder text="No interactions found for this type combination..." />
-    ) : (
-      <div className={styles.typeInteractions}>{typeInteractions}</div>
-    );
-  };
+  const strings = useStrings();
+  // Sort so a legacy ?types=water,fire URL renders the same label/order as the
+  // canonical /type-interactions/fire-water page it points at.
+  const selected = usePokemonTypesFromQuery().split(",").filter(Boolean).sort();
+  const canonicalPath = selected.length ? `/type-interactions/${toTypeSlug(selected)}` : "/type-interactions";
+  // Mirror the selected combo across locales; with nothing selected, pair the
+  // bare index pages. `selected` is english, so the FR side is toFrTypeSlug.
+  const enHref = selected.length ? `/type-interactions/${toTypeSlug(selected)}` : "/type-interactions";
+  const frHref = selected.length ? `/fr/type-interactions/${toFrTypeSlug(selected)}` : "/fr/type-interactions";
 
   return (
     <>
       <Header
-        title="Type Interactions"
-        description="Learn more about which types pokemons are weak and resistant against !"
+        title="Pokémon Type Interactions — Weakness & Strength Chart | Pokédex"
+        description="Pick a type (or two) to see the damage it takes from and deals to every other type. Full Pokémon type effectiveness chart."
+        canonicalPath={canonicalPath}
+        alternates={hreflangAlternates(enHref, frHref)}
+        jsonLd={breadcrumbJsonLd([
+          { name: "Pokédex", path: "/" },
+          { name: "Type Interactions", path: "/type-interactions" },
+        ])}
       />
       <Page>
-        <div id="type-interactions" className={styles.container}>
-          <TypesSelector pathname={TYPE_INTERACTIONS} />
-          <div>{renderTypeInteractionTables()}</div>
-        </div>
+        <>
+          <div className={styles.container}>
+            <TypeIntro selected={selected} />
+            <TypePicker selected={selected} />
+            <TypeMatchups selected={selected} />
+          </div>
+          {/* Crawlable index of every single/dual-type matchup page. The picker
+              above is a client-side filter, so without this the 171 combo pages
+              have no internal links and are orphaned. */}
+          <BrowseIndex
+            heading={strings.browseTypesHeading}
+            ariaLabel={strings.browseTypesAria}
+            items={enTypeComboItems()}
+          />
+        </>
       </Page>
     </>
   );

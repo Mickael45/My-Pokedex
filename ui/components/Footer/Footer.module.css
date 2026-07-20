@@ -1,0 +1,57 @@
+.footer {
+  /* No top border and a quiet tone so the footer blends into the page rather
+     than reading as a separate band — matters most on the vividly themed detail
+     pages. Bottom padding kept small; the App container already reserves space
+     for the fixed mobile tab bar, so a big bottom pad here just left a dead gap. */
+  padding: 1.25rem 1rem;
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+/* Detail pages render the footer INSIDE their type-coloured content area, so it
+   inherits the white text and sits on the themed background — a faint light rule
+   separates it from the content above instead of a standalone band. */
+.embedded {
+  /* Space above the divider so it isn't cramped against the content panels. */
+  margin-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+}
+
+/* Guarantee a ≥24×24px pointer target for each footer link (WCAG 2.2 Target
+   Size); the plain inline text links were ~20px tall and packed too close. */
+.links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 4px;
+}
+
+.disclaimer {
+  max-width: 60ch;
+  margin: 0 auto 0.5rem;
+  opacity: 0.75;
+}
+
+/* Blend the legal links into the footer's own text tone instead of the loud
+   site-wide link colour (red on light, yellow on dark), so the footer reads as a
+   quiet utility band on every page — including the vividly themed detail pages.
+   The :global([data-theme]) prefix outranks the themed `a` colour rule. */
+:global([data-theme]) .footer .links a {
+  color: inherit;
+  opacity: 0.85;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+:global([data-theme]) .footer .links a:hover {
+  opacity: 1;
+}

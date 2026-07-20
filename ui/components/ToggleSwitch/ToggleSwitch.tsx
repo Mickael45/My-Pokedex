@@ -1,3 +1,4 @@
+import { type ReactNode } from "react";
 import styles from "./ToggleSwitch.module.css";
 
 interface IProps {
@@ -5,19 +6,20 @@ interface IProps {
   onLabel: string;
   offLabel: string;
   checked: boolean;
+  /** `off` icon is shown while unchecked, `on` while checked. */
+  icons: { on: ReactNode; off: ReactNode };
 }
 
-const ToggleSwitch = ({ handleClick, onLabel, offLabel, checked }: IProps) => (
-  <div className={styles.container}>
-    <input onChange={handleClick} className={styles.toggle} id={onLabel} type="checkbox" checked={checked} />
-    <label
-      id="res switch"
-      className={styles.toggleButton}
-      data-tg-off={onLabel.toLocaleUpperCase()}
-      data-tg-on={offLabel.toLocaleUpperCase()}
-      htmlFor={onLabel}
-    ></label>
-  </div>
+const ToggleSwitch = ({ handleClick, onLabel, offLabel, checked, icons }: IProps) => (
+  <button
+    type="button"
+    className={styles.iconFlip}
+    data-on={checked}
+    onClick={handleClick}
+    aria-label={checked ? offLabel : onLabel}
+  >
+    {checked ? icons.on : icons.off}
+  </button>
 );
 
 export default ToggleSwitch;

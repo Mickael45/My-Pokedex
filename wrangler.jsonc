@@ -1,0 +1,16 @@
+{
+  "name": "my-pokedex",
+  "compatibility_date": "2026-06-01",
+  "assets": { "directory": "./out", "not_found_handling": "404-page" },
+  "workers_dev": false,
+  "preview_urls": true,
+  // Bind the Worker to both hostnames as Custom Domains (config-as-code, so we
+  // don't depend on the dashboard "Add Domain" dialog). `wrangler deploy` creates
+  // the missing binding and leaves the already-correct one untouched. The apex
+  // (my-pokedex.com) is the canonical host — sitemap/canonical/OG all use it, and
+  // www 301-redirects to it — but www MUST still be bound so that redirect resolves.
+  "routes": [
+    { "pattern": "my-pokedex.com", "custom_domain": true },
+    { "pattern": "www.my-pokedex.com", "custom_domain": true }
+  ]
+}

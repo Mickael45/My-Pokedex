@@ -4,7 +4,8 @@ export type Type = {
   };
 };
 
-export type EvolvesTo = { evolves_to: EvolvesTo[]; evolution_details: []; species: { name: string, url: string } };
+export type EvolutionDetail = { min_level: number | null; trigger: { name: string }; item: { name: string } | null };
+export type EvolvesTo = { evolves_to: EvolvesTo[]; evolution_details: EvolutionDetail[]; species: { name: string, url: string } };
 
 export type EvolutionData = {
   evolves_to: EvolvesTo[];
@@ -54,6 +55,7 @@ export type Variety = {
 
 export type Specie = {
   id: string,
+  evolves_from_species: { name: string; url: string } | null;
   evolution_chain: {
     url: string;
   };
@@ -70,4 +72,5 @@ export interface IPokemonResponseType {
   weight: number;
   height: number;
   abilities: Ability[];
+  species: { name: string; url: string };
 }

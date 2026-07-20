@@ -1,11 +1,11 @@
-import Image from "next/image";
 import { FormEvent, useEffect } from "react";
 import { useRouter } from "next/router";
 import { getElementById } from "../../../utils/domManipulation";
 import useFiltering from "../../../hooks/useFiltering";
 import { usePokemonIdFromQuery, usePokemonNameFromQuery } from "../../../hooks/useQueryParams";
 import styles from "./SearchInput.module.css";
-import { HOME } from "../../../constants/Routes";
+import { POKEMON, HOME, FR_HOME, FR_POKEMON } from "../../../constants/Routes";
+import { useLocale, useStrings } from "../../../hooks/useLocale";
 
 const NAME_INPUT_ID = "nameInputId";
 
@@ -14,26 +14,34 @@ const SearchInput = () => {
   const name = usePokemonNameFromQuery();
   const filteredPokemons = useFiltering();
   const router = useRouter();
+  const locale = useLocale();
+  const strings = useStrings();
+
+  // The FR detail route (/fr/pokemon/[slug]) is a details page too, so the
+  // input is cleared there just as on the English /pokemon/ route.
+  const isOnDetailsPage =
+    router.pathname.startsWith(POKEMON) || router.pathname.startsWith(FR_POKEMON);
+  const homeHref = locale === "fr" ? FR_HOME : HOME;
 
   const handlePokemonsAndFilteringQueryChange = () => {
     const input = getElementById(NAME_INPUT_ID) as HTMLInputElement;
 
-    input.value = id || name;
+    input.value = isOnDetailsPage ? "" : id || name;
   };
 
-  useEffect(handlePokemonsAndFilteringQueryChange, [id, name, filteredPokemons]);
+  useEffect(handlePokemonsAndFilteringQueryChange, [id, name, filteredPokemons, isOnDetailsPage]);
 
   const createQuery = () => {
     const { value = "" } = getElementById(NAME_INPUT_ID) as HTMLInputElement;
 
     if (value === "") {
-      router.push(HOME);
+      router.push(homeHref);
       return;
     }
     const search = !isNaN(+value) ? `id=${value.toLowerCase()}` : `name=${value.toLowerCase()}`;
 
     router.push({
-      pathname: HOME,
+      pathname: homeHref,
       search,
     });
   };
@@ -46,18 +54,23 @@ const SearchInput = () => {
   return (
     <form onSubmit={handleFormSubmit} className={styles.container}>
       <div>
-        <input autoComplete="off" placeholder="Search a Pokemon by name or id" id={NAME_INPUT_ID} />
-        <Image
-          src="/icons/search.svg"
-          onClick={createQuery}
-          alt="searchIcon"
-          height={25}
-          width={25}
-          style={{
-            maxWidth: "100%",
-            height: "auto"
-          }} />
-        <button type="submit" hidden>Submit</button>
+        <label htmlFor={NAME_INPUT_ID} className="srOnly">
+          {strings.searchPlaceholder}
+        </label>
+        <input autoComplete="off" placeholder={strings.searchPlaceholder} id={NAME_INPUT_ID} />
+        {/* The visible search glyph IS the submit control — a real <button> so it
+            is keyboard-operable (the old clickable <img> was mouse-only). The
+            icon is decorative; the button carries the accessible name. */}
+        <button type="submit" className={styles.searchBtn} aria-label={strings.searchSubmit}>
+          <img
+            src="/icons/search.svg"
+            alt=""
+            aria-hidden="true"
+            height={25}
+            width={25}
+            style={{ maxWidth: "100%", height: "auto" }}
+          />
+        </button>
       </div>
     </form>
   );

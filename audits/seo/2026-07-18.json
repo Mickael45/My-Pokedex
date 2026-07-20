@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "audit": "seo",
+  "site": "my-pokedex",
+  "generated_at": "2026-07-18T15:26:15Z",
+  "target": {
+    "ref": "bdd94b76714eeb26104e826d27d77261368bf8c5",
+    "url": "https://my-pokedex.com"
+  },
+  "pages_audited": 2404,
+  "report_path": "audits/seo/2026-07-18-report.md",
+  "checks_run": {
+    "raw-html-content": 1,
+    "robots-txt-valid": 1,
+    "robots-prod-vs-repo": 1,
+    "sitemap-valid": 1,
+    "canonical-present": 1,
+    "canonical-resolves-200": 1,
+    "host-canonicalization": 1,
+    "public-dns-resolution": 1,
+    "indexability-directives": 1,
+    "soft-404-real-status": 1,
+    "lastmod-honest": 1,
+    "title-unique": 1,
+    "title-length": 1,
+    "meta-description-unique": 2,
+    "meta-description-length": 1,
+    "single-h1": 1,
+    "html-lang": 1,
+    "viewport-meta": 1,
+    "hreflang-valid": 1,
+    "schema-valid": 1,
+    "schema-matches-content": 1,
+    "og-image-present": 1,
+    "open-graph-complete": 1,
+    "favicon-icon-set": 1,
+    "manifest-installable": 1,
+    "core-web-vitals": 1,
+    "security-headers": 1,
+    "ai-crawler-access": 1,
+    "publisher-identity-visible": 1,
+    "eeat-identity": 1,
+    "content-spam-guardrails": 1,
+    "orphaned-pages": 1,
+    "click-depth-exceeded": 1
+  },
+  "checks_skipped": {
+    "ads-txt-valid": "Ad-free site; AdSense abandoned 2026-07-09 (Nintendo IP), all ad code removed; no ads.txt needed",
+    "ad-unit-renders": "Ad-free site; no ad loader script present",
+    "publisher-id-correct": "Ad-free site; no ad publisher ID",
+    "cmp-consent-footer": "No CMP; consent-requiring analytics (GA4) removed in commit 7da08ec",
+    "consent-mode-region-scoped": "No analytics or Consent Mode; site sets no tracking cookies"
+  },
+  "issues": [
+    {
+      "check_id": "lastmod-honest",
+      "severity": "moderate",
+      "count": 1,
+      "note": "All 2404 sitemap URLs share lastmod 2026-07-07 (flat). Left open by design: it is a manually-pinned constant (scripts/generateSitemap.mjs LASTMOD), explicitly not new Date(), bumped only when content actually changes, so it never stamps today on unchanged URLs across redeploys. Introducing per-page dates without real per-entity change tracking would be less honest. Revisit when per-entity modification timestamps exist."
+    }
+  ],
+  "issue_counts": {
+    "critical": 0,
+    "serious": 0,
+    "moderate": 1,
+    "minor": 0
+  }
+}

@@ -22,7 +22,6 @@ const IntersectionObserver = ({ children, handleIntersection }: IProps) => {
 
   useEffect(updateIsIntersecting, [entry]);
 
-  console.log(ref, children)
   return <span ref={ref}>{children}</span>;
 };
 
