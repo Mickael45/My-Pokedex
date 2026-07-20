@@ -1,0 +1,82 @@
+/* Pill type selector for the Type Interactions dossier. Colour tokens
+   (--panel-bg, --ink-*) are inherited from the page container so it follows
+   the active light/dark theme; the selected chip glows with its type colour. */
+.picker {
+  margin: 8px 0 6px;
+  padding: 18px;
+  border: 1px solid var(--panel-border);
+  border-radius: 16px;
+  background: var(--panel-bg);
+  box-shadow: 0 18px 50px -34px rgba(0, 0, 0, 0.5);
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  /* Was --ink-faint (#8a93a8 → 3.08:1); use --ink so the "Type(s)" label clears
+     WCAG AA. The secondary .hint keeps the dimmer --ink-dim for hierarchy. */
+  color: var(--ink);
+}
+.hint {
+  color: var(--ink-dim);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: 8px 15px 8px 12px;
+  cursor: pointer;
+  color: #fff;
+  /* Option D: deep, AA-safe fill (white label/icon passes). Unselected recedes
+     via desaturation — never opacity — so the text keeps its contrast. */
+  background: linear-gradient(160deg, var(--chip, #888), color-mix(in srgb, var(--chip, #888) 80%, #000));
+  filter: saturate(0.55) brightness(0.93);
+  text-transform: capitalize;
+  font-weight: bold;
+  transition: transform 0.14s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+.chipIcon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  display: block;
+}
+.chip:hover {
+  transform: translateY(-2px);
+  filter: saturate(0.85);
+}
+.chip.on {
+  filter: saturate(1.1);
+  /* panel-coloured gap then a type-coloured ring */
+  box-shadow: 0 0 0 2px var(--panel-bg, #fff), 0 0 0 4px var(--c), 0 8px 22px -6px var(--c);
+}
+
+/* Larger chips in high-res to match the bigger HD type elsewhere on the page. */
+:global([data-resolution="high res."]) .chip {
+  font-size: 16px;
+}
+:global([data-resolution="high res."]) .label {
+  font-size: 14px;
+}
+
+@media (max-width: 640px) {
+  .chip {
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+}

@@ -1,0 +1,29 @@
+.wrap {
+  max-width: 70ch;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  line-height: 1.6;
+}
+
+.wrap h1 {
+  margin-bottom: 0.5rem;
+}
+
+.wrap h2 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.updated {
+  font-size: 0.85rem;
+  opacity: 0.7;
+  margin-bottom: 1.5rem;
+}
+
+/* Underline links inside prose so they are distinguishable from body text by
+   more than colour alone (WCAG 1.4.1 Use of Color); the global stylesheet
+   otherwise strips underlines from every <a>. */
+.wrap a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

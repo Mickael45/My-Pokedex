@@ -5,7 +5,28 @@
   row-gap: 15px;
 }
 
-.container > :first-child {
-  height: 35px;
-  justify-self: end;
+.pageHeader {
+  width: 100%;
+  max-width: 70ch;
+  /* Breathing room below the sticky header before the title block. */
+  margin: 28px auto 6px;
+  text-align: center;
+}
+
+.pageTitle {
+  margin: 4px 0 0;
+  font-weight: bold;
+  font-size: 26px;
+  color: var(--ink);
+}
+
+.intro {
+  color: var(--ink-dim);
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 8px auto 4px;
+}
+
+:global([data-resolution="high res."]) .intro {
+  font-size: 17px;
 }

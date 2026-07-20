@@ -3,7 +3,15 @@
   width: 100%;
   flex-wrap: wrap;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  gap: 28px;
   margin-bottom: 55px;
   justify-self: center;
+}
+
+/* Invisible infinite-scroll sentinel (replaces the old loading spinner). Keeps a
+   height so the IntersectionObserver still detects it entering the viewport. */
+.sentinel {
+  width: 100%;
+  height: 60px;
 }

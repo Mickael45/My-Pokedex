@@ -1,6 +1,5 @@
 import { JSX } from "react";
 import IntersectionObserver from "../../components/IntersectionObserver/IntersectionObserver";
-import PokeballSpinner from "../../components/PokeballSpinner/PokeballSpinner";
 import styles from "./FlexboxList.module.css";
 
 interface IProps {
@@ -10,7 +9,9 @@ interface IProps {
 }
 
 const FlexboxList = ({ children, showMore, hasReachedEnd }: IProps) => {
-  const renderLoadMoreComponent = () => (!hasReachedEnd ? <PokeballSpinner /> : <div />);
+  // Invisible spacer used purely as the infinite-scroll sentinel — it keeps a
+  // height so the IntersectionObserver still fires, but shows no spinner.
+  const renderLoadMoreComponent = () => (!hasReachedEnd ? <div className={styles.sentinel} /> : <div />);
 
   const renderIntersectionObserver = () =>
     children?.length > 0 ? (
