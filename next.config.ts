@@ -18,7 +18,13 @@ const nextConfig: NextConfig = {
   // trade build speed for reliability: few workers, few pages in flight per worker,
   // plus a Next-level retry. Peak connections ≈ cpus × page-fetch fan-out stays polite.
   experimental: {
-    cpus: 2,
+    // In LIVE/record builds each of the ~2,050 SSG pages fetches PokéAPI, so we cap
+    // workers for network politeness. In REPLAY (the swarm/Pi build) there is no
+    // network — pages read the promoted 72 MB snapshot, and each Next worker holds a
+    // full ~460 MB parsed copy in RSS. Two workers (~1.2 GB) sit right at the Pi's
+    // MemoryHigh cap and risk an OOM kill; one worker (~0.6 GB) is safe. So: 1 worker
+    // in replay (slow-but-complete beats fast-and-crashy), 2 otherwise.
+    cpus: process.env.POKEDEX_SNAPSHOT === "replay" ? 1 : 2,
     staticGenerationMaxConcurrency: 4,
     staticGenerationRetryCount: 2,
   },
