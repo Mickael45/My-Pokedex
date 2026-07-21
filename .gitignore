@@ -37,3 +37,7 @@ amplifytools.xcconfig
 # data/candidate/ is the fresh crawl, promoted to data/latest.json by the orchestrator.
 # Runtime data, regenerated each run — same policy as the other swarm sites.
 data/
+
+# Swarm provisions with `npm install` (no committed lockfile); npm rewrites
+# yarn.lock, which would dirty the tree and break the fetch stage git pull.
+yarn.lock
