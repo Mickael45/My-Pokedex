@@ -2,7 +2,7 @@
   "schema_version": 1,
   "audit": "seo",
   "site": "my-pokedex",
-  "generated_at": "2026-07-21T13:35:56Z",
+  "generated_at": "2026-07-21T14:13:26Z",
   "target": {
     "ref": "bdd94b76714eeb26104e826d27d77261368bf8c5",
     "url": "https://my-pokedex.com"
